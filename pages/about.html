@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Havelock Fair 2026 | À propos — Foire Havelock</title>
+  <meta name="description" content="Learn about the Havelock Fair — one of Canada's oldest agricultural fairs, founded in 1871. Meet our board and learn about our history in Havelock, Quebec.">
+  <meta property="og:title" content="About the Havelock Fair">
+  <meta property="og:description" content="155+ years of community, heritage, and rural tradition in Havelock, Quebec.">
+  <link rel="canonical" href="https://www.havelockfair.ca/pages/about.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .page-hero {
+      position: relative;
+      padding: 160px 0 80px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      text-align: center;
+      color: var(--white);
+    }
+    .page-hero h1 { color: var(--white); margin-bottom: 12px; }
+    .page-hero p { opacity: 0.8; font-size: 1.1rem; }
+
+    /* History section */
+    .history-section {
+      padding: 80px 0;
+      background: var(--cream);
+    }
+    .history-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .history-grid { grid-template-columns: 1fr; gap: 40px; }
+    }
+    .history-text h2 {
+      margin-bottom: 16px;
+    }
+    .history-text p {
+      color: var(--text-light);
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+    .history-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .history-stat {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .history-stat .stat-num {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gold);
+      display: block;
+    }
+    .history-stat .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+    .history-image-placeholder {
+      background: var(--cream-dark);
+      border-radius: var(--radius-lg);
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      border: 2px dashed var(--gold);
+    }
+
+    /* Mission / values */
+    .mission-section {
+      padding: 80px 0;
+      background: var(--navy);
+      color: var(--white);
+    }
+    .mission-section h2 { color: var(--white); text-align: center; margin-bottom: 48px; }
+    .mission-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    @media (max-width: 768px) {
+      .mission-cards { grid-template-columns: 1fr; }
+    }
+    .mission-card {
+      background: rgba(255,255,255,0.07);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      border: 1px solid rgba(200,146,42,0.3);
+      text-align: center;
+    }
+    .mission-card .mission-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+    .mission-card h3 {
+      color: var(--gold-light);
+      margin-bottom: 12px;
+      font-size: 1.15rem;
+    }
+    .mission-card p {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* Board section */
+    .board-section {
+      padding: 80px 0;
+      background: var(--cream);
+    }
+    .board-section h2 { text-align: center; margin-bottom: 12px; }
+    .board-subtitle {
+      text-align: center;
+      color: var(--text-light);
+      margin-bottom: 48px;
+    }
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 24px;
+    }
+    .board-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .board-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    .board-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin: 0 auto 16px;
+      border: 3px solid var(--gold);
+    }
+    .board-name {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .board-role {
+      font-size: 0.85rem;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 80px 0;
+      background: var(--cream-dark);
+      text-align: center;
+    }
+    .cta-section h2 { margin-bottom: 12px; }
+    .cta-section p { color: var(--text-light); margin-bottom: 28px; max-width: 520px; margin-left: auto; margin-right: auto; }
+    .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <span>Havelock Fair</span>
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-menu">
+        <li><a href="/" data-i18n="nav_home">Home</a></li>
+        <li><a href="/pages/schedule.html" data-i18n="nav_schedule">Schedule</a></li>
+        <li><a href="/pages/directions.html" data-i18n="nav_directions">Directions</a></li>
+        <li><a href="/pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
+        <li><a href="/pages/about.html" class="active" data-i18n="nav_about">About</a></li>
+        <li><a href="/pages/contact.html" data-i18n="nav_contact">Contact</a></li>
+        <li><a href="/pages/registration.html" data-i18n="nav_registration">Registration</a></li>
+        <li>
+          <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="fr">FR</button>
+            <button class="lang-btn" data-lang="es">ES</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ========== PAGE HERO ========== -->
+  <section class="page-hero">
+    <div class="container">
+      <h1 data-i18n="about_page_title">About the Havelock Fair</h1>
+      <p data-i18n="about_page_subtitle">155+ years of community, heritage, and rural tradition</p>
+    </div>
+  </section>
+
+  <!-- ========== HISTORY ========== -->
+  <section class="history-section">
+    <div class="container">
+      <div class="history-grid">
+        <div class="history-text fade-in">
+          <span class="about-tag" data-i18n="about_tag">Since 1871</span>
+          <h2 data-i18n="about_history_title">A Living Tradition Since 1871</h2>
+          <p data-i18n="about_history_p1">The Havelock Fair is one of Canada's oldest continuously held agricultural exhibitions. Since 1871, it has served as the beating heart of the Haut-Saint-Laurent community — a gathering place where farmers, families, and neighbours come together each September to celebrate rural life.</p>
+          <p data-i18n="about_history_p2">Founded during an era when agricultural fairs were the primary way communities shared knowledge, traded livestock, and connected across the region, the Havelock Fair has adapted through generations while staying true to its roots. Today it draws visitors from across Quebec, Ontario, and the United States.</p>
+          <p data-i18n="about_history_p3">From hand-drawn plows to digital registration systems, the fair has modernized without losing what makes it special: the deep sense of place, the pride of local farmers and artisans, and the joy of a community that shows up for itself every year.</p>
+          <div class="history-stat-grid">
+            <div class="history-stat">
+              <span class="stat-num">1871</span>
+              <div class="stat-label" data-i18n="stat_founded">Year Founded</div>
+            </div>
+            <div class="history-stat">
+              <span class="stat-num">155+</span>
+              <div class="stat-label" data-i18n="stat_years">Years Running</div>
+            </div>
+            <div class="history-stat">
+              <span class="stat-num">27</span>
+              <div class="stat-label" data-i18n="stat_classes">Competition Classes</div>
+            </div>
+            <div class="history-stat">
+              <span class="stat-num">2</span>
+              <div class="stat-label" data-i18n="stat_days">Fair Days</div>
+            </div>
+          </div>
+        </div>
+        <div class="history-image-placeholder fade-in">
+          <span data-i18n="about_photo_placeholder">Fair Photos Coming Soon</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MISSION / VALUES ========== -->
+  <section class="mission-section">
+    <div class="container">
+      <h2 data-i18n="about_values_title">What We Stand For</h2>
+      <div class="mission-cards">
+        <div class="mission-card fade-in">
+          <div class="mission-icon">🌾</div>
+          <h3 data-i18n="about_val1_title">Agriculture</h3>
+          <p data-i18n="about_val1_text">Celebrating the farmers, growers, and livestock breeders who feed our communities and preserve rural livelihoods across the Haut-Saint-Laurent.</p>
+        </div>
+        <div class="mission-card fade-in">
+          <div class="mission-icon">🤝</div>
+          <h3 data-i18n="about_val2_title">Community</h3>
+          <p data-i18n="about_val2_text">A fair built by volunteers for neighbours. Every year, dozens of community members give their time to make the Havelock Fair happen.</p>
+        </div>
+        <div class="mission-card fade-in">
+          <div class="mission-icon">📜</div>
+          <h3 data-i18n="about_val3_title">Heritage</h3>
+          <p data-i18n="about_val3_text">Preserving the traditions, crafts, and rural knowledge that define life in this part of Quebec — and passing them on to the next generation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== BOARD ========== -->
+  <section class="board-section">
+    <div class="container">
+      <h2 data-i18n="about_board_title">Our Board</h2>
+      <p class="board-subtitle" data-i18n="about_board_subtitle">The volunteers who make the Havelock Fair possible</p>
+      <div class="board-grid">
+        <div class="board-card fade-in">
+          <div class="board-avatar">👩‍💼</div>
+          <div class="board-name">Nadeana Tannahill</div>
+          <div class="board-role" data-i18n="board_president">President</div>
+        </div>
+        <div class="board-card fade-in">
+          <div class="board-avatar">📋</div>
+          <div class="board-name">Rommy Hernandez Tenorio</div>
+          <div class="board-role" data-i18n="board_secretary">Secretary</div>
+        </div>
+        <!-- Additional board members can be added here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA ========== -->
+  <section class="cta-section">
+    <div class="container fade-in">
+      <h2 data-i18n="about_cta_title">Join Us September 12–13, 2026</h2>
+      <p data-i18n="about_cta_text">Come experience the Havelock Fair for yourself — rain or shine, the tradition continues.</p>
+      <div class="btn-group">
+        <a href="/pages/schedule.html" class="btn btn-primary" data-i18n="nav_schedule">Schedule</a>
+        <a href="/pages/directions.html" class="btn btn-outline" data-i18n="nav_directions">Directions</a>
+        <a href="/pages/contact.html" class="btn btn-outline" data-i18n="nav_contact">Contact</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">Havelock Fair</div>
+          <p class="footer-tagline" data-i18n="footer_tagline">A proud tradition since 1871.</p>
+          <div class="footer-social">
+            <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h4 data-i18n="footer_quick">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="/pages/schedule.html" data-i18n="nav_schedule">Schedule</a></li>
+            <li><a href="/pages/directions.html" data-i18n="nav_directions">Directions</a></li>
+            <li><a href="/pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
+            <li><a href="/pages/about.html" data-i18n="nav_about">About</a></li>
+            <li><a href="/pages/contact.html" data-i18n="nav_contact">Contact</a></li>
+            <li><a href="/pages/registration.html" data-i18n="nav_registration">Registration</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 data-i18n="footer_contact">Contact</h4>
+          <div class="footer-contact-info">
+            <span data-i18n="footer_address">455 Route 202, Havelock, Quebec J0S 2C0</span>
+            <a href="tel:+14508261155" data-i18n="footer_phone">(450) 826-1155</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2026 <span data-i18n="footer_copyright">Havelock Fair. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

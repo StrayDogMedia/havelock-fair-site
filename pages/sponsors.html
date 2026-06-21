@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sponsors — Havelock Fair 2026 | Commanditaires</title>
+  <meta name="description" content="Thank you to the sponsors and community partners who make the Havelock Fair possible. Learn about sponsorship opportunities for 2026.">
+  <meta property="og:title" content="Sponsors — Havelock Fair 2026">
+  <meta property="og:description" content="Meet the generous sponsors and community partners behind one of Canada's oldest agricultural fairs.">
+  <link rel="canonical" href="https://www.havelockfair.ca/pages/sponsors.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .page-hero {
+      position: relative;
+      padding: 160px 0 80px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      text-align: center;
+      color: var(--white);
+    }
+    .page-hero h1 { color: var(--white); margin-bottom: 12px; }
+    .page-hero p { opacity: 0.8; font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+    .sponsors-section { padding: 64px 0 32px; }
+
+    /* Tier section */
+    .sponsor-tier {
+      margin-bottom: 56px;
+    }
+    .tier-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--cream-dark);
+    }
+    .tier-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tier-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--white);
+    }
+    .tier-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    /* Sponsor cards grid */
+    .sponsor-grid {
+      display: grid;
+      gap: 20px;
+    }
+    .sponsor-grid.featured { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+    .sponsor-grid.gold { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    .sponsor-grid.silver { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .sponsor-grid.bronze { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+
+    /* Sponsor card */
+    .sponsor-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: transform var(--transition), box-shadow var(--transition);
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sponsor-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    .sponsor-card[href="#"] { cursor: default; }
+    .sponsor-card[href="#"]:hover { transform: none; box-shadow: var(--shadow); }
+
+    .sponsor-logo {
+      flex-shrink: 0;
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--white);
+      letter-spacing: -0.5px;
+    }
+
+    .sponsor-grid.featured .sponsor-logo { width: 80px; height: 80px; font-size: 1.3rem; }
+    .sponsor-grid.featured .sponsor-card { padding: 24px; border: 2px solid var(--navy); background: linear-gradient(135deg, #f8f6f0 0%, var(--white) 100%); }
+    .sponsor-grid.featured .sponsor-name { font-size: 1.15rem; font-weight: 700; }
+    .sponsor-grid.gold .sponsor-logo { width: 64px; height: 64px; font-size: 1.1rem; }
+
+    .sponsor-logo-img {
+      flex-shrink: 0;
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius);
+      object-fit: contain;
+      background: var(--white);
+    }
+    .sponsor-grid.featured .sponsor-logo-img { width: 80px; height: 80px; }
+    .sponsor-grid.gold .sponsor-logo-img { width: 64px; height: 64px; }
+
+    .sponsor-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      line-height: 1.3;
+    }
+    .sponsor-grid.gold .sponsor-name { font-size: 1.05rem; }
+    .sponsor-grid.community .sponsor-name { font-size: 0.88rem; font-weight: 500; }
+
+    .sponsor-link-hint {
+      margin-left: auto;
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity var(--transition);
+      color: var(--gold);
+    }
+    .sponsor-card:hover .sponsor-link-hint { opacity: 1; }
+    .sponsor-card[href="#"] .sponsor-link-hint { display: none; }
+
+    /* Become a sponsor CTA */
+    .become-sponsor {
+      padding: 64px 0;
+      background: var(--navy);
+      text-align: center;
+      color: var(--white);
+    }
+    .become-sponsor h2 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+    .become-sponsor p {
+      max-width: 640px;
+      margin: 0 auto 28px;
+      opacity: 0.85;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    .become-sponsor .btn-primary {
+      font-size: 1rem;
+      padding: 14px 36px;
+    }
+
+    /* Thanks ribbon */
+    .thanks-ribbon {
+      text-align: center;
+      padding: 40px 24px;
+      background: var(--cream-dark);
+    }
+    .thanks-ribbon p {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 600px) {
+      .sponsor-grid.featured,
+      .sponsor-grid.gold,
+      .sponsor-grid.silver,
+      .sponsor-grid.bronze {
+        grid-template-columns: 1fr;
+      }
+      .tier-title { font-size: 1.2rem; }
+      .become-sponsor h2 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" role="navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand"><span>Havelock Fair</span></a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-menu">
+        <li><a href="/" data-i18n="nav_home">Home</a></li>
+        <li><a href="/pages/schedule.html" data-i18n="nav_schedule">Schedule</a></li>
+        <li><a href="/pages/directions.html" data-i18n="nav_directions">Directions</a></li>
+        <li><a href="/pages/sponsors.html" class="active" data-i18n="nav_sponsors">Sponsors</a></li>
+        <li><a href="/pages/about.html" data-i18n="nav_about">About</a></li>
+        <li><a href="/pages/contact.html" data-i18n="nav_contact">Contact</a></li>
+        <li><a href="/pages/registration.html" data-i18n="nav_registration">Registration</a></li>
+        <li>
+          <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="fr">FR</button>
+            <button class="lang-btn" data-lang="es">ES</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <h1 data-i18n="sponsors_title">Our Sponsors</h1>
+      <p data-i18n="sponsors_subtitle">The Havelock Fair is made possible by the generous support of our sponsors and community partners.</p>
+    </div>
+  </section>
+
+  <!-- SPONSORS -->
+  <section class="sponsors-section">
+    <div class="container" id="sponsors-container"></div>
+  </section>
+
+  <!-- BECOME A SPONSOR -->
+  <section class="become-sponsor">
+    <div class="container">
+      <h2 data-i18n="sponsors_become_title">Become a Sponsor</h2>
+      <p data-i18n="sponsors_become_text">Support one of Canada's oldest agricultural fairs and connect with thousands of visitors from across the region. Sponsorship packages include signage, program placement, and recognition at the event.</p>
+      <a href="mailto:info@havelockfair.ca?subject=Sponsorship%20Inquiry" class="btn btn-primary" data-i18n="sponsors_become_btn">Contact Us About Sponsorship</a>
+    </div>
+  </section>
+
+  <!-- THANKS -->
+  <section class="thanks-ribbon">
+    <div class="container">
+      <p data-i18n="sponsors_thanks">Thank you to all our sponsors for keeping this tradition alive since 1871.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">Havelock Fair</div>
+          <p class="footer-tagline" data-i18n="footer_tagline">A proud tradition since 1871.</p>
+          <div class="footer-social">
+            <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h4 data-i18n="footer_quick">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="/pages/schedule.html" data-i18n="nav_schedule">Schedule</a></li>
+            <li><a href="/pages/directions.html" data-i18n="nav_directions">Directions</a></li>
+            <li><a href="/pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
+            <li><a href="/pages/about.html" data-i18n="nav_about">About</a></li>
+            <li><a href="/pages/contact.html" data-i18n="nav_contact">Contact</a></li>
+            <li><a href="/pages/registration.html" data-i18n="nav_registration">Registration</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 data-i18n="footer_contact">Contact</h4>
+          <div class="footer-contact-info">
+            <span data-i18n="footer_address">455 Route 202, Havelock, Quebec J0S 2C0</span>
+            <a href="tel:+14508261155" data-i18n="footer_phone">(450) 826-1155</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2026 <span data-i18n="footer_copyright">Havelock Fair. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/sponsors-data.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const tierIcons = {
+      crown: '<svg viewBox="0 0 24 24"><path d="M2 20h20v2H2zM4 17l2-9 5 4 1-6 1 6 5-4 2 9z"/></svg>',
+      star: '<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
+      shield: '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+      award: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>'
+    };
+
+    function hashColor(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      const hue = Math.abs(hash) % 360;
+      return `hsl(${hue}, 35%, 40%)`;
+    }
+
+    function buildSponsors() {
+      const lang = currentLang || "en";
+      const container = document.getElementById("sponsors-container");
+      container.innerHTML = "";
+
+      sponsorTiers.forEach(tier => {
+        const list = sponsors[tier.key];
+        if (!list || list.length === 0) return;
+
+        const section = document.createElement("div");
+        section.className = "sponsor-tier";
+
+        const tierLabel = (translations[lang] && translations[lang][tier.i18n]) || tier.key;
+
+        section.innerHTML = `
+          <div class="tier-header">
+            <div class="tier-icon" style="background:${tier.color}">${tierIcons[tier.icon]}</div>
+            <div class="tier-title">${tierLabel}</div>
+          </div>
+        `;
+
+        const grid = document.createElement("div");
+        grid.className = `sponsor-grid ${tier.key}`;
+
+        list.forEach(sp => {
+          const card = document.createElement("a");
+          card.className = "sponsor-card";
+          card.href = sp.url;
+          if (sp.url !== "#") {
+            card.target = "_blank";
+            card.rel = "noopener";
+          }
+
+          const logoHtml = sp.logo
+            ? `<img class="sponsor-logo-img" src="${sp.logo}" alt="${sp.name}" loading="lazy">`
+            : `<div class="sponsor-logo" style="background:${hashColor(sp.name)}">${sp.initials}</div>`;
+
+          card.innerHTML = `
+            ${logoHtml}
+            <div class="sponsor-name">${sp.name}</div>
+            <div class="sponsor-link-hint">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </div>
+          `;
+
+          grid.appendChild(card);
+        });
+
+        section.appendChild(grid);
+        container.appendChild(section);
+      });
+    }
+
+    const origSetLang = setLanguage;
+    setLanguage = function(lang) {
+      origSetLang(lang);
+      buildSponsors();
+    };
+
+    buildSponsors();
+  </script>
+</body>
+</html>

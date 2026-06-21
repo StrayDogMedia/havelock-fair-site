@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule — Havelock Fair 2026 | Horaire</title>
+  <meta name="description" content="Full schedule for the 2026 Havelock Fair, September 12-13. Livestock shows, live music, children's activities, antique tractors, and more in Havelock, Quebec.">
+  <meta property="og:title" content="Schedule — Havelock Fair 2026">
+  <meta property="og:description" content="Two days of livestock shows, live music, children's activities, and community spirit.">
+  <link rel="canonical" href="https://www.havelockfair.ca/pages/schedule.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .page-hero {
+      position: relative;
+      padding: 160px 0 80px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      text-align: center;
+      color: var(--white);
+    }
+    .page-hero h1 { color: var(--white); margin-bottom: 12px; }
+    .page-hero p { opacity: 0.8; font-size: 1.1rem; }
+
+    .schedule-section { padding: 64px 0; }
+
+    /* Day tabs */
+    .day-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .day-tab {
+      padding: 12px 32px;
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: 2px solid var(--navy);
+      border-radius: 50px;
+      background: transparent;
+      color: var(--navy);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .day-tab:hover { background: var(--cream-dark); }
+    .day-tab.active {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    /* Category filters */
+    .cat-filters {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 48px;
+    }
+    .cat-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 2px solid var(--cream-dark);
+      border-radius: 50px;
+      background: var(--white);
+      color: var(--text);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .cat-btn:hover { border-color: var(--gold); }
+    .cat-btn.active {
+      background: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+    .cat-btn .cat-icon { font-size: 1rem; }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 28px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--cream-dark);
+      border-radius: 2px;
+    }
+
+    .time-group { margin-bottom: 8px; }
+
+    .time-header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 0;
+      z-index: 1;
+    }
+    .time-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 3px solid var(--cream);
+      flex-shrink: 0;
+      margin-left: 19px;
+      z-index: 2;
+      box-shadow: 0 0 0 3px var(--gold);
+    }
+    .time-label {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .event-card {
+      position: relative;
+      margin-left: 60px;
+      margin-bottom: 12px;
+      padding: 16px 20px;
+      background: var(--white);
+      border-radius: var(--radius);
+      border-left: 4px solid var(--navy);
+      box-shadow: var(--shadow);
+      transition: all var(--transition);
+    }
+    .event-card:hover {
+      transform: translateX(4px);
+      box-shadow: var(--shadow-lg);
+    }
+    .event-card[data-cat="animals"] { border-left-color: #5c3d1e; }
+    .event-card[data-cat="music"]   { border-left-color: #6b2fa0; }
+    .event-card[data-cat="kids"]    { border-left-color: #c4561a; }
+    .event-card[data-cat="food"]    { border-left-color: #8b6914; }
+    .event-card[data-cat="antique"] { border-left-color: #2d5a27; }
+    .event-card[data-cat="general"] { border-left-color: #4a5568; }
+
+    .event-cat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 10px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 50px;
+      margin-bottom: 6px;
+      color: var(--white);
+    }
+    .event-card[data-cat="animals"] .event-cat-badge { background: #5c3d1e; }
+    .event-card[data-cat="music"]   .event-cat-badge { background: #6b2fa0; }
+    .event-card[data-cat="kids"]    .event-cat-badge { background: #c4561a; }
+    .event-card[data-cat="food"]    .event-cat-badge { background: #8b6914; }
+    .event-card[data-cat="antique"] .event-cat-badge { background: #2d5a27; }
+    .event-card[data-cat="general"] .event-cat-badge { background: #4a5568; }
+
+    .event-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .event-card.hidden {
+      display: none;
+    }
+    .time-group.hidden {
+      display: none;
+    }
+
+    .day-content { display: none; }
+    .day-content.active { display: block; }
+
+    /* Download banner */
+    .download-banner {
+      text-align: center;
+      padding: 48px 24px;
+      background: var(--cream-dark);
+    }
+    .download-banner p {
+      font-size: 1rem;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .timeline::before { left: 16px; }
+      .time-dot { margin-left: 7px; width: 18px; height: 18px; }
+      .event-card { margin-left: 44px; padding: 12px 14px; }
+      .time-label { font-size: 1.1rem; }
+      .day-tab { padding: 10px 20px; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" role="navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand"><span>Havelock Fair</span></a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-menu">
+        <li><a href="/" data-i18n="nav_home">Home</a></li>
+        <li><a href="/pages/schedule.html" class="active" data-i18n="nav_schedule">Schedule</a></li>
+        <li><a href="/pages/directions.html" data-i18n="nav_directions">Directions</a></li>
+        <li><a href="/pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
+        <li><a href="/pages/about.html" data-i18n="nav_about">About</a></li>
+        <li><a href="/pages/contact.html" data-i18n="nav_contact">Contact</a></li>
+        <li><a href="/pages/registration.html" data-i18n="nav_registration">Registration</a></li>
+        <li>
+          <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="fr">FR</button>
+            <button class="lang-btn" data-lang="es">ES</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <h1 data-i18n="nav_schedule">Schedule</h1>
+      <p data-i18n="hero_date">September 12–13, 2026</p>
+    </div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section class="schedule-section">
+    <div class="container">
+
+      <!-- Day Tabs -->
+      <div class="day-tabs">
+        <button class="day-tab active" data-day="saturday" id="tab-sat"></button>
+        <button class="day-tab" data-day="sunday" id="tab-sun"></button>
+      </div>
+
+      <!-- Category Filters -->
+      <div class="cat-filters" id="cat-filters"></div>
+
+      <!-- Saturday -->
+      <div class="day-content active" id="day-saturday">
+        <div class="timeline" id="timeline-saturday"></div>
+      </div>
+
+      <!-- Sunday -->
+      <div class="day-content" id="day-sunday">
+        <div class="timeline" id="timeline-sunday"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Download PDF -->
+  <section class="download-banner">
+    <div class="container">
+      <p id="download-text">The full 48-page program book includes competition classes, prize lists, regulations, and registration forms.</p>
+      <a href="#" class="btn btn-primary" id="download-btn">Download Full Program (PDF)</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">Havelock Fair</div>
+          <p class="footer-tagline" data-i18n="footer_tagline">A proud tradition since 1871.</p>
+          <div class="footer-social">
+            <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h4 data-i18n="footer_quick">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="/pages/schedule.html" data-i18n="nav_schedule">Schedule</a></li>
+            <li><a href="/pages/directions.html" data-i18n="nav_directions">Directions</a></li>
+            <li><a href="/pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
+            <li><a href="/pages/about.html" data-i18n="nav_about">About</a></li>
+            <li><a href="/pages/contact.html" data-i18n="nav_contact">Contact</a></li>
+            <li><a href="/pages/registration.html" data-i18n="nav_registration">Registration</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 data-i18n="footer_contact">Contact</h4>
+          <div class="footer-contact-info">
+            <span data-i18n="footer_address">455 Route 202, Havelock, Quebec J0S 2C0</span>
+            <a href="tel:+14508261155" data-i18n="footer_phone">(450) 826-1155</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2026 <span data-i18n="footer_copyright">Havelock Fair. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/schedule-data.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    let activeDay = "saturday";
+    let activeCat = "all";
+
+    function buildTimeline(dayKey) {
+      const day = scheduleData[dayKey];
+      const lang = currentLang || "en";
+      const timeline = document.getElementById(`timeline-${dayKey}`);
+      timeline.innerHTML = "";
+
+      const grouped = {};
+      day.events.forEach(ev => {
+        if (!grouped[ev.time]) grouped[ev.time] = [];
+        grouped[ev.time].push(ev);
+      });
+
+      Object.entries(grouped).forEach(([time, events]) => {
+        const group = document.createElement("div");
+        group.className = "time-group";
+        group.dataset.time = time;
+
+        const h = parseInt(time.split(":")[0]);
+        const ampm = h >= 12 ? "PM" : "AM";
+        const h12 = h > 12 ? h - 12 : h;
+        const timeStr = lang === "fr" ? `${time.replace(":", "h")}` : `${h12}:${time.split(":")[1]} ${ampm}`;
+
+        group.innerHTML = `
+          <div class="time-header">
+            <div class="time-dot"></div>
+            <div class="time-label">${timeStr}</div>
+          </div>
+        `;
+
+        events.forEach(ev => {
+          const card = document.createElement("div");
+          card.className = "event-card";
+          card.dataset.cat = ev.cat;
+          const catLabel = categoryInfo[ev.cat] ? categoryInfo[ev.cat][lang] || categoryInfo[ev.cat].en : ev.cat;
+          const catIcon = categoryInfo[ev.cat] ? categoryInfo[ev.cat].icon : "";
+          card.innerHTML = `
+            <div class="event-cat-badge">${catIcon} ${catLabel}</div>
+            <div class="event-title">${ev[lang] || ev.en}</div>
+          `;
+          group.appendChild(card);
+        });
+
+        timeline.appendChild(group);
+      });
+
+      filterEvents();
+    }
+
+    function filterEvents() {
+      document.querySelectorAll(".day-content.active .event-card").forEach(card => {
+        card.classList.toggle("hidden", activeCat !== "all" && card.dataset.cat !== activeCat);
+      });
+      document.querySelectorAll(".day-content.active .time-group").forEach(group => {
+        const visible = group.querySelectorAll(".event-card:not(.hidden)");
+        group.classList.toggle("hidden", visible.length === 0);
+      });
+    }
+
+    function buildFilters() {
+      const lang = currentLang || "en";
+      const container = document.getElementById("cat-filters");
+      container.innerHTML = "";
+      Object.entries(categoryInfo).forEach(([key, info]) => {
+        const btn = document.createElement("button");
+        btn.className = `cat-btn${key === activeCat ? " active" : ""}`;
+        btn.dataset.cat = key;
+        btn.innerHTML = `<span class="cat-icon">${info.icon}</span> ${info[lang] || info.en}`;
+        btn.addEventListener("click", () => {
+          activeCat = key;
+          document.querySelectorAll(".cat-btn").forEach(b => b.classList.toggle("active", b.dataset.cat === key));
+          filterEvents();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    function updateDayTabs() {
+      const lang = currentLang || "en";
+      document.getElementById("tab-sat").textContent = scheduleData.saturday[`date_${lang}`] || scheduleData.saturday.date_en;
+      document.getElementById("tab-sun").textContent = scheduleData.sunday[`date_${lang}`] || scheduleData.sunday.date_en;
+    }
+
+    function switchDay(day) {
+      activeDay = day;
+      document.querySelectorAll(".day-tab").forEach(t => t.classList.toggle("active", t.dataset.day === day));
+      document.querySelectorAll(".day-content").forEach(c => c.classList.toggle("active", c.id === `day-${day}`));
+      buildTimeline(day);
+    }
+
+    document.querySelectorAll(".day-tab").forEach(tab => {
+      tab.addEventListener("click", () => switchDay(tab.dataset.day));
+    });
+
+    const origSetLang = setLanguage;
+    setLanguage = function(lang) {
+      origSetLang(lang);
+      buildFilters();
+      updateDayTabs();
+      buildTimeline(activeDay);
+    };
+
+    buildFilters();
+    updateDayTabs();
+    buildTimeline("saturday");
+  </script>
+</body>
+</html>
