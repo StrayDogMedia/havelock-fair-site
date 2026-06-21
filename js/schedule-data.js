@@ -1,8 +1,8 @@
 const scheduleData = {
   saturday: {
-    date_en: "Saturday, September 13",
-    date_fr: "Samedi, 13 septembre",
-    date_es: "Sábado, 13 de septiembre",
+    date_en: "Saturday, September 12",
+    date_fr: "Samedi, 12 septembre",
+    date_es: "Sábado, 12 de septiembre",
     events: [
       { time: "6:00", cat: "general", en: "Gates open for exhibitors only", fr: "Ouverture des portes pour les exposants", es: "Puertas abiertas solo para expositores" },
       { time: "8:00", cat: "general", en: "Gates open to the public", fr: "Ouverture des portes au public", es: "Puertas abiertas al público" },
@@ -23,9 +23,9 @@ const scheduleData = {
     ]
   },
   sunday: {
-    date_en: "Sunday, September 14",
-    date_fr: "Dimanche, 14 septembre",
-    date_es: "Domingo, 14 de septiembre",
+    date_en: "Sunday, September 13",
+    date_fr: "Dimanche, 13 septembre",
+    date_es: "Domingo, 13 de septiembre",
     events: [
       { time: "7:00", cat: "general", en: "Gates open for exhibitors", fr: "Ouverture des portes pour les exposants", es: "Puertas abiertas para expositores" },
       { time: "8:00", cat: "general", en: "Gates open to the public", fr: "Ouverture des portes au public", es: "Puertas abiertas al público" },

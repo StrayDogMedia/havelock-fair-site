@@ -256,11 +256,10 @@ h3 { font-size: clamp(1.2rem, 2.5vw, 1.5rem); }
 .hero-img {
   position: absolute;
   inset: 0;
-  background-image:
-    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%231a2744"/><text x="600" y="400" text-anchor="middle" fill="%23243456" font-size="120" font-family="serif">HAVELOCK FAIR</text></svg>');
+  background-image: url('../images/hero/hero.jpg');
   background-size: cover;
-  background-position: center;
-  filter: saturate(0.8);
+  background-position: center 40%;
+  filter: saturate(0.85);
 }
 
 .hero-content {

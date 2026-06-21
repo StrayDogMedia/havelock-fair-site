@@ -123,6 +123,7 @@
         <li><a href="/pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
         <li><a href="/pages/about.html" data-i18n="nav_about">About</a></li>
         <li><a href="/pages/contact.html" data-i18n="nav_contact">Contact</a></li>
+        <li><a href="/pages/gallery.html" data-i18n="nav_gallery">Photos</a></li>
         <li><a href="/pages/registration.html" data-i18n="nav_registration">Registration</a></li>
         <li>
           <div class="lang-switcher">
@@ -174,7 +175,7 @@
           </div>
         </div>
         <div class="about-image fade-in">
-          <div class="about-image-placeholder">Your Fair Photo Here</div>
+          <img src="/images/gallery/fair-2025-04.jpg" alt="Havelock Fair 2025" style="width:100%;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);object-fit:cover;max-height:480px;">
         </div>
       </div>
     </div>
@@ -221,6 +222,59 @@
     </div>
   </section>
 
+  <!-- ========== ADMISSION ========== -->
+  <section style="padding:80px 0;background:var(--navy);color:var(--white);">
+    <div class="container">
+      <div class="section-header fade-in" style="text-align:center;margin-bottom:48px;">
+        <h2 style="color:var(--white);" data-i18n="admission_title">Admission & Information</h2>
+        <p style="color:rgba(255,255,255,0.75);max-width:560px;margin:0 auto;" data-i18n="admission_subtitle">Everything you need to know before you arrive</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;">
+        <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(200,146,42,0.3);border-radius:var(--radius-lg);padding:32px;text-align:center;" class="fade-in">
+          <div style="font-size:2.2rem;margin-bottom:12px;">🎟️</div>
+          <h3 style="color:var(--gold-light);margin-bottom:16px;" data-i18n="adm_adults_title">Adults</h3>
+          <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;" data-i18n="adm_adults_text">General admission covers both days of the fair. Children 12 and under free.</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(200,146,42,0.3);border-radius:var(--radius-lg);padding:32px;text-align:center;" class="fade-in">
+          <div style="font-size:2.2rem;margin-bottom:12px;">🕗</div>
+          <h3 style="color:var(--gold-light);margin-bottom:16px;" data-i18n="adm_hours_title">Hours</h3>
+          <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;" data-i18n="adm_hours_text">Gates open 8:00 AM both days. Exhibitors: 6:00 AM Saturday, 7:00 AM Sunday. Closes 5:00 PM.</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(200,146,42,0.3);border-radius:var(--radius-lg);padding:32px;text-align:center;" class="fade-in">
+          <div style="font-size:2.2rem;margin-bottom:12px;">🍗</div>
+          <h3 style="color:var(--gold-light);margin-bottom:16px;" data-i18n="adm_food_title">Food & Drinks</h3>
+          <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;" data-i18n="adm_food_text">BBQ chicken dinner, canteen, sugar shanty, and local vendors. No outside food restrictions.</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(200,146,42,0.3);border-radius:var(--radius-lg);padding:32px;text-align:center;" class="fade-in">
+          <div style="font-size:2.2rem;margin-bottom:12px;">🅿️</div>
+          <h3 style="color:var(--gold-light);margin-bottom:16px;" data-i18n="adm_parking_title">Parking</h3>
+          <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;" data-i18n="adm_parking_text">Free parking on-site. Follow volunteer attendants. Overflow parking available along Route 202.</p>
+        </div>
+      </div>
+      <div style="margin-top:48px;text-align:center;">
+        <a href="/pages/schedule.html" class="btn btn-primary" data-i18n="adm_schedule_cta">View Full Schedule</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PHOTOS PREVIEW ========== -->
+  <section style="padding:80px 0;background:var(--cream);">
+    <div class="container">
+      <div class="section-header fade-in" style="text-align:center;margin-bottom:48px;">
+        <h2 data-i18n="photos_title">Photos from the Fair</h2>
+        <p style="color:var(--text-light);max-width:500px;margin:0 auto;" data-i18n="photos_subtitle">A glimpse of what awaits at Havelock Fair 2026</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" class="fade-in">
+        <img src="/images/gallery/fair-2025-01.jpg" alt="Havelock Fair 2025" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius);">
+        <img src="/images/gallery/fair-2025-02.jpg" alt="Havelock Fair 2025" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius);">
+        <img src="/images/gallery/fair-2025-03.jpg" alt="Havelock Fair 2025" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius);">
+      </div>
+      <div style="text-align:center;margin-top:32px;">
+        <a href="/pages/gallery.html" class="btn btn-outline" data-i18n="photos_cta">View All Photos</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ========== CTA ========== -->
   <section class="cta-section">
     <div class="container fade-in">
@@ -251,7 +305,8 @@
             <li><a href="/pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
             <li><a href="/pages/about.html" data-i18n="nav_about">About</a></li>
             <li><a href="/pages/contact.html" data-i18n="nav_contact">Contact</a></li>
-            <li><a href="/pages/registration.html" data-i18n="nav_registration">Registration</a></li>
+            <li><a href="/pages/gallery.html" data-i18n="nav_gallery">Photos</a></li>
+        <li><a href="/pages/registration.html" data-i18n="nav_registration">Registration</a></li>
           </ul>
         </div>
         <div>
