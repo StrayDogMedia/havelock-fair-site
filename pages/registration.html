@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registration — Havelock Fair 2026 | Inscription — Foire Havelock</title>
-  <meta name="description" content="Register for competitions at the Havelock Fair 2026. Livestock, indoor, youth (4-H), and equestrian registration. Bilingual EN/FR.">
-  <meta property="og:title" content="Competition Registration — Havelock Fair 2026">
-  <meta property="og:description" content="Register your entries for the Havelock Fair 2026 competitions. Livestock, indoor, 4-H, and equestrian.">
+  <meta name="description" content="Register for the 2026 Havelock Fair competitions. Livestock, indoor classes, youth, 4-H, and equestrian entries. / Inscrivez-vous aux compétitions de la Foire Havelock 2026.">
   <link rel="canonical" href="https://www.havelockfair.ca/pages/registration.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,236 +12,626 @@
   <link rel="stylesheet" href="../css/style.css">
   <style>
     .page-hero {
-      position: relative;
-      padding: 160px 0 80px;
+      position: relative; padding: 160px 0 80px;
       background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
-      text-align: center;
-      color: var(--white);
+      text-align: center; color: var(--white);
     }
     .page-hero h1 { color: var(--white); margin-bottom: 12px; }
-    .page-hero p { opacity: 0.8; font-size: 1.1rem; }
+    .page-hero p  { opacity: .8; font-size: 1.1rem; }
 
-    /* Category cards */
-    .reg-categories {
-      padding: 80px 0;
-      background: var(--cream);
-    }
-    .reg-categories h2 { text-align: center; margin-bottom: 12px; }
-    .reg-intro {
-      text-align: center;
-      color: var(--text-light);
-      max-width: 620px;
-      margin: 0 auto 48px;
-      line-height: 1.7;
-    }
-    .reg-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-      margin-bottom: 48px;
-    }
-    @media (max-width: 640px) {
-      .reg-grid { grid-template-columns: 1fr; }
-    }
-    .reg-card {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      padding: 32px;
-      box-shadow: var(--shadow);
-      border-top: 4px solid var(--gold);
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
-    .reg-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-    .reg-card-icon { font-size: 2.5rem; margin-bottom: 16px; }
-    .reg-card h3 { color: var(--navy); margin-bottom: 8px; font-size: 1.2rem; }
-    .reg-card p { color: var(--text-light); font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px; }
-    .reg-card-classes {
-      font-size: 0.8rem;
-      color: var(--gold);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
+    .reg-section { padding: 64px 0 80px; background: var(--cream); }
 
-    /* CTA button area */
-    .reg-cta-area {
-      text-align: center;
-      margin-top: 16px;
+    .form-tabs {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 8px; margin-bottom: 40px;
     }
-    .reg-cta-area .btn {
-      font-size: 1.05rem;
-      padding: 16px 40px;
+    .form-tab {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px;
+      font-family: var(--font-heading); font-size: 1rem; font-weight: 600;
+      border: 2px solid var(--navy); border-radius: 50px;
+      background: transparent; color: var(--navy);
+      cursor: pointer; transition: all var(--transition); white-space: nowrap;
     }
-    .reg-cta-note {
-      margin-top: 16px;
-      color: var(--text-light);
-      font-size: 0.88rem;
-    }
+    .form-tab:hover  { background: var(--cream-dark); }
+    .form-tab.active { background: var(--navy); color: var(--white); }
+    .form-tab .tab-icon { font-size: 1.1rem; }
 
-    /* Info boxes */
-    .reg-info-section {
-      padding: 72px 0;
-      background: var(--navy);
-      color: var(--white);
+    .form-panel        { display: none; }
+    .form-panel.active { display: block; }
+
+    .reg-info-box {
+      background: var(--white); border-left: 4px solid var(--gold);
+      border-radius: var(--radius); padding: 20px 24px;
+      margin-bottom: 32px; font-size: .95rem; color: var(--text-light);
     }
-    .reg-info-section h2 { color: var(--white); text-align: center; margin-bottom: 48px; }
-    .reg-info-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
+    .reg-info-box strong { color: var(--navy); }
+
+    .form-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden; margin-bottom: 32px; }
+    .form-card-header { background: var(--navy); color: var(--white); padding: 20px 32px; }
+    .form-card-header h3 { color: var(--white); font-size: 1.1rem; margin: 0; }
+    .form-card-body { padding: 32px; }
+
+    .field-row            { display: grid; grid-template-columns: 1fr 1fr;     gap: 16px; margin-bottom: 16px; }
+    .field-row.three      { grid-template-columns: 1fr 1fr 1fr; }
+    .field-row.full       { grid-template-columns: 1fr; }
+    .field-group          { display: flex; flex-direction: column; gap: 6px; }
+    .field-group label    { font-size: .85rem; font-weight: 600; color: var(--navy); text-transform: uppercase; letter-spacing: .5px; }
+    .field-group label .req { color: #c0392b; margin-left: 2px; }
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+      padding: 10px 14px; border: 1.5px solid #d0d7e0; border-radius: var(--radius);
+      font-family: var(--font-body); font-size: .95rem; color: var(--text);
+      background: var(--cream); transition: border-color var(--transition), box-shadow var(--transition);
+      width: 100%;
     }
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+      outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(26,39,68,.1); background: var(--white);
+    }
+    .field-group select   { cursor: pointer; }
+    .field-group textarea { resize: vertical; min-height: 80px; }
+
+    .entry-slot           { border: 1.5px solid var(--cream-dark); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; transition: border-color var(--transition); }
+    .entry-slot:focus-within { border-color: var(--gold); }
+    .entry-slot-header    { background: var(--cream-dark); padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .entry-slot-header span { font-family: var(--font-heading); font-size: .9rem; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 1px; }
+    .entry-slot-body      { padding: 20px; }
+    .livestock-fields     { display: none; }
+    .indoor-fields        { display: none; }
+
+    .form-divider         { border: none; border-top: 1px solid var(--cream-dark); margin: 28px 0; }
+    .section-label        { font-family: var(--font-heading); font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--gold); margin-bottom: 16px; margin-top: 4px; }
+
+    .check-group { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: var(--cream); border-radius: var(--radius); margin-bottom: 12px; }
+    .check-group input[type=checkbox] { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; accent-color: var(--navy); cursor: pointer; }
+    .check-group label { font-size: .9rem; color: var(--text); cursor: pointer; line-height: 1.5; }
+
+    .submit-row { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-top: 32px; }
+    .btn-submit {
+      background: var(--gold); color: var(--white); border: 2px solid var(--gold);
+      padding: 16px 48px; font-size: 1.1rem; font-weight: 700; border-radius: 50px;
+      cursor: pointer; transition: all var(--transition); font-family: var(--font-body);
+    }
+    .btn-submit:hover   { background: var(--gold-light); border-color: var(--gold-light); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(200,146,42,.4); }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .submit-note        { font-size: .85rem; color: var(--text-light); text-align: center; }
+
+    .form-message { display: none; padding: 20px 24px; border-radius: var(--radius); margin-top: 24px; font-weight: 500; }
+    .form-message.success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+    .form-message.error   { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+
+    .notes-box { background: #fff8e6; border: 1px solid #e0ab3e; border-radius: var(--radius); padding: 20px 24px; margin-top: 32px; }
+    .notes-box h4 { color: var(--brown); font-size: 1rem; margin-bottom: 12px; }
+    .notes-box ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    .notes-box ul li { font-size: .9rem; color: var(--text); padding-left: 20px; position: relative; }
+    .notes-box ul li::before { content: '•'; position: absolute; left: 0; color: var(--gold); font-weight: 700; }
+
     @media (max-width: 768px) {
-      .reg-info-grid { grid-template-columns: 1fr; }
+      .field-row, .field-row.three { grid-template-columns: 1fr; }
+      .form-card-body { padding: 20px; }
+      .form-tab       { padding: 10px 18px; font-size: .9rem; }
     }
-    .reg-info-card {
-      background: rgba(255,255,255,0.07);
-      border-radius: var(--radius-lg);
-      padding: 28px;
-      border: 1px solid rgba(200,146,42,0.3);
-    }
-    .reg-info-card h3 {
-      color: var(--gold-light);
-      font-size: 1rem;
-      margin-bottom: 10px;
-    }
-    .reg-info-card p {
-      color: rgba(255,255,255,0.75);
-      font-size: 0.9rem;
-      line-height: 1.65;
-    }
-
-    /* Questions */
-    .reg-questions {
-      padding: 72px 0;
-      background: var(--cream-dark);
-      text-align: center;
-    }
-    .reg-questions h2 { margin-bottom: 12px; }
-    .reg-questions p { color: var(--text-light); margin-bottom: 28px; max-width: 480px; margin-left: auto; margin-right: auto; }
-    .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
   </style>
 </head>
 <body>
 
-  <!-- ========== NAVBAR ========== -->
-  <nav class="navbar" role="navigation" aria-label="Main navigation">
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" role="navigation" aria-label="Main navigation">
     <div class="nav-inner">
-      <a href="../" class="nav-brand">
-        <span>Havelock Fair</span>
-      </a>
+      <a href="../" class="nav-brand"><span>Havelock Fair</span></a>
       <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
       <ul class="nav-menu">
-        <li><a href="../" data-i18n="nav_home">Home</a></li>
-        <li><a href="schedule.html" data-i18n="nav_schedule">Schedule</a></li>
-        <li><a href="directions.html" data-i18n="nav_directions">Directions</a></li>
-        <li><a href="sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
-        <li><a href="about.html" data-i18n="nav_about">About</a></li>
-        <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
+        <li><a href="../"              data-i18n="nav_home">Home</a></li>
+        <li><a href="schedule.html"    data-i18n="nav_schedule">Schedule</a></li>
+        <li><a href="directions.html"  data-i18n="nav_directions">Directions</a></li>
+        <li><a href="sponsors.html"    data-i18n="nav_sponsors">Sponsors</a></li>
+        <li><a href="about.html"       data-i18n="nav_about">About</a></li>
+        <li><a href="contact.html"     data-i18n="nav_contact">Contact</a></li>
+        <li><a href="gallery.html"     data-i18n="nav_gallery">Photos</a></li>
         <li><a href="registration.html" class="active" data-i18n="nav_registration">Registration</a></li>
         <li>
           <div class="lang-switcher">
             <button class="lang-btn active" data-lang="en">EN</button>
             <button class="lang-btn" data-lang="fr">FR</button>
-            <button class="lang-btn" data-lang="es">ES</button>
           </div>
         </li>
       </ul>
     </div>
   </nav>
 
-  <!-- ========== PAGE HERO ========== -->
+  <!-- PAGE HERO -->
   <section class="page-hero">
     <div class="container">
-      <h1 data-i18n="reg_page_title">Competition Registration</h1>
-      <p data-i18n="reg_page_subtitle">Havelock Fair 2026 — September 12–13</p>
+      <h1 data-i18n="reg_title">Competition Registration</h1>
+      <p data-i18n="reg_subtitle">Havelock Fair — September 12–13, 2026</p>
     </div>
   </section>
 
-  <!-- ========== CATEGORIES ========== -->
-  <section class="reg-categories">
+  <!-- REGISTRATION FORM -->
+  <section class="reg-section">
     <div class="container">
-      <h2 data-i18n="reg_categories_title">What Would You Like to Register For?</h2>
-      <p class="reg-intro" data-i18n="reg_intro">The Havelock Fair welcomes competitors in four categories. Our bilingual registration form covers all classes — livestock, indoor, youth, and equestrian.</p>
 
-      <div class="reg-grid">
-        <div class="reg-card fade-in">
-          <div class="reg-card-icon">🐄</div>
-          <h3 data-i18n="reg_cat1_title">General Competition</h3>
-          <p data-i18n="reg_cat1_desc">Livestock entries (heavy horses, cattle, sheep, poultry, rabbits) and indoor classes (baking, preserves, vegetables, flowers, photography, arts & crafts, and more).</p>
-          <div class="reg-card-classes" data-i18n="reg_cat1_classes">Classes 1–25</div>
+      <!-- Tab switcher -->
+      <div class="form-tabs" role="tablist">
+        <button class="form-tab active" data-panel="general" role="tab" aria-selected="true">
+          <span class="tab-icon">🏆</span>
+          <span data-i18n="reg_tab_general">General (Classes 1–25)</span>
+        </button>
+        <button class="form-tab" data-panel="youth" role="tab" aria-selected="false">
+          <span class="tab-icon">⭐</span>
+          <span data-i18n="reg_tab_youth">Youth (Classes 26–27)</span>
+        </button>
+        <button class="form-tab" data-panel="fourhee" role="tab" aria-selected="false">
+          <span class="tab-icon">🌿</span>
+          <span data-i18n="reg_tab_4h">4-H</span>
+        </button>
+        <button class="form-tab" data-panel="equestrian" role="tab" aria-selected="false">
+          <span class="tab-icon">🐴</span>
+          <span data-i18n="reg_tab_equestrian">Equestrian / Gymkhana</span>
+        </button>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           FORM 1 — GENERAL (Classes 1–25)
+           ══════════════════════════════════════ -->
+      <div class="form-panel active" id="panel-general">
+        <div class="reg-info-box">
+          <strong data-i18n="reg_info_title">Before you register:</strong>
+          <span data-i18n="reg_info_general"> All competitors must be members of the Havelock Fair. Ages 13+ pay a $15 membership fee (deducted from prize winnings). One article per section per exhibitor. Animals must have been in your possession for 30+ days before the fair.</span>
         </div>
-        <div class="reg-card fade-in">
-          <div class="reg-card-icon">🧒</div>
-          <h3 data-i18n="reg_cat2_title">Youth (Juniors)</h3>
-          <p data-i18n="reg_cat2_desc">Open to youth competitors. Class assigned automatically by age at time of registration.</p>
-          <div class="reg-card-classes" data-i18n="reg_cat2_classes">Classes 26–27</div>
-        </div>
-        <div class="reg-card fade-in">
-          <div class="reg-card-icon">🍀</div>
-          <h3 data-i18n="reg_cat3_title">4-H</h3>
-          <p data-i18n="reg_cat3_desc">4-H club members including ATQ-registered livestock, group entries, showmanship, and cloverbuds. ATQ number required for livestock entries.</p>
-          <div class="reg-card-classes" data-i18n="reg_cat3_classes">4-H Categories</div>
-        </div>
-        <div class="reg-card fade-in">
-          <div class="reg-card-icon">🐴</div>
-          <h3 data-i18n="reg_cat4_title">Equestrian & Gymkhana</h3>
-          <p data-i18n="reg_cat4_desc">Horse and pony entries including English, Western, and Gymkhana events. Emergency contact required. Gymkhana section checkboxes included.</p>
-          <div class="reg-card-classes" data-i18n="reg_cat4_classes">Equestrian Classes</div>
+
+        <form id="form-general" novalidate>
+          <!-- Exhibitor Info -->
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_exhibitor">Exhibitor Information</h3></div>
+            <div class="form-card-body">
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="g_first"><span data-i18n="reg_first_name">First Name</span><span class="req">*</span></label>
+                  <input type="text" id="g_first" name="first_name" required autocomplete="given-name">
+                </div>
+                <div class="field-group">
+                  <label for="g_last"><span data-i18n="reg_last_name">Last Name</span><span class="req">*</span></label>
+                  <input type="text" id="g_last" name="last_name" required autocomplete="family-name">
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="g_email"><span data-i18n="reg_email">Email Address</span><span class="req">*</span></label>
+                  <input type="email" id="g_email" name="email" required autocomplete="email">
+                </div>
+                <div class="field-group">
+                  <label for="g_phone"><span data-i18n="reg_phone">Phone Number</span></label>
+                  <input type="tel" id="g_phone" name="phone" autocomplete="tel">
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="g_dob"><span data-i18n="reg_dob">Date of Birth</span><span class="req">*</span></label>
+                  <input type="date" id="g_dob" name="dob" required>
+                </div>
+                <div class="field-group">
+                  <label for="g_member_num"><span data-i18n="reg_member_num">Exhibitor / Member # (if returning)</span></label>
+                  <input type="text" id="g_member_num" name="member_num">
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="g_address"><span data-i18n="reg_address">Street Address</span></label>
+                  <input type="text" id="g_address" name="address" autocomplete="street-address">
+                </div>
+                <div class="field-group">
+                  <label for="g_city"><span data-i18n="reg_city">City / Town</span></label>
+                  <input type="text" id="g_city" name="city" autocomplete="address-level2">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Membership -->
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_membership">Membership &amp; Acknowledgement</h3></div>
+            <div class="form-card-body">
+              <div class="check-group">
+                <input type="checkbox" id="g_member_agree" name="member_agree" required>
+                <label for="g_member_agree" data-i18n="reg_member_agree">I understand that all competitors must be members of the Havelock Fair, and that the $15 membership fee (for ages 13+) will be deducted from prize winnings.</label>
+              </div>
+              <div class="check-group">
+                <input type="checkbox" id="g_rules_agree" name="rules_agree" required>
+                <label for="g_rules_agree" data-i18n="reg_rules_agree">I have read the fair book rules and agree to abide by all competition regulations, including the one-article-per-section rule and anonymous judging requirements for indoor classes.</label>
+              </div>
+              <div class="check-group">
+                <input type="checkbox" id="g_possession_agree" name="possession_agree">
+                <label for="g_possession_agree" data-i18n="reg_possession_agree">For livestock entries: I confirm that all animals entered have been in my possession for at least 30 days prior to the fair.</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Entry Slots (JS-rendered) -->
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_entries">Competition Entries (up to 5)</h3></div>
+            <div class="form-card-body">
+              <p style="font-size:.9rem;color:var(--text-light);margin-bottom:20px;" data-i18n="reg_entries_note">Fill in as many entry slots as needed. Leave unused slots blank.</p>
+              <div id="g-entries"></div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_notes">Additional Notes</h3></div>
+            <div class="form-card-body">
+              <div class="field-group">
+                <label for="g_notes"><span data-i18n="reg_notes_label">Any additional information for the competition committee</span></label>
+                <textarea id="g_notes" name="notes"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="submit-row">
+            <button type="submit" class="btn-submit" id="btn-submit-general"><span data-i18n="reg_submit">Submit Registration</span></button>
+            <p class="submit-note" data-i18n="reg_submit_note">You will receive a confirmation email. Exhibitor numbers are assigned on the day of the fair.</p>
+          </div>
+          <div class="form-message success" id="msg-general-success">✅ <span data-i18n="reg_success">Your registration has been submitted! Check your email for confirmation. See you at the fair!</span></div>
+          <div class="form-message error"   id="msg-general-error">⚠️ <span data-i18n="reg_error">Something went wrong. Please try again or contact us at (450) 826-1155.</span></div>
+        </form>
+
+        <div class="notes-box">
+          <h4 data-i18n="reg_notes_title">📋 Important Rules</h4>
+          <ul>
+            <li data-i18n="reg_rule1">One article per section per exhibitor</li>
+            <li data-i18n="reg_rule2">No name or initials on exhibited indoor items (anonymous judging)</li>
+            <li data-i18n="reg_rule3">Judging begins at 11:00 AM sharp — all exhibits must be in place by 10:30 AM</li>
+            <li data-i18n="reg_rule4">Prize cheques are mailed after the fair</li>
+            <li data-i18n="reg_rule5">Next year's membership fee will be deducted from prize winnings</li>
+            <li data-i18n="reg_rule6">Booth/display spaces: $80 for two days</li>
+          </ul>
         </div>
       </div>
 
-      <div class="reg-cta-area">
-        <a
-          href="https://script.google.com/macros/s/AKfycbyKedLkV8kpJqn560Rt44_HlZKAhS3tmOTD0SAX_awQDiNwmKm8JLHJg_15jMOBO6yZ/exec"
-          target="_blank"
-          rel="noopener"
-          class="btn btn-primary"
-          data-i18n="reg_open_form"
-        >Open Registration Form</a>
-        <p class="reg-cta-note" data-i18n="reg_form_note">The registration form opens in a new tab. Available in English and French.</p>
+      <!-- ══════════════════════════════════════
+           FORM 2 — YOUTH (Classes 26–27)
+           ══════════════════════════════════════ -->
+      <div class="form-panel" id="panel-youth">
+        <div class="reg-info-box">
+          <strong data-i18n="reg_info_title">Before you register:</strong>
+          <span data-i18n="reg_info_youth"> Youth classes are for exhibitors aged 8–14. Class 26 (Junior) is for ages 8–11; Class 27 (Intermediate) is for ages 12–14. A parent or guardian must complete this form.</span>
+        </div>
+
+        <form id="form-youth" novalidate>
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_parent">Parent / Guardian Information</h3></div>
+            <div class="form-card-body">
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="y_parent_first"><span data-i18n="reg_first_name">First Name</span><span class="req">*</span></label>
+                  <input type="text" id="y_parent_first" name="parent_first" required autocomplete="given-name">
+                </div>
+                <div class="field-group">
+                  <label for="y_parent_last"><span data-i18n="reg_last_name">Last Name</span><span class="req">*</span></label>
+                  <input type="text" id="y_parent_last" name="parent_last" required autocomplete="family-name">
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="y_email"><span data-i18n="reg_email">Email Address</span><span class="req">*</span></label>
+                  <input type="email" id="y_email" name="email" required autocomplete="email">
+                </div>
+                <div class="field-group">
+                  <label for="y_phone"><span data-i18n="reg_phone">Phone Number</span><span class="req">*</span></label>
+                  <input type="tel" id="y_phone" name="phone" required autocomplete="tel">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_youth">Youth Exhibitor Information</h3></div>
+            <div class="form-card-body">
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="y_first"><span data-i18n="reg_youth_first">Youth First Name</span><span class="req">*</span></label>
+                  <input type="text" id="y_first" name="youth_first" required>
+                </div>
+                <div class="field-group">
+                  <label for="y_last"><span data-i18n="reg_youth_last">Youth Last Name</span><span class="req">*</span></label>
+                  <input type="text" id="y_last" name="youth_last" required>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="y_dob"><span data-i18n="reg_dob">Date of Birth</span><span class="req">*</span></label>
+                  <input type="date" id="y_dob" name="youth_dob" required>
+                </div>
+                <div class="field-group">
+                  <label><span data-i18n="reg_class_assigned">Assigned Class</span></label>
+                  <input type="text" id="y_class_display" readonly style="background:var(--cream-dark);font-weight:600;" placeholder="Auto-assigned from date of birth">
+                  <input type="hidden" id="y_class_num" name="class_num">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_entries">Competition Entries (up to 5)</h3></div>
+            <div class="form-card-body"><div id="y-entries"></div></div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_membership">Acknowledgement</h3></div>
+            <div class="form-card-body">
+              <div class="check-group">
+                <input type="checkbox" id="y_rules_agree" name="rules_agree" required>
+                <label for="y_rules_agree" data-i18n="reg_youth_agree">I confirm that the youth exhibitor information above is accurate, and I agree to the fair's competition rules on their behalf.</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="submit-row">
+            <button type="submit" class="btn-submit" id="btn-submit-youth"><span data-i18n="reg_submit">Submit Registration</span></button>
+            <p class="submit-note" data-i18n="reg_submit_note">You will receive a confirmation email.</p>
+          </div>
+          <div class="form-message success" id="msg-youth-success">✅ <span data-i18n="reg_success">Your registration has been submitted!</span></div>
+          <div class="form-message error"   id="msg-youth-error">⚠️ <span data-i18n="reg_error">Something went wrong. Please try again or contact us at (450) 826-1155.</span></div>
+        </form>
       </div>
-    </div>
+
+      <!-- ══════════════════════════════════════
+           FORM 3 — 4-H
+           ══════════════════════════════════════ -->
+      <div class="form-panel" id="panel-fourhee">
+        <div class="reg-info-box">
+          <strong data-i18n="reg_info_title">Before you register:</strong>
+          <span data-i18n="reg_info_4h"> 4-H entries require valid ATQ registration numbers for all animals. Showmanship entries are open to all 4-H members. Contact your club leader if you have questions about eligibility.</span>
+        </div>
+
+        <form id="form-4h" novalidate>
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_exhibitor">Exhibitor Information</h3></div>
+            <div class="form-card-body">
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="h_first"><span data-i18n="reg_first_name">First Name</span><span class="req">*</span></label>
+                  <input type="text" id="h_first" name="first_name" required>
+                </div>
+                <div class="field-group">
+                  <label for="h_last"><span data-i18n="reg_last_name">Last Name</span><span class="req">*</span></label>
+                  <input type="text" id="h_last" name="last_name" required>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="h_email"><span data-i18n="reg_email">Email Address</span><span class="req">*</span></label>
+                  <input type="email" id="h_email" name="email" required>
+                </div>
+                <div class="field-group">
+                  <label for="h_club"><span data-i18n="reg_4h_club">4-H Club Name</span><span class="req">*</span></label>
+                  <input type="text" id="h_club" name="club" required>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="h_dob"><span data-i18n="reg_dob">Date of Birth</span><span class="req">*</span></label>
+                  <input type="date" id="h_dob" name="dob" required>
+                </div>
+                <div class="field-group">
+                  <label for="h_leader"><span data-i18n="reg_4h_leader">Club Leader Name</span></label>
+                  <input type="text" id="h_leader" name="leader">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_4h_entries">4-H Entries</h3></div>
+            <div class="form-card-body">
+              <div class="section-label" data-i18n="reg_4h_heifer_label">Heifer Sections (Class 24)</div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="h_heifer_section"><span data-i18n="reg_4h_heifer_section">Section</span></label>
+                  <select id="h_heifer_section" name="heifer_section">
+                    <option value="">— Select —</option>
+                    <option value="1">Section 1 — Calf born Jan–Apr 2026</option>
+                    <option value="2">Section 2 — Calf born May–Dec 2025</option>
+                    <option value="3">Section 3 — Yearling heifer born 2024</option>
+                    <option value="4">Section 4 — Two-year-old heifer</option>
+                    <option value="5">Section 5 — Cow, 3 years old or over</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label for="h_atq"><span data-i18n="reg_4h_atq">ATQ Registration Number</span><span class="req">*</span></label>
+                  <input type="text" id="h_atq" name="atq">
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="h_animal_name"><span data-i18n="reg_animal_name">Animal Name / ID</span></label>
+                  <input type="text" id="h_animal_name" name="animal_name">
+                </div>
+                <div class="field-group">
+                  <label for="h_breed"><span data-i18n="reg_animal_breed">Breed</span></label>
+                  <input type="text" id="h_breed" name="breed">
+                </div>
+              </div>
+              <hr class="form-divider">
+              <div class="section-label" data-i18n="reg_4h_group_label">Group Class</div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="h_group_section"><span data-i18n="reg_4h_group_section">Group Section Entry</span></label>
+                  <select id="h_group_section" name="group_section">
+                    <option value="">— Select —</option>
+                    <option value="group_of_3">Group of 3 animals (same exhibitor)</option>
+                    <option value="breeders_herd">Breeder's herd</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label for="h_group_atq2"><span data-i18n="reg_4h_atq2">Additional ATQ Numbers (if group)</span></label>
+                  <input type="text" id="h_group_atq2" name="group_atq2">
+                </div>
+              </div>
+              <hr class="form-divider">
+              <div class="section-label" data-i18n="reg_4h_showmanship_label">Showmanship (Section 6)</div>
+              <div class="check-group">
+                <input type="checkbox" id="h_showmanship" name="showmanship">
+                <label for="h_showmanship" data-i18n="reg_4h_showmanship">Enter Showmanship — Section 6 (Open to all 4-H members)</label>
+              </div>
+              <hr class="form-divider">
+              <div class="section-label" data-i18n="reg_4h_cloverbud_label">Cloverbud (ages 5–7)</div>
+              <div class="check-group">
+                <input type="checkbox" id="h_cloverbud" name="cloverbud">
+                <label for="h_cloverbud" data-i18n="reg_4h_cloverbud">Enter Cloverbud class (non-competitive, participation ribbon)</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_membership">Acknowledgement</h3></div>
+            <div class="form-card-body">
+              <div class="check-group">
+                <input type="checkbox" id="h_atq_agree" name="atq_agree" required>
+                <label for="h_atq_agree" data-i18n="reg_4h_atq_agree">I confirm that all ATQ registration numbers provided are accurate and that all animals have been in my possession for at least 30 days prior to the fair.</label>
+              </div>
+              <div class="check-group">
+                <input type="checkbox" id="h_rules_agree" name="rules_agree" required>
+                <label for="h_rules_agree" data-i18n="reg_rules_agree">I have read the fair book rules and agree to abide by all competition regulations.</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="submit-row">
+            <button type="submit" class="btn-submit" id="btn-submit-4h"><span data-i18n="reg_submit">Submit Registration</span></button>
+            <p class="submit-note" data-i18n="reg_submit_note">You will receive a confirmation email.</p>
+          </div>
+          <div class="form-message success" id="msg-4h-success">✅ <span data-i18n="reg_success">Your registration has been submitted!</span></div>
+          <div class="form-message error"   id="msg-4h-error">⚠️ <span data-i18n="reg_error">Something went wrong. Please try again or contact us at (450) 826-1155.</span></div>
+        </form>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           FORM 4 — EQUESTRIAN / GYMKHANA
+           ══════════════════════════════════════ -->
+      <div class="form-panel" id="panel-equestrian">
+        <div class="reg-info-box">
+          <strong data-i18n="reg_info_title">Before you register:</strong>
+          <span data-i18n="reg_info_equestrian"> Gymkhana classes are open to all ages. Sections 10–13 are split into Horse (A) and Pony (B) divisions. All riders must wear approved helmets. Emergency contact information is required.</span>
+        </div>
+
+        <form id="form-equestrian" novalidate>
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_rider">Rider Information</h3></div>
+            <div class="form-card-body">
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="e_first"><span data-i18n="reg_first_name">First Name</span><span class="req">*</span></label>
+                  <input type="text" id="e_first" name="first_name" required>
+                </div>
+                <div class="field-group">
+                  <label for="e_last"><span data-i18n="reg_last_name">Last Name</span><span class="req">*</span></label>
+                  <input type="text" id="e_last" name="last_name" required>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="e_email"><span data-i18n="reg_email">Email Address</span><span class="req">*</span></label>
+                  <input type="email" id="e_email" name="email" required>
+                </div>
+                <div class="field-group">
+                  <label for="e_phone"><span data-i18n="reg_phone">Phone Number</span><span class="req">*</span></label>
+                  <input type="tel" id="e_phone" name="phone" required>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="e_dob"><span data-i18n="reg_dob">Date of Birth</span><span class="req">*</span></label>
+                  <input type="date" id="e_dob" name="dob" required>
+                </div>
+                <div class="field-group">
+                  <label for="e_horse_name"><span data-i18n="reg_horse_name">Horse / Pony Name</span><span class="req">*</span></label>
+                  <input type="text" id="e_horse_name" name="horse_name" required>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="e_horse_type"><span data-i18n="reg_horse_type">Horse or Pony?</span><span class="req">*</span></label>
+                  <select id="e_horse_type" name="horse_type" required>
+                    <option value="">— Select —</option>
+                    <option value="horse">Horse (Division A)</option>
+                    <option value="pony">Pony (Division B)</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label for="e_helmet"><span data-i18n="reg_helmet_confirm">Helmet Confirmation</span><span class="req">*</span></label>
+                  <select id="e_helmet" name="helmet" required>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes, I have an approved riding helmet</option>
+                    <option value="no">No — I need to arrange a helmet</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_emergency">Emergency Contact</h3></div>
+            <div class="form-card-body">
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="e_emerg_name"><span data-i18n="reg_emerg_name">Emergency Contact Name</span><span class="req">*</span></label>
+                  <input type="text" id="e_emerg_name" name="emerg_name" required>
+                </div>
+                <div class="field-group">
+                  <label for="e_emerg_phone"><span data-i18n="reg_emerg_phone">Emergency Contact Phone</span><span class="req">*</span></label>
+                  <input type="tel" id="e_emerg_phone" name="emerg_phone" required>
+                </div>
+              </div>
+              <div class="field-row full">
+                <div class="field-group">
+                  <label for="e_emerg_relation"><span data-i18n="reg_emerg_relation">Relationship to Rider</span></label>
+                  <input type="text" id="e_emerg_relation" name="emerg_relation">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_gymkhana">Gymkhana Sections (Class 25)</h3></div>
+            <div class="form-card-body">
+              <p style="font-size:.9rem;color:var(--text-light);margin-bottom:20px;" data-i18n="reg_gymkhana_note">Select the sections you wish to enter.</p>
+              <div id="gymkhana-sections"></div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header"><h3 data-i18n="reg_section_membership">Acknowledgement</h3></div>
+            <div class="form-card-body">
+              <div class="check-group">
+                <input type="checkbox" id="e_safety_agree" name="safety_agree" required>
+                <label for="e_safety_agree" data-i18n="reg_equestrian_agree">I confirm that I will wear an approved riding helmet at all times while on horseback at the fairgrounds, and that my horse/pony is safe to handle in a public setting.</label>
+              </div>
+              <div class="check-group">
+                <input type="checkbox" id="e_rules_agree" name="rules_agree" required>
+                <label for="e_rules_agree" data-i18n="reg_rules_agree">I have read the fair book rules and agree to abide by all competition regulations.</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="submit-row">
+            <button type="submit" class="btn-submit" id="btn-submit-equestrian"><span data-i18n="reg_submit">Submit Registration</span></button>
+            <p class="submit-note" data-i18n="reg_submit_note">You will receive a confirmation email.</p>
+          </div>
+          <div class="form-message success" id="msg-equestrian-success">✅ <span data-i18n="reg_success">Your registration has been submitted!</span></div>
+          <div class="form-message error"   id="msg-equestrian-error">⚠️ <span data-i18n="reg_error">Something went wrong. Please try again or contact us at (450) 826-1155.</span></div>
+        </form>
+      </div>
+
+    </div><!-- /container -->
   </section>
 
-  <!-- ========== INFO ========== -->
-  <section class="reg-info-section">
-    <div class="container">
-      <h2 data-i18n="reg_info_title">Registration Information</h2>
-      <div class="reg-info-grid">
-        <div class="reg-info-card fade-in">
-          <h3 data-i18n="reg_info1_title">Exhibitor Numbers</h3>
-          <p data-i18n="reg_info1_text">Upon submission, you will receive a unique Havelock Fair exhibitor number (HF2026-####). Bring this number to the fairgrounds on competition day.</p>
-        </div>
-        <div class="reg-info-card fade-in">
-          <h3 data-i18n="reg_info2_title">Multiple Entries</h3>
-          <p data-i18n="reg_info2_text">You may register up to 5 entries per submission on the General tab. For more entries, submit the form again with the same contact information.</p>
-        </div>
-        <div class="reg-info-card fade-in">
-          <h3 data-i18n="reg_info3_title">Questions?</h3>
-          <p data-i18n="reg_info3_text">Contact our secretary Rommy Hernandez Tenorio at rommyh@hotmail.com or call (450) 826-1155 for registration assistance.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== QUESTIONS ========== -->
-  <section class="reg-questions">
-    <div class="container fade-in">
-      <h2 data-i18n="reg_q_title">Need Help?</h2>
-      <p data-i18n="reg_q_text">Our team is happy to assist with registration or answer any questions about competition classes and rules.</p>
-      <div class="btn-group">
-        <a href="contact.html" class="btn btn-primary" data-i18n="nav_contact">Contact Us</a>
-        <a href="schedule.html" class="btn btn-outline" data-i18n="nav_schedule">View Schedule</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== FOOTER ========== -->
+  <!-- FOOTER -->
   <footer class="footer">
     <div class="container">
       <div class="footer-grid">
@@ -259,13 +647,13 @@
         <div>
           <h4 data-i18n="footer_quick">Quick Links</h4>
           <ul class="footer-links">
-            <li><a href="schedule.html" data-i18n="nav_schedule">Schedule</a></li>
-            <li><a href="directions.html" data-i18n="nav_directions">Directions</a></li>
-            <li><a href="sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
-            <li><a href="about.html" data-i18n="nav_about">About</a></li>
-            <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
-            <li><a href="gallery.html" data-i18n="nav_gallery">Photos</a></li>
-        <li><a href="registration.html" data-i18n="nav_registration">Registration</a></li>
+            <li><a href="schedule.html"    data-i18n="nav_schedule">Schedule</a></li>
+            <li><a href="directions.html"  data-i18n="nav_directions">Directions</a></li>
+            <li><a href="sponsors.html"    data-i18n="nav_sponsors">Sponsors</a></li>
+            <li><a href="about.html"       data-i18n="nav_about">About</a></li>
+            <li><a href="contact.html"     data-i18n="nav_contact">Contact</a></li>
+            <li><a href="gallery.html"     data-i18n="nav_gallery">Photos</a></li>
+            <li><a href="registration.html" data-i18n="nav_registration">Registration</a></li>
           </ul>
         </div>
         <div>
@@ -284,5 +672,402 @@
 
   <script src="../js/i18n.js"></script>
   <script src="../js/main.js"></script>
+  <script>
+  // ═══════════════════════════════════════════════════════
+  //  CONFIGURATION
+  // ═══════════════════════════════════════════════════════
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyKedLkV8kpJqn560Rt44_HlZKAhS3tmOTD0SAX_awQDiNwmKm8JLHJg_15jMOBO6yZ/exec';
+
+  // ═══════════════════════════════════════════════════════
+  //  CLASS DATA
+  // ═══════════════════════════════════════════════════════
+  const CLASSES = [
+    { num:1,  en:"Class 1 — Draft Horses",          fr:"Classe 1 — Chevaux de trait",          type:"livestock" },
+    { num:2,  en:"Class 2 — Light Horses",           fr:"Classe 2 — Chevaux légers",            type:"livestock" },
+    { num:3,  en:"Class 3 — Cattle",                 fr:"Classe 3 — Bovins",                    type:"livestock" },
+    { num:4,  en:"Class 4 — Dairy Cattle",           fr:"Classe 4 — Bovins laitiers",           type:"livestock" },
+    { num:5,  en:"Class 5 — Beef Cattle",            fr:"Classe 5 — Bovins de boucherie",       type:"livestock" },
+    { num:6,  en:"Class 6 — Goats",                  fr:"Classe 6 — Chèvres",                   type:"livestock" },
+    { num:7,  en:"Class 7 — Sheep",                  fr:"Classe 7 — Moutons",                   type:"livestock" },
+    { num:8,  en:"Class 8 — Swine",                  fr:"Classe 8 — Porcs",                     type:"livestock" },
+    { num:9,  en:"Class 9 — Rabbits",                fr:"Classe 9 — Lapins",                    type:"livestock" },
+    { num:10, en:"Class 10 — Fowl / Poultry",        fr:"Classe 10 — Volaille",                 type:"livestock" },
+    { num:11, en:"Class 11 — Fruit",                 fr:"Classe 11 — Fruits",                   type:"indoor"    },
+    { num:12, en:"Class 12 — Vegetables",            fr:"Classe 12 — Légumes",                  type:"indoor"    },
+    { num:13, en:"Class 13 — Field Crops",           fr:"Classe 13 — Grandes cultures",         type:"indoor"    },
+    { num:14, en:"Class 14 — Honey & Maple",         fr:"Classe 14 — Miel et érable",           type:"indoor"    },
+    { num:15, en:"Class 15 — Baked Goods",           fr:"Classe 15 — Produits de boulangerie",  type:"indoor"    },
+    { num:16, en:"Class 16 — Preserves & Pickles",   fr:"Classe 16 — Conserves et marinades",   type:"indoor"    },
+    { num:17, en:"Class 17 — Needlework",            fr:"Classe 17 — Travaux à l'aiguille",     type:"indoor"    },
+    { num:18, en:"Class 18 — Quilts",                fr:"Classe 18 — Courtepointes",            type:"indoor"    },
+    { num:19, en:"Class 19 — Weaving / Rug Hooking", fr:"Classe 19 — Tissage / Crochet",        type:"indoor"    },
+    { num:20, en:"Class 20 — Woodworking",           fr:"Classe 20 — Menuiserie",               type:"indoor"    },
+    { num:21, en:"Class 21 — Flowers",               fr:"Classe 21 — Fleurs",                   type:"indoor"    },
+    { num:22, en:"Class 22 — Photography",           fr:"Classe 22 — Photographie",             type:"indoor"    },
+    { num:23, en:"Class 23 — Fine Arts",             fr:"Classe 23 — Beaux-arts",               type:"indoor"    },
+    { num:24, en:"Class 24 — 4-H",                   fr:"Classe 24 — 4-H",                      type:"4h"        },
+    { num:25, en:"Class 25 — Gymkhana",              fr:"Classe 25 — Gymkhana",                 type:"equestrian"},
+  ];
+
+  const GYMKHANA_SECTIONS = [
+    { num:1,  en:"Section 1 — Flag Race",          fr:"Section 1 — Course au drapeau",      split:false },
+    { num:2,  en:"Section 2 — Barrel Race",        fr:"Section 2 — Course de tonneaux",     split:false },
+    { num:3,  en:"Section 3 — Pole Bending",       fr:"Section 3 — Slalom de poteaux",      split:false },
+    { num:4,  en:"Section 4 — Keyhole Race",       fr:"Section 4 — Course trou de serrure", split:false },
+    { num:5,  en:"Section 5 — Figure 8",           fr:"Section 5 — Huit de chiffre",        split:false },
+    { num:6,  en:"Section 6 — Musical Stalls",     fr:"Section 6 — Stalles musicales",      split:false },
+    { num:7,  en:"Section 7 — Egg & Spoon",        fr:"Section 7 — Œuf à la cuillère",      split:false },
+    { num:8,  en:"Section 8 — Costume Class",      fr:"Section 8 — Classe costume",         split:false },
+    { num:9,  en:"Section 9 — Walk-Trot Class",    fr:"Section 9 — Pas-trot",               split:false },
+    { num:10, en:"Section 10 — Barrel Race",       fr:"Section 10 — Course de tonneaux",    split:true  },
+    { num:11, en:"Section 11 — Pole Bending",      fr:"Section 11 — Slalom de poteaux",     split:true  },
+    { num:12, en:"Section 12 — Flag Race",         fr:"Section 12 — Course au drapeau",     split:true  },
+    { num:13, en:"Section 13 — Speed & Control",   fr:"Section 13 — Vitesse et contrôle",   split:true  },
+  ];
+
+  // ═══════════════════════════════════════════════════════
+  //  BUILD ENTRY SLOTS
+  // ═══════════════════════════════════════════════════════
+  function buildGeneralEntries() {
+    const container = document.getElementById('g-entries');
+    if (!container) return;
+    const lang = (typeof currentLang !== 'undefined') ? currentLang : 'en';
+    container.innerHTML = '';
+    for (let i = 1; i <= 5; i++) {
+      const slot = document.createElement('div');
+      slot.className = 'entry-slot';
+      slot.innerHTML = `
+        <div class="entry-slot-header">
+          <span>${lang === 'fr' ? 'Entrée' : 'Entry'} ${i}</span>
+        </div>
+        <div class="entry-slot-body">
+          <div class="field-row">
+            <div class="field-group">
+              <label for="g_class_${i}">Class</label>
+              <select id="g_class_${i}" name="entry_${i}_class" class="class-select" data-slot="${i}">
+                <option value="">— ${lang === 'fr' ? 'Sélectionner' : 'Select'} —</option>
+                ${CLASSES.map(c => `<option value="${c.num}" data-type="${c.type}">${lang === 'fr' ? c.fr : c.en}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="g_division_${i}">Division (if applicable)</label>
+              <input type="text" id="g_division_${i}" name="entry_${i}_division">
+            </div>
+          </div>
+          <div class="field-row full">
+            <div class="field-group">
+              <label for="g_section_${i}">Section Number / Name</label>
+              <input type="text" id="g_section_${i}" name="entry_${i}_section">
+            </div>
+          </div>
+          <div class="livestock-fields" id="g_livestock_${i}">
+            <div class="field-row three">
+              <div class="field-group">
+                <label for="g_tag_${i}">Animal Tag / ID</label>
+                <input type="text" id="g_tag_${i}" name="entry_${i}_tag">
+              </div>
+              <div class="field-group">
+                <label for="g_abreed_${i}">Breed</label>
+                <input type="text" id="g_abreed_${i}" name="entry_${i}_breed">
+              </div>
+              <div class="field-group">
+                <label for="g_adob_${i}">Animal Date of Birth</label>
+                <input type="date" id="g_adob_${i}" name="entry_${i}_animal_dob">
+              </div>
+            </div>
+            <div class="field-row full">
+              <div class="field-group">
+                <label for="g_possess_${i}">Date Animal Came Into Your Possession</label>
+                <input type="date" id="g_possess_${i}" name="entry_${i}_possession_date">
+              </div>
+            </div>
+          </div>
+          <div class="indoor-fields" id="g_indoor_${i}">
+            <div class="field-row full">
+              <div class="field-group">
+                <label for="g_desc_${i}">Description of Entry</label>
+                <input type="text" id="g_desc_${i}" name="entry_${i}_description">
+              </div>
+            </div>
+          </div>
+        </div>`;
+      container.appendChild(slot);
+      const sel = slot.querySelector('.class-select');
+      sel.addEventListener('change', () => {
+        const type = (sel.options[sel.selectedIndex] || {}).dataset.type || '';
+        document.getElementById(`g_livestock_${i}`).style.display = type === 'livestock' ? 'block' : 'none';
+        document.getElementById(`g_indoor_${i}`).style.display    = type === 'indoor'    ? 'block' : 'none';
+      });
+    }
+  }
+
+  function buildYouthEntries() {
+    const container = document.getElementById('y-entries');
+    if (!container) return;
+    const lang = (typeof currentLang !== 'undefined') ? currentLang : 'en';
+    container.innerHTML = '';
+    for (let i = 1; i <= 5; i++) {
+      const slot = document.createElement('div');
+      slot.className = 'entry-slot';
+      slot.innerHTML = `
+        <div class="entry-slot-header"><span>${lang === 'fr' ? 'Entrée' : 'Entry'} ${i}</span></div>
+        <div class="entry-slot-body">
+          <div class="field-row">
+            <div class="field-group">
+              <label>Class</label>
+              <select name="y_entry_${i}_class">
+                <option value="">— Select —</option>
+                <option value="26">${lang === 'fr' ? 'Classe 26 — Jeune (8–11 ans)' : 'Class 26 — Junior (ages 8–11)'}</option>
+                <option value="27">${lang === 'fr' ? 'Classe 27 — Intermédiaire (12–14 ans)' : 'Class 27 — Intermediate (ages 12–14)'}</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Section Number / Name</label>
+              <input type="text" name="y_entry_${i}_section">
+            </div>
+          </div>
+          <div class="field-row full">
+            <div class="field-group">
+              <label>Description of Entry</label>
+              <input type="text" name="y_entry_${i}_description">
+            </div>
+          </div>
+        </div>`;
+      container.appendChild(slot);
+    }
+  }
+
+  function buildGymkhanaSections() {
+    const container = document.getElementById('gymkhana-sections');
+    if (!container) return;
+    const lang     = (typeof currentLang !== 'undefined') ? currentLang : 'en';
+    const horseEl  = document.getElementById('e_horse_type');
+    const division = horseEl && horseEl.value === 'pony' ? 'B' : 'A';
+    container.innerHTML = '';
+    GYMKHANA_SECTIONS.forEach(s => {
+      const label  = lang === 'fr' ? s.fr : s.en;
+      const suffix = s.split ? ` (Division ${division})` : '';
+      const div    = document.createElement('div');
+      div.className = 'check-group';
+      div.innerHTML = `
+        <input type="checkbox" id="gym_${s.num}" name="gym_section_${s.num}" value="${s.num}${s.split ? division : ''}">
+        <label for="gym_${s.num}">${label}${suffix}</label>`;
+      container.appendChild(div);
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  YOUTH AGE → CLASS
+  // ═══════════════════════════════════════════════════════
+  function updateYouthClass() {
+    const dob = document.getElementById('y_dob');
+    if (!dob || !dob.value) return;
+    const lang  = (typeof currentLang !== 'undefined') ? currentLang : 'en';
+    const today = new Date('2026-09-12');
+    const birth = new Date(dob.value);
+    let age     = today.getFullYear() - birth.getFullYear();
+    const m     = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+    const display = document.getElementById('y_class_display');
+    const hidden  = document.getElementById('y_class_num');
+    if (age >= 8 && age <= 11)  { display.value = lang === 'fr' ? 'Classe 26 — Jeune' : 'Class 26 — Junior';           hidden.value = '26'; }
+    else if (age >= 12 && age <= 14) { display.value = lang === 'fr' ? 'Classe 27 — Intermédiaire' : 'Class 27 — Intermediate'; hidden.value = '27'; }
+    else { display.value = lang === 'fr' ? "Hors limites d'âge" : 'Outside age range'; hidden.value = ''; }
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  PAYLOAD BUILDER  (maps snake_case HTML names → camelCase Code.gs names)
+  // ═══════════════════════════════════════════════════════
+  function buildPayload(form, formType) {
+    const params = new URLSearchParams();
+    const fv = (name) => { const el = form.querySelector(`[name="${name}"]`); return el ? el.value.trim() : ''; };
+    const cb = (name) => { const el = form.querySelector(`[name="${name}"]`); return el ? el.checked : false; };
+
+    params.set('formType',    formType);
+    params.set('submittedAt', new Date().toISOString());
+    params.set('lang',        typeof currentLang !== 'undefined' ? currentLang : 'en');
+
+    if (formType === 'general') {
+      params.set('firstName',       fv('first_name'));
+      params.set('lastName',        fv('last_name'));
+      params.set('email',           fv('email'));
+      params.set('phone',           fv('phone'));
+      params.set('dob',             fv('dob'));
+      params.set('memberNum',       fv('member_num'));
+      params.set('address',         fv('address'));
+      params.set('city',            fv('city'));
+      params.set('memberAgree',     cb('member_agree').toString());
+      params.set('rulesAgree',      cb('rules_agree').toString());
+      params.set('possessionAgree', cb('possession_agree').toString());
+      params.set('notes',           fv('notes'));
+      for (let i = 1; i <= 5; i++) {
+        params.set(`entry${i}_class`, fv(`entry_${i}_class`));
+        const parts = [
+          fv(`entry_${i}_section`),
+          fv(`entry_${i}_division`),
+          fv(`entry_${i}_description`),
+          fv(`entry_${i}_tag`),
+          fv(`entry_${i}_breed`),
+          fv(`entry_${i}_animal_dob`),
+          fv(`entry_${i}_possession_date`),
+        ].filter(Boolean);
+        params.set(`entry${i}_details`, parts.join(' | '));
+      }
+    }
+
+    if (formType === 'youth') {
+      params.set('firstName',     fv('parent_first'));
+      params.set('lastName',      fv('parent_last'));
+      params.set('email',         fv('email'));
+      params.set('phone',         fv('phone'));
+      params.set('dob',           fv('youth_dob'));
+      params.set('youthFirstName', fv('youth_first'));
+      params.set('youthLastName',  fv('youth_last'));
+      params.set('assignedClass',  fv('class_num'));
+      params.set('rulesAgree',     cb('rules_agree').toString());
+      for (let i = 1; i <= 5; i++) {
+        params.set(`entry${i}_class`,   fv(`y_entry_${i}_class`));
+        params.set(`entry${i}_details`, [fv(`y_entry_${i}_section`), fv(`y_entry_${i}_description`)].filter(Boolean).join(' | '));
+      }
+    }
+
+    if (formType === '4h') {
+      params.set('firstName',   fv('first_name'));
+      params.set('lastName',    fv('last_name'));
+      params.set('email',       fv('email'));
+      params.set('dob',         fv('dob'));
+      params.set('clubName',    fv('club'));
+      params.set('leaderName',  fv('leader'));
+      params.set('rulesAgree',  cb('rules_agree').toString());
+      params.set('showmanship', cb('showmanship').toString());
+      params.set('cloverbud',   cb('cloverbud').toString());
+      params.set('animalEntries', JSON.stringify({ section: fv('heifer_section'), atq: fv('atq'), name: fv('animal_name'), breed: fv('breed') }));
+      params.set('groupEntries',  JSON.stringify({ section: fv('group_section'),  atq2: fv('group_atq2') }));
+    }
+
+    if (formType === 'equestrian') {
+      params.set('firstName',     fv('first_name'));
+      params.set('lastName',      fv('last_name'));
+      params.set('email',         fv('email'));
+      params.set('phone',         fv('phone'));
+      params.set('dob',           fv('dob'));
+      params.set('horseName',     fv('horse_name'));
+      params.set('horseType',     fv('horse_type'));
+      params.set('helmetConfirm', fv('helmet'));
+      params.set('emergName',     fv('emerg_name'));
+      params.set('emergPhone',    fv('emerg_phone'));
+      params.set('emergRelation', fv('emerg_relation'));
+      params.set('rulesAgree',    cb('rules_agree').toString());
+      // Collect all checked gymkhana section values into one comma-separated string
+      const sections = Array.from(form.querySelectorAll('[name^="gym_section_"]:checked')).map(el => el.value);
+      params.set('gymkhanaSections', sections.join(', '));
+    }
+
+    return params;
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  SUBMIT HANDLER
+  // ═══════════════════════════════════════════════════════
+  function wireForm(formId, successId, errorId, btnId, formType) {
+    const form = document.getElementById(formId);
+    const btn  = document.getElementById(btnId);
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Validate required fields
+      let valid = true;
+      form.querySelectorAll('[required]').forEach(el => {
+        const empty = el.type === 'checkbox' ? !el.checked : !el.value.trim();
+        if (empty) {
+          if (el.type === 'checkbox') el.style.outline = '2px solid #c0392b';
+          else el.style.borderColor = '#c0392b';
+          valid = false;
+        } else {
+          el.style.outline = '';
+          el.style.borderColor = '';
+        }
+      });
+      if (!valid) {
+        const first = form.querySelector('[required]');
+        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      btn.disabled = true;
+      const payload = buildPayload(form, formType);
+
+      try {
+        const resp = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: payload });
+        let json = {};
+        try { json = await resp.json(); } catch (_) { /* opaque response is still a success */ }
+
+        if (resp.ok && json.result !== 'error') {
+          document.getElementById(successId).style.display = 'block';
+          document.getElementById(errorId).style.display   = 'none';
+          form.reset();
+          buildGeneralEntries();
+          buildYouthEntries();
+          window.scrollTo({ top: document.getElementById(successId).offsetTop - 100, behavior: 'smooth' });
+        } else {
+          throw new Error(json.error || `HTTP ${resp.status}`);
+        }
+      } catch (err) {
+        console.error('[Havelock Fair Registration] Submission error:', err);
+        document.getElementById(errorId).style.display   = 'block';
+        document.getElementById(successId).style.display = 'none';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  TAB SWITCHING
+  // ═══════════════════════════════════════════════════════
+  document.querySelectorAll('.form-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.form-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected','true');
+      const panel = document.getElementById('panel-' + tab.dataset.panel);
+      if (panel) panel.classList.add('active');
+    });
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  INIT
+  // ═══════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', () => {
+    buildGeneralEntries();
+    buildYouthEntries();
+    buildGymkhanaSections();
+
+    const yDob = document.getElementById('y_dob');
+    if (yDob) yDob.addEventListener('change', updateYouthClass);
+    const horseType = document.getElementById('e_horse_type');
+    if (horseType) horseType.addEventListener('change', buildGymkhanaSections);
+
+    wireForm('form-general',    'msg-general-success',    'msg-general-error',    'btn-submit-general',    'general');
+    wireForm('form-youth',      'msg-youth-success',      'msg-youth-error',      'btn-submit-youth',      'youth');
+    wireForm('form-4h',         'msg-4h-success',         'msg-4h-error',         'btn-submit-4h',         '4h');
+    wireForm('form-equestrian', 'msg-equestrian-success', 'msg-equestrian-error', 'btn-submit-equestrian', 'equestrian');
+  });
+
+  // Rebuild dynamic entries when language switches
+  if (typeof setLanguage !== 'undefined') {
+    const _orig = setLanguage;
+    setLanguage = function(lang) {
+      _orig(lang);
+      buildGeneralEntries();
+      buildYouthEntries();
+      buildGymkhanaSections();
+      updateYouthClass();
+    };
+  }
+  </script>
 </body>
 </html>
