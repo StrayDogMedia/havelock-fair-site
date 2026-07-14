@@ -550,7 +550,11 @@ async function postToSheet(payload, formType, btnId, msgId) {
   btn.disabled = true; btn.innerHTML = '<span>⏳</span> Submitting…';
   msg.className = 'form-message';
   try {
-    const res = await fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ formType, ...payload }) });
+    // NOTE: use text/plain (not application/json) so the browser skips the CORS
+    // preflight OPTIONS request. Google Apps Script web apps return 405 to
+    // preflights (no Access-Control headers), which caused "Failed to fetch".
+    // The body is still a JSON string; doPost's JSON.parse() is unchanged.
+    const res = await fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ formType, ...payload }) });
     const data = await res.json();
     if (data.result === 'success') {
       msg.textContent = '✅ Registration submitted! Please bring this form to the office before judging begins at 11:00 a.m.';
