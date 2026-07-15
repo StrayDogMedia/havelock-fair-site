@@ -11,6 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
   <style>
+    /* Keep focused fields / anchor targets from tucking under the fixed navbar */
+    html { scroll-padding-top: 90px; }
     .page-hero { position:relative; padding:160px 0 80px; background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%); text-align:center; color:var(--white); }
     .page-hero h1 { color:var(--white); margin-bottom:12px; }
     .page-hero p { opacity:.8; font-size:1.1rem; }
@@ -89,12 +91,12 @@
 <body>
 
 <nav class="navbar" id="navbar">
-  <div class="container">
+  <div class="nav-inner">
     <a href="../index.html" class="nav-brand">Havelock Fair</a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
       <span></span><span></span><span></span>
     </button>
-    <ul class="nav-links" id="navLinks">
+    <ul class="nav-menu" id="navLinks">
       <li><a href="../index.html">Home</a></li>
       <li><a href="schedule.html">Schedule</a></li>
       <li><a href="directions.html">Directions</a></li>
@@ -102,12 +104,14 @@
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
       <li><a href="gallery.html">Photo Gallery</a></li>
-      <li><a href="registration.html" class="nav-cta active">Registration</a></li>
+      <li><a href="registration.html" class="active">Registration</a></li>
+      <li>
+        <div class="lang-switcher">
+          <button class="lang-btn active" onclick="setLang('en')">EN</button>
+          <button class="lang-btn" onclick="setLang('fr')">FR</button>
+        </div>
+      </li>
     </ul>
-    <div class="lang-switcher">
-      <button class="lang-btn active" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('fr')">FR</button>
-    </div>
   </div>
 </nav>
 
