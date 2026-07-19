@@ -24,13 +24,13 @@
   <!-- Canonical -->
   <link rel="canonical" href="https://www.havelockfair.ca">
 
-  <!-- Fonts -->
+  <!-- Fonts (Heritage Noir: Newsreader / Spectral / Manrope) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400;1,6..72,500&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/heritage.css">
 
   <!-- Schema.org Structured Data -->
   <script type="application/ld+json">
@@ -105,227 +105,293 @@
 </head>
 <body>
 
-  <!-- ========== NAVBAR ========== -->
-  <nav class="navbar" role="navigation" aria-label="Main navigation">
-    <div class="nav-inner">
-      <a href="./" class="nav-brand">
-        <span>Havelock Fair</span>
-      </a>
-
-      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-
-      <ul class="nav-menu">
-        <li><a href="./" class="active" data-i18n="nav_home">Home</a></li>
-        <li><a href="pages/schedule.html" data-i18n="nav_schedule">Schedule</a></li>
-        <li><a href="pages/directions.html" data-i18n="nav_directions">Directions</a></li>
-        <li><a href="pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
-        <li><a href="pages/about.html" data-i18n="nav_about">About</a></li>
-        <li><a href="pages/contact.html" data-i18n="nav_contact">Contact</a></li>
-        <li><a href="pages/gallery.html" data-i18n="nav_gallery">Photos</a></li>
-        <li><a href="pages/registration.html" data-i18n="nav_registration">Registration</a></li>
-        <li>
-          <div class="lang-switcher">
-            <button class="lang-btn active" data-lang="en">EN</button>
-            <button class="lang-btn" data-lang="fr">FR</button>
-            <button class="lang-btn" data-lang="es">ES</button>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </nav>
-
   <!-- ========== HERO ========== -->
-  <section class="hero">
-    <div class="hero-img"></div>
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-tag">Since 1871 &bull; Depuis 1871</div>
-      <h1 data-i18n="hero_title">Havelock Fair</h1>
-      <p class="hero-subtitle" data-i18n="hero_subtitle">One of Canada's oldest continuously held agricultural fairs</p>
-      <p class="hero-date" data-i18n="hero_date">September 12–13, 2026</p>
-      <div class="hero-buttons">
-        <a href="pages/schedule.html" class="btn btn-primary" data-i18n="hero_cta">View Schedule</a>
-        <a href="pages/directions.html" class="btn btn-outline" data-i18n="hero_cta2">Get Directions</a>
+  <section class="hf-hero">
+    <div class="hf-hero-media">
+      <img src="images/home/hero.jpg" alt="Riders on horseback at the Havelock Fairgrounds">
+    </div>
+    <div class="hf-hero-scrim"></div>
+    <div class="hf-frame"></div>
+
+    <header class="hf-header">
+      <a href="./" class="hf-brand">Havelock&nbsp;Fair</a>
+      <nav class="hf-nav" aria-label="Main navigation">
+        <a href="./" class="active" data-i18n="nav_home">Home</a>
+        <a href="pages/schedule.html" data-i18n="nav_schedule">Schedule</a>
+        <a href="pages/directions.html" data-i18n="nav_directions">Directions</a>
+        <a href="pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a>
+        <a href="pages/about.html" data-i18n="nav_about">About</a>
+        <a href="pages/contact.html" data-i18n="nav_contact">Contact</a>
+        <a href="pages/gallery.html" data-i18n="nav_gallery">Photos</a>
+        <a href="pages/registration.html" data-i18n="nav_registration">Registration</a>
+      </nav>
+      <div class="hf-nav-side">
+        <div class="hf-lang">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="fr">FR</button>
+          <button class="lang-btn" data-lang="es">ES</button>
+        </div>
+        <a href="pages/registration.html" class="hf-tickets" data-i18n="nav_tickets">Tickets</a>
+      </div>
+      <button class="hf-menu-btn" id="hf-menu-open" aria-expanded="false" aria-controls="hf-mobile-menu">
+        <span aria-hidden="true">&#8801;</span> <span data-i18n="nav_menu">Menu</span>
+      </button>
+    </header>
+
+    <div class="hf-mobile-menu" id="hf-mobile-menu">
+      <div class="hf-mobile-top">
+        <span class="hf-brand">Havelock&nbsp;Fair</span>
+        <button class="hf-mobile-close" id="hf-menu-close" aria-label="Close menu">&times;</button>
+      </div>
+      <nav class="hf-mobile-nav" aria-label="Mobile navigation">
+        <a href="./" data-i18n="nav_home">Home</a>
+        <a href="pages/schedule.html" data-i18n="nav_schedule">Schedule</a>
+        <a href="pages/directions.html" data-i18n="nav_directions">Directions</a>
+        <a href="pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a>
+        <a href="pages/about.html" data-i18n="nav_about">About</a>
+        <a href="pages/contact.html" data-i18n="nav_contact">Contact</a>
+        <a href="pages/gallery.html" data-i18n="nav_gallery">Photos</a>
+        <a href="pages/registration.html" data-i18n="nav_registration">Registration</a>
+      </nav>
+      <div class="hf-mobile-foot">
+        <div class="hf-lang">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="fr">FR</button>
+          <button class="lang-btn" data-lang="es">ES</button>
+        </div>
+        <a href="pages/registration.html" class="hf-tickets" data-i18n="nav_tickets">Tickets</a>
       </div>
     </div>
+
+    <div class="hf-hero-copy">
+      <div class="hf-eyebrow hf-eyebrow--bright" data-i18n="hero_eyebrow">Est. 1871 &middot; Haut-Saint-Laurent, Qu&eacute;bec</div>
+      <h1 class="hf-h1">Havelock<br><em>Fair</em></h1>
+      <div class="hf-hero-sub">
+        <p class="hf-hero-lede" data-i18n="hero_lede">One of Canada's oldest continuously held agricultural fairs — a living tradition in the heart of rural Qu&eacute;bec.</p>
+        <div class="hf-hero-date" data-i18n="hero_date">September 12&ndash;13, 2026</div>
+      </div>
+    </div>
+    <div class="hf-hero-edition" data-i18n="edition_label">155th Edition &middot; Since 1871</div>
+    <div class="hf-hero-cue" aria-hidden="true">&darr;</div>
   </section>
 
   <!-- ========== COUNTDOWN ========== -->
-  <section id="countdown">
-    <div class="container">
-      <div class="countdown-title" data-i18n="countdown_title">The Fair Begins In</div>
-      <div class="countdown-numbers"></div>
-    </div>
+  <section class="hf-countdown" id="countdown" aria-label="Countdown to the fair">
+    <div class="countdown-title"></div>
+    <div class="countdown-numbers"></div>
   </section>
 
-  <!-- ========== ABOUT ========== -->
-  <section class="about">
-    <div class="container">
-      <div class="about-grid">
-        <div class="about-text fade-in">
-          <span class="about-tag" data-i18n="about_tag">Since 1871</span>
-          <h2 data-i18n="about_title">A Living Tradition in Rural Quebec</h2>
-          <p data-i18n="about_p1">For over 150 years, the Havelock Fair has brought together families, farmers, and friends in the heart of the Haut-Saint-Laurent region. What began as a small agricultural gathering in 1871 has grown into one of Canada's most cherished community events.</p>
-          <p data-i18n="about_p2">From livestock shows and 4-H competitions to antique tractors, live country music, maple treats, and children's games — there's something for everyone at the Havelock Fairgrounds.</p>
-          <div class="about-location">
-            <span data-i18n="about_location">455 Route 202, Havelock, Quebec J0S 2C0</span>
-            <span class="location-note" data-i18n="about_minutes">Minutes from the Canada–US border</span>
-          </div>
-        </div>
-        <div class="about-image fade-in">
-          <img src="images/gallery/fair-2025-04.jpg" alt="Havelock Fair 2025" style="width:100%;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);object-fit:cover;max-height:480px;">
-        </div>
+  <!-- ========== CHAPTER ONE ========== -->
+  <section class="hf-chapter" id="story">
+    <div class="hf-chapter-grid">
+      <div class="hf-chapter-label" data-reveal>
+        <div class="hf-eyebrow hf-eyebrow--bronze" data-i18n="ch1_label">Chapter One</div>
+        <div class="hf-chapter-name" data-i18n="ch1_name">The Gathering Field</div>
+        <div class="hf-chapter-rule"></div>
+      </div>
+      <div data-reveal>
+        <p class="hf-chapter-lead"><span class="hf-dropcap" data-i18n="ch1_drop">S</span><span data-i18n="ch1_lead">ince 1871, one field in the Haut-Saint-Laurent has done the same quiet, extraordinary thing every September — it gathers a community. Farmers and families, competitors and first-time visitors, drawn together by the oldest rhythm there is: the harvest.</span></p>
+        <p class="hf-chapter-body" data-i18n="ch1_body">What began as a modest agricultural gathering is now the 155th edition — one of Canada's most enduring rural traditions, and a place where heritage is not remembered but lived.</p>
       </div>
     </div>
   </section>
 
-  <!-- ========== HIGHLIGHTS ========== -->
-  <section class="highlights">
-    <div class="container">
-      <div class="section-header fade-in">
-        <h2 data-i18n="highlights_title">What to Expect</h2>
+  <!-- ========== A LIVING HERITAGE ========== -->
+  <section class="hf-heritage" id="heritage">
+    <div class="hf-heritage-numeral" aria-hidden="true">1871</div>
+    <div class="hf-heritage-grid">
+      <div class="hf-heritage-photos" data-reveal>
+        <div class="hf-heritage-photo-back">
+          <img src="images/home/heritage-back.jpg" alt="A vintage automobile at the Havelock Fair car show">
+        </div>
+        <div class="hf-heritage-photo-front">
+          <img src="images/home/heritage-front.jpg" alt="Prize-winning floral arrangements in the exhibit hall">
+        </div>
       </div>
-      <div class="highlights-grid">
-        <div class="highlight-card fade-in">
-          <div class="highlight-icon">&#x1F40E;</div>
-          <h3 data-i18n="highlights_livestock">Livestock & 4-H</h3>
-          <p data-i18n="highlights_livestock_desc">Heavy horses, cattle shows, and youth competitions showcasing the best of rural agriculture.</p>
+      <div class="hf-heritage-copy" data-reveal>
+        <div class="hf-eyebrow" data-i18n="her_eyebrow">A Living Heritage</div>
+        <h2 class="hf-heritage-title"><span data-i18n="her_t1">Five generations,</span><br><em data-i18n="her_t2">one field.</em></h2>
+        <p class="hf-heritage-body" data-i18n="her_body">Heavy horses in the morning mist. The Chateauguay Valley tractors polished to a shine. The same maple, the same music, the same welcome — carried forward, year after year, by the people who call this place home.</p>
+        <a href="pages/gallery.html" class="hf-link-line" data-i18n="her_link">Explore the archive</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CINEMATIC BREAK ========== -->
+  <section class="hf-break">
+    <img src="images/home/break.jpg" alt="Neighbours gathered on hay bales inside the cattle barn" data-parallax>
+    <div class="hf-break-scrim"></div>
+    <div class="hf-break-line">
+      <p data-i18n="break_quote">&ldquo;You don't visit the Havelock Fair. You return to it.&rdquo;</p>
+    </div>
+  </section>
+
+  <!-- ========== WHAT AWAITS YOU (spotlight cards) ========== -->
+  <section class="hf-fair" id="fair">
+    <div class="hf-fair-head" data-reveal>
+      <div class="hf-eyebrow" data-i18n="fair_eyebrow">The Experience</div>
+      <h2 class="hf-h2" data-i18n="fair_title">What Awaits You</h2>
+    </div>
+    <div class="hf-cards" data-reveal>
+      <button class="hf-card" aria-haspopup="dialog">
+        <span class="hf-card-bg" style="background-image:url('images/home/spotlight/ls-1.jpg')"></span>
+        <span class="hf-card-scrim"></span>
+        <div class="hf-card-num" aria-hidden="true">01</div>
+        <h3 data-i18n="highlights_livestock">Livestock &amp; 4-H</h3>
+        <p data-i18n="sp_ls_tease">Horses, cattle &amp; young showmen in the ring</p>
+        <span class="hf-card-open" data-i18n="sp_open">Take a look</span>
+      </button>
+      <button class="hf-card" aria-haspopup="dialog">
+        <span class="hf-card-bg" style="background-image:url('images/home/spotlight/mu-1.jpg')"></span>
+        <span class="hf-card-scrim"></span>
+        <div class="hf-card-num" aria-hidden="true">02</div>
+        <h3 data-i18n="highlights_music">Live Music</h3>
+        <p data-i18n="sp_mu_tease">Country &amp; folk on the outdoor stage</p>
+        <span class="hf-card-open" data-i18n="sp_open">Take a look</span>
+      </button>
+      <button class="hf-card" aria-haspopup="dialog">
+        <span class="hf-card-bg" style="background-image:url('images/home/spotlight/tr-1.jpg')"></span>
+        <span class="hf-card-scrim"></span>
+        <div class="hf-card-num" aria-hidden="true">03</div>
+        <h3 data-i18n="highlights_antique">Antique Tractors</h3>
+        <p data-i18n="sp_tr_tease">Restored classics lined up on the green</p>
+        <span class="hf-card-open" data-i18n="sp_open">Take a look</span>
+      </button>
+      <button class="hf-card" aria-haspopup="dialog">
+        <span class="hf-card-bg" style="background-image:url('images/home/spotlight/fd-1.jpg')"></span>
+        <span class="hf-card-scrim"></span>
+        <div class="hf-card-num" aria-hidden="true">04</div>
+        <h3 data-i18n="highlights_food">Local Food &amp; Treats</h3>
+        <p data-i18n="sp_fd_tease">BBQ, maple &amp; blue-ribbon pies</p>
+        <span class="hf-card-open" data-i18n="sp_open">Take a look</span>
+      </button>
+      <button class="hf-card" aria-haspopup="dialog">
+        <span class="hf-card-bg" style="background-image:url('images/home/spotlight/kd-1.jpg')"></span>
+        <span class="hf-card-scrim"></span>
+        <div class="hf-card-num" aria-hidden="true">05</div>
+        <h3 data-i18n="highlights_kids">Kids' Activities</h3>
+        <p data-i18n="sp_kd_tease">Games, face paint &amp; farm fun</p>
+        <span class="hf-card-open" data-i18n="sp_open">Take a look</span>
+      </button>
+      <button class="hf-card" aria-haspopup="dialog">
+        <span class="hf-card-bg" style="background-image:url('images/home/spotlight/cr-1.jpg')"></span>
+        <span class="hf-card-scrim"></span>
+        <div class="hf-card-num" aria-hidden="true">06</div>
+        <h3 data-i18n="highlights_crafts">Arts &amp; Crafts</h3>
+        <p data-i18n="sp_cr_tease">Quilts, woodcraft &amp; fine art</p>
+        <span class="hf-card-open" data-i18n="sp_open">Take a look</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- spotlight modal -->
+  <div class="hf-spot" id="hf-spot" role="dialog" aria-modal="true" aria-labelledby="hf-spot-title">
+    <button class="hf-spot-close" id="hf-spot-close" aria-label="Close">&times;</button>
+    <div class="hf-spot-panel" id="hf-spot-panel"></div>
+  </div>
+
+  <!-- ========== PULL QUOTE ========== -->
+  <section class="hf-quote">
+    <div class="hf-quote-mark" aria-hidden="true">&ldquo;</div>
+    <p data-reveal data-i18n="quote_text">For one hundred and fifty-five years, the same field has gathered the same families — and quietly welcomed the world.</p>
+    <span class="hf-eyebrow" data-i18n="quote_attr">A Tradition Since 1871</span>
+  </section>
+
+  <!-- ========== GALLERY ========== -->
+  <section class="hf-gallery" id="gallery">
+    <div class="hf-gallery-inner">
+      <div class="hf-gallery-head" data-reveal>
+        <div>
+          <span class="hf-eyebrow" data-i18n="gal_eyebrow">The Gallery</span>
+          <h2 class="hf-gallery-title" data-i18n="gal_title">From the Fairgrounds</h2>
         </div>
-        <div class="highlight-card fade-in">
-          <div class="highlight-icon">&#x1F3B5;</div>
-          <h3 data-i18n="highlights_music">Live Music</h3>
-          <p data-i18n="highlights_music_desc">Country, folk, and local talent performing all day on our outdoor stage.</p>
+        <a href="pages/gallery.html" class="hf-link-line" data-i18n="gal_cta">View All Photos</a>
+      </div>
+      <div class="hf-mosaic" data-reveal>
+        <img src="images/gallery/fair-2025-01.jpg" alt="Heavy-horse team and wagon" class="span2x2">
+        <img src="images/gallery/fair-2025-02.jpg" alt="Children showing a dairy cow">
+        <img src="images/gallery/fair-2025-03.jpg" alt="Cattle judging under the flags">
+        <img src="images/gallery/fair-2025-05.jpg" alt="Miniature horses at the rail" class="span2w">
+        <img src="images/gallery/fair-2025-13.jpg" alt="Giant prize pumpkin">
+        <img src="images/gallery/fair-2025-15.jpg" alt="Children's bouncy castle">
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PLAN YOUR VISIT ========== -->
+  <section class="hf-visit" id="visit">
+    <div class="hf-visit-inner">
+      <div class="hf-visit-head" data-reveal>
+        <div>
+          <span class="hf-eyebrow hf-eyebrow--bronze" data-i18n="visit_eyebrow">Plan Your Visit</span>
+          <h2 class="hf-visit-date"><span data-i18n="visit_d1">September 12</span><em data-i18n="visit_amp"> &amp; </em><span data-i18n="visit_d2">13, 2026</span></h2>
         </div>
-        <div class="highlight-card fade-in">
-          <div class="highlight-icon">&#x1F69C;</div>
-          <h3 data-i18n="highlights_antique">Antique Tractors</h3>
-          <p data-i18n="highlights_antique_desc">The Chateauguay Valley Garden Tractor Club and vintage machinery on display.</p>
+        <p class="hf-visit-lede" data-i18n="visit_lede">Gates open at 8:00 AM both days at the Havelock Fairgrounds — 455 Route 202, minutes from the Canada–US border. Children 12 and under are always free.</p>
+      </div>
+      <div class="hf-visit-table" data-reveal>
+        <div class="hf-visit-cell">
+          <div class="hf-visit-cell-title" data-i18n="adm_adults_title">Weekend Admission</div>
+          <div class="hf-visit-price" data-i18n="adm_price">$15</div>
+          <p data-i18n="adm_adults_text">One weekend pass covers both days of the fair. Children 12 and under free.</p>
         </div>
-        <div class="highlight-card fade-in">
-          <div class="highlight-icon">&#x1F33D;</div>
-          <h3 data-i18n="highlights_food">Local Food & Treats</h3>
-          <p data-i18n="highlights_food_desc">Maple products, BBQ, homemade pies, and farm-fresh flavors from local producers.</p>
+        <div class="hf-visit-cell">
+          <div class="hf-visit-cell-title" data-i18n="adm_hours_title">Hours</div>
+          <p data-i18n="adm_hours_text">Gates open 8:00 AM both days. Exhibitors: 6:00 AM Saturday, 7:00 AM Sunday. Closes 5:00 PM.</p>
         </div>
-        <div class="highlight-card fade-in">
-          <div class="highlight-icon">&#x1F3A0;</div>
-          <h3 data-i18n="highlights_kids">Kids' Activities</h3>
-          <p data-i18n="highlights_kids_desc">Games, face painting, petting zoo, and hands-on farm experiences for the little ones.</p>
+        <div class="hf-visit-cell">
+          <div class="hf-visit-cell-title" data-i18n="adm_food_title">Food &amp; Drinks</div>
+          <p data-i18n="adm_food_text">BBQ chicken dinner, canteen, sugar shanty, and local vendors. No outside food restrictions.</p>
         </div>
-        <div class="highlight-card fade-in">
-          <div class="highlight-icon">&#x1F9F5;</div>
-          <h3 data-i18n="highlights_crafts">Arts & Crafts</h3>
-          <p data-i18n="highlights_crafts_desc">Handmade goods, quilts, woodworking, and artisan vendors from across the region.</p>
+        <div class="hf-visit-cell">
+          <div class="hf-visit-cell-title" data-i18n="adm_parking_title">Parking</div>
+          <p data-i18n="adm_parking_text">Free parking on-site. Follow volunteer attendants. Overflow parking available along Route 202.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ========== ADMISSION ========== -->
-  <section style="padding:80px 0;background:var(--navy);color:var(--white);">
-    <div class="container">
-      <div class="section-header fade-in" style="text-align:center;margin-bottom:48px;">
-        <h2 style="color:var(--white);" data-i18n="admission_title">Admission & Information</h2>
-        <p style="color:rgba(255,255,255,0.75);max-width:560px;margin:0 auto;" data-i18n="admission_subtitle">Everything you need to know before you arrive</p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;">
-        <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(200,146,42,0.3);border-radius:var(--radius-lg);padding:32px;text-align:center;" class="fade-in">
-          <div style="font-size:2.2rem;margin-bottom:12px;">🎟️</div>
-          <h3 style="color:var(--gold-light);margin-bottom:16px;" data-i18n="adm_adults_title">Adults</h3>
-          <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;" data-i18n="adm_adults_text">General admission covers both days of the fair. Children 12 and under free.</p>
-        </div>
-        <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(200,146,42,0.3);border-radius:var(--radius-lg);padding:32px;text-align:center;" class="fade-in">
-          <div style="font-size:2.2rem;margin-bottom:12px;">🕗</div>
-          <h3 style="color:var(--gold-light);margin-bottom:16px;" data-i18n="adm_hours_title">Hours</h3>
-          <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;" data-i18n="adm_hours_text">Gates open 8:00 AM both days. Exhibitors: 6:00 AM Saturday, 7:00 AM Sunday. Closes 5:00 PM.</p>
-        </div>
-        <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(200,146,42,0.3);border-radius:var(--radius-lg);padding:32px;text-align:center;" class="fade-in">
-          <div style="font-size:2.2rem;margin-bottom:12px;">🍗</div>
-          <h3 style="color:var(--gold-light);margin-bottom:16px;" data-i18n="adm_food_title">Food & Drinks</h3>
-          <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;" data-i18n="adm_food_text">BBQ chicken dinner, canteen, sugar shanty, and local vendors. No outside food restrictions.</p>
-        </div>
-        <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(200,146,42,0.3);border-radius:var(--radius-lg);padding:32px;text-align:center;" class="fade-in">
-          <div style="font-size:2.2rem;margin-bottom:12px;">🅿️</div>
-          <h3 style="color:var(--gold-light);margin-bottom:16px;" data-i18n="adm_parking_title">Parking</h3>
-          <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;" data-i18n="adm_parking_text">Free parking on-site. Follow volunteer attendants. Overflow parking available along Route 202.</p>
-        </div>
-      </div>
-      <div style="margin-top:48px;text-align:center;">
-        <a href="pages/schedule.html" class="btn btn-primary" data-i18n="adm_schedule_cta">View Full Schedule</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== PHOTOS PREVIEW ========== -->
-  <section style="padding:80px 0;background:var(--cream);">
-    <div class="container">
-      <div class="section-header fade-in" style="text-align:center;margin-bottom:48px;">
-        <h2 data-i18n="photos_title">Photos from the Fair</h2>
-        <p style="color:var(--text-light);max-width:500px;margin:0 auto;" data-i18n="photos_subtitle">A glimpse of what awaits at Havelock Fair 2026</p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" class="fade-in">
-        <img src="images/gallery/fair-2025-01.jpg" alt="Havelock Fair 2025" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius);">
-        <img src="images/gallery/fair-2025-02.jpg" alt="Havelock Fair 2025" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius);">
-        <img src="images/gallery/fair-2025-03.jpg" alt="Havelock Fair 2025" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius);">
-      </div>
-      <div style="text-align:center;margin-top:32px;">
-        <a href="pages/gallery.html" class="btn btn-outline" data-i18n="photos_cta">View All Photos</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== CTA ========== -->
-  <section class="cta-section">
-    <div class="container fade-in">
-      <h2 data-i18n="cta_title">Join Us This September</h2>
-      <p data-i18n="cta_text">Whether you're a lifelong local or visiting for the first time, the Havelock Fair welcomes you.</p>
-      <a href="pages/directions.html" class="btn btn-primary" data-i18n="cta_button">Plan Your Visit</a>
+  <!-- ========== FINALE CTA ========== -->
+  <section class="hf-finale">
+    <img src="images/home/finale.jpg" alt="Families gathered on the Havelock fairgrounds" data-parallax>
+    <div class="hf-finale-scrim"></div>
+    <div class="hf-frame"></div>
+    <div class="hf-finale-copy">
+      <span class="hf-eyebrow hf-eyebrow--bright" data-i18n="hero_eyebrow">Est. 1871 &middot; Haut-Saint-Laurent, Qu&eacute;bec</span>
+      <h2 class="hf-finale-title"><span data-i18n="cta_title_1">Join Us This </span><em data-i18n="cta_title_2">September</em></h2>
+      <p class="hf-finale-lede" data-i18n="cta_text">Whether you're a lifelong local or visiting for the first time, the Havelock Fair welcomes you.</p>
+      <a href="pages/directions.html" class="hf-btn-gold" data-i18n="cta_button">Plan Your Visit</a>
     </div>
   </section>
 
   <!-- ========== FOOTER ========== -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-brand">Havelock Fair</div>
-          <p class="footer-tagline" data-i18n="footer_tagline">A proud tradition since 1871.</p>
-          <div class="footer-social">
-            <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" aria-label="Facebook">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            </a>
-          </div>
-        </div>
-        <div>
-          <h4 data-i18n="footer_quick">Quick Links</h4>
-          <ul class="footer-links">
-            <li><a href="pages/schedule.html" data-i18n="nav_schedule">Schedule</a></li>
-            <li><a href="pages/directions.html" data-i18n="nav_directions">Directions</a></li>
-            <li><a href="pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
-            <li><a href="pages/about.html" data-i18n="nav_about">About</a></li>
-            <li><a href="pages/contact.html" data-i18n="nav_contact">Contact</a></li>
-            <li><a href="pages/gallery.html" data-i18n="nav_gallery">Photos</a></li>
-        <li><a href="pages/registration.html" data-i18n="nav_registration">Registration</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 data-i18n="footer_contact">Contact</h4>
-          <div class="footer-contact-info">
-            <span data-i18n="footer_address">455 Route 202, Havelock, Quebec J0S 2C0</span>
-            <a href="tel:+14508261155" data-i18n="footer_phone">(450) 826-1155</a>
-          </div>
+  <footer class="hf-footer">
+    <div class="hf-footer-grid">
+      <div>
+        <div class="hf-footer-brand">Havelock Fair</div>
+        <p class="hf-footer-tagline" data-i18n="hfoot_tagline">A treasured Canadian tradition since 1871, in the heart of the Haut-Saint-Laurent.</p>
+      </div>
+      <div>
+        <div class="hf-footer-h" data-i18n="hfoot_explore">Explore</div>
+        <div class="hf-footer-links">
+          <a href="pages/schedule.html" data-i18n="nav_schedule">Schedule</a>
+          <a href="pages/registration.html" data-i18n="nav_registration">Registration</a>
+          <a href="pages/sponsors.html" data-i18n="nav_sponsors">Sponsors</a>
+          <a href="pages/about.html" data-i18n="nav_about">About</a>
+          <a href="pages/gallery.html" data-i18n="nav_gallery">Photos</a>
+          <a href="pages/contact.html" data-i18n="nav_contact">Contact</a>
         </div>
       </div>
-      <div class="footer-bottom">
-        &copy; 2026 <span data-i18n="footer_copyright">Havelock Fair. All rights reserved.</span>
+      <div>
+        <div class="hf-footer-h" data-i18n="hfoot_visit">Visit</div>
+        <p class="hf-footer-contact">455 Route 202<br>Havelock, Qu&eacute;bec J0S 2C0<br><a href="tel:+14508261155">(450) 826-1155</a><br><a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener">facebook.com/havelockfair</a></p>
       </div>
     </div>
+    <div class="hf-footer-legal" data-i18n="hfoot_credit">&copy; 2026 Havelock Fair &middot; Foire Havelock — With the support of MAPAQ &amp; the Association des expositions agricoles du Qu&eacute;bec.</div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- Scripts (order matters: i18n → countdown → heritage) -->
   <script src="js/i18n.js"></script>
   <script src="js/countdown.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/heritage-home.js"></script>
 </body>
 </html>
