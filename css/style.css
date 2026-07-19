@@ -256,10 +256,11 @@ h3 { font-size: clamp(1.2rem, 2.5vw, 1.5rem); }
 .hero-img {
   position: absolute;
   inset: 0;
-  background-image: url('../images/hero/hero.jpg');
+  background-image: url('../images/hero/hero-1.jpg');
   background-size: cover;
   background-position: center 40%;
   filter: saturate(0.85);
+  will-change: opacity;
 }
 
 .hero-content {
