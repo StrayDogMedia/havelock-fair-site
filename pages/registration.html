@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Stop iOS Safari from auto-linkifying emails/phones on this page; its
+       data detector was generating a broken mailto link (truncated before the
+       TLD) on the confirmation card. -->
+  <meta name="format-detection" content="telephone=no, email=no, address=no, date=no">
   <title>Registration — Havelock Fair 2026 | Inscription — Foire Havelock</title>
   <meta name="description" content="Register for the 2026 Havelock Fair competitions. / Inscrivez-vous aux compétitions de la Foire Havelock 2026.">
   <link rel="canonical" href="https://www.havelockfair.ca/pages/registration.html">
@@ -107,6 +111,8 @@
     .confirm-body { padding:28px 28px 32px; color:var(--text); }
     .confirm-email-note { background:#f0fff4; border:1.5px solid #9ae6b4; border-radius:8px; padding:14px 18px; font-size:.92rem; color:#276749; margin-bottom:22px; }
     .confirm-email-note strong, .confirm-section li { overflow-wrap:anywhere; }
+    /* Belt-and-suspenders: if a data detector still linkifies, render it as plain text */
+    .confirm-card a[x-apple-data-detectors] { color:inherit !important; text-decoration:none !important; pointer-events:none; }
     .confirm-section { margin-bottom:22px; }
     .confirm-section h4 { font-size:.82rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-light); margin:0 0 10px; border-bottom:1px solid #e2e8f0; padding-bottom:6px; }
     .confirm-section ul { margin:0; padding:0; list-style:none; }
