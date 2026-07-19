@@ -7,414 +7,127 @@
   <meta name="description" content="Photos and videos from the Havelock Fair. See highlights from past years and get a taste of what to expect at Foire Havelock 2026.">
   <meta property="og:title" content="Photos & Videos — Havelock Fair 2026">
   <meta property="og:description" content="Highlights from the Havelock Fair — livestock, music, kids, community, and more.">
-  <link rel="canonical" href="https://www.havelockfair.ca/pages/gallery.html">
+  <link rel="canonical" href="https://havelockfair.ca/pages/gallery.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css">
-  <style>
-    .page-hero {
-      position: relative;
-      padding: 160px 0 80px;
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
-      text-align: center;
-      color: var(--white);
-    }
-    .page-hero h1 { color: var(--white); margin-bottom: 12px; }
-    .page-hero p { opacity: 0.8; font-size: 1.1rem; }
-
-    .gallery-section { padding: 80px 0; background: var(--cream); }
-    .gallery-year-label {
-      font-family: var(--font-heading);
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 24px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid var(--gold);
-      display: inline-block;
-    }
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 64px;
-    }
-    @media (max-width: 768px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 480px) { .gallery-grid { grid-template-columns: 1fr; } }
-
-    .gallery-item {
-      position: relative;
-      overflow: hidden;
-      border-radius: var(--radius);
-      cursor: pointer;
-      background: var(--cream-dark);
-    }
-    .gallery-item img {
-      width: 100%;
-      aspect-ratio: 4/3;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.4s ease;
-    }
-    .gallery-item:hover img { transform: scale(1.05); }
-
-    /* Lightbox */
-    .lightbox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.92);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    .lightbox.open { display: flex; }
-    .lightbox img {
-      max-width: 90vw;
-      max-height: 85vh;
-      object-fit: contain;
-      border-radius: var(--radius);
-      box-shadow: 0 0 60px rgba(0,0,0,0.8);
-    }
-    .lightbox-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: none;
-      color: var(--white);
-      font-size: 2rem;
-      cursor: pointer;
-      line-height: 1;
-      opacity: 0.8;
-    }
-    .lightbox-close:hover { opacity: 1; }
-    .lightbox-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255,255,255,0.15);
-      border: none;
-      color: var(--white);
-      font-size: 1.8rem;
-      padding: 12px 18px;
-      cursor: pointer;
-      border-radius: var(--radius);
-      transition: background var(--transition);
-    }
-    .lightbox-nav:hover { background: rgba(255,255,255,0.3); }
-    .lightbox-prev { left: 16px; }
-    .lightbox-next { right: 16px; }
-
-    /* Video section */
-    .video-section {
-      padding: 80px 0;
-      background: var(--navy);
-      color: var(--white);
-    }
-    .video-section h2 { color: var(--white); text-align: center; margin-bottom: 12px; }
-    .video-subtitle {
-      text-align: center;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 48px;
-      font-size: 1rem;
-    }
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 32px;
-    }
-    .video-card {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(200,146,42,0.3);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
-    .video-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-    .video-thumb {
-      position: relative;
-      aspect-ratio: 16/9;
-      background: rgba(0,0,0,0.4);
-      overflow: hidden;
-    }
-    .video-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.7;
-    }
-    .video-play {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .play-btn {
-      width: 60px;
-      height: 60px;
-      background: rgba(200,146,42,0.9);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform var(--transition), background var(--transition);
-    }
-    .video-card:hover .play-btn { transform: scale(1.1); background: var(--gold); }
-    .play-btn svg { width: 24px; height: 24px; fill: white; margin-left: 4px; }
-    .video-info { padding: 20px 24px 24px; }
-    .video-info h3 { color: var(--gold-light); margin-bottom: 8px; font-size: 1.05rem; }
-    .video-info p { color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.6; }
-    .video-cta {
-      text-align: center;
-      margin-top: 48px;
-    }
-
-    /* Facebook embed section */
-    .facebook-section {
-      padding: 80px 0;
-      background: var(--cream);
-      text-align: center;
-    }
-    .facebook-section h2 { margin-bottom: 12px; }
-    .facebook-section p { color: var(--text-light); margin-bottom: 32px; }
-    .fb-links {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .fb-link-card {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 28px;
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 600;
-      transition: transform var(--transition), box-shadow var(--transition);
-      border: 2px solid var(--cream-dark);
-    }
-    .fb-link-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--gold); }
-    .fb-link-card .fb-icon { font-size: 1.6rem; }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400;1,6..72,500&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/heritage.css">
+  <link rel="stylesheet" href="../css/heritage-pages.css">
 </head>
-<body>
+<body data-nav="gallery">
 
-  <!-- NAVBAR -->
-  <nav class="navbar scrolled" role="navigation">
-    <div class="nav-inner">
-      <a href="../" class="nav-brand"><span>Havelock Fair</span></a>
-      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-menu">
-        <li><a href="../" data-i18n="nav_home">Home</a></li>
-        <li><a href="schedule.html" data-i18n="nav_schedule">Schedule</a></li>
-        <li><a href="directions.html" data-i18n="nav_directions">Directions</a></li>
-        <li><a href="sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
-        <li><a href="about.html" data-i18n="nav_about">About</a></li>
-        <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
-        <li><a href="gallery.html" class="active" data-i18n="nav_gallery">Photos</a></li>
-        <li><a href="registration.html" data-i18n="nav_registration">Registration</a></li>
-        <li>
-          <div class="lang-switcher">
-            <button class="lang-btn active" data-lang="en">EN</button>
-            <button class="lang-btn" data-lang="fr">FR</button>
-            <button class="lang-btn" data-lang="es">ES</button>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </nav>
-
-  <!-- PAGE HERO -->
-  <section class="page-hero">
-    <div class="container">
-      <h1 data-i18n="gallery_title">Photos & Videos</h1>
-      <p data-i18n="gallery_subtitle">Moments from the Havelock Fair — past and present</p>
+  <!-- ========== PAGE HERO ========== -->
+  <section class="hf-page-hero">
+    <img src="../images/gallery/fair-2025-08.jpg" alt="Costumed horse and rider at the Havelock Fair">
+    <div class="hf-page-hero-scrim"></div>
+    <div class="hf-frame"></div>
+    <div class="hf-page-hero-copy">
+      <div class="hf-eyebrow hf-eyebrow--bright" data-i18n="gal_eyebrow">The Gallery</div>
+      <h1 class="hf-page-title" data-i18n="gallery_title">Photos &amp; Videos</h1>
+      <p class="hf-page-lede" data-i18n="gallery_subtitle">Moments from the Havelock Fair — past and present</p>
     </div>
   </section>
 
-  <!-- PHOTO GALLERY -->
-  <section class="gallery-section">
-    <div class="container">
-      <div class="gallery-year-label">2025 Fair — Highlights</div>
-      <div class="gallery-grid" id="gallery-grid">
-        <div class="gallery-item fade-in" onclick="openLightbox(0)">
-          <img src="../images/gallery/fair-2025-01.jpg" alt="Havelock Fair 2025">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(1)">
-          <img src="../images/gallery/fair-2025-02.jpg" alt="Havelock Fair 2025">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(2)">
-          <img src="../images/gallery/fair-2025-03.jpg" alt="Havelock Fair 2025">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(3)">
-          <img src="../images/gallery/fair-2025-04.jpg" alt="Havelock Fair 2025">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(4)">
-          <img src="../images/gallery/fair-2025-05.jpg" alt="Havelock Fair 2025">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(5)">
-          <img src="../images/gallery/fair-2025-06.jpg" alt="Havelock Fair 2025">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(6)">
-          <img src="../images/gallery/fair-2025-07.jpg" alt="4-H youth showing a calf at the Havelock Fair" loading="lazy">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(7)">
-          <img src="../images/gallery/fair-2025-08.jpg" alt="Costumed horse and rider at the Havelock Fair" loading="lazy">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(8)">
-          <img src="../images/gallery/fair-2025-09.jpg" alt="Heavy horses and driving cart at the Havelock Fair" loading="lazy">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(9)">
-          <img src="../images/gallery/fair-2025-10.jpg" alt="Handmade quilts on display at the Havelock Fair" loading="lazy">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(10)">
-          <img src="../images/gallery/fair-2025-11.jpg" alt="Homemade preserves and jams competition at the Havelock Fair" loading="lazy">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(11)">
-          <img src="../images/gallery/fair-2025-12.jpg" alt="Antique car show at the Havelock Fair" loading="lazy">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(12)">
-          <img src="../images/gallery/fair-2025-13.jpg" alt="Giant prize pumpkin at the Havelock Fair" loading="lazy">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(13)">
-          <img src="../images/gallery/fair-2025-14.jpg" alt="Face painting for kids at the Havelock Fair" loading="lazy">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(14)">
-          <img src="../images/gallery/fair-2025-15.jpg" alt="Children's bouncy castle at the Havelock Fair" loading="lazy">
-        </div>
-        <div class="gallery-item fade-in" onclick="openLightbox(15)">
-          <img src="../images/gallery/fair-2025-16.jpg" alt="Floral arrangement display at the Havelock Fair" loading="lazy">
-        </div>
+  <!-- ========== PHOTO MOSAIC ========== -->
+  <section class="hf-sec">
+    <div class="hf-sec-inner--wide">
+      <div class="hf-sec-head" data-reveal>
+        <span class="hf-eyebrow" data-i18n="gallery_year_2025">The 2025 Fair — Highlights</span>
+        <h2 class="hf-sec-h2" data-i18n="gal_title">From the Fairgrounds</h2>
       </div>
-
-      <div style="text-align:center;padding:32px;background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow);">
-        <p style="color:var(--text-light);margin-bottom:20px;" data-i18n="gallery_more_text">More photos from the 2025 fair are available on our Facebook page and Google Drive album.</p>
-        <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="gallery_fb_btn">View More on Facebook</a>
+      <div class="hf-gal-mosaic" data-reveal>
+        <button class="hf-gal-item span2x2" onclick="openLightbox(0)"><img src="../images/gallery/fair-2025-01.jpg" alt="Heavy-horse team and wagon at the Havelock Fair"></button>
+        <button class="hf-gal-item" onclick="openLightbox(1)"><img src="../images/gallery/fair-2025-02.jpg" alt="Children showing a dairy cow" loading="lazy"></button>
+        <button class="hf-gal-item" onclick="openLightbox(2)"><img src="../images/gallery/fair-2025-03.jpg" alt="Cattle judging under the flags" loading="lazy"></button>
+        <button class="hf-gal-item" onclick="openLightbox(3)"><img src="../images/gallery/fair-2025-04.jpg" alt="Riders on horseback at the Havelock Fairgrounds" loading="lazy"></button>
+        <button class="hf-gal-item" onclick="openLightbox(4)"><img src="../images/gallery/fair-2025-05.jpg" alt="Miniature horses at the rail" loading="lazy"></button>
+        <button class="hf-gal-item span2w" onclick="openLightbox(5)"><img src="../images/gallery/fair-2025-06.jpg" alt="The Havelock Fair midway" loading="lazy"></button>
+        <button class="hf-gal-item" onclick="openLightbox(6)"><img src="../images/gallery/fair-2025-07.jpg" alt="4-H youth showing a calf" loading="lazy"></button>
+        <button class="hf-gal-item" onclick="openLightbox(7)"><img src="../images/gallery/fair-2025-08.jpg" alt="Costumed horse and rider" loading="lazy"></button>
+        <button class="hf-gal-item span2x2" onclick="openLightbox(8)"><img src="../images/gallery/fair-2025-09.jpg" alt="Heavy horses and driving cart" loading="lazy"></button>
+        <button class="hf-gal-item" onclick="openLightbox(9)"><img src="../images/gallery/fair-2025-10.jpg" alt="Handmade quilts on display" loading="lazy"></button>
+        <button class="hf-gal-item" onclick="openLightbox(10)"><img src="../images/gallery/fair-2025-11.jpg" alt="Homemade preserves and jams competition" loading="lazy"></button>
+        <button class="hf-gal-item" onclick="openLightbox(11)"><img src="../images/gallery/fair-2025-12.jpg" alt="Antique car show" loading="lazy"></button>
+        <button class="hf-gal-item" onclick="openLightbox(12)"><img src="../images/gallery/fair-2025-13.jpg" alt="Giant prize pumpkin" loading="lazy"></button>
+        <button class="hf-gal-item" onclick="openLightbox(13)"><img src="../images/gallery/fair-2025-14.jpg" alt="Face painting for kids" loading="lazy"></button>
+        <button class="hf-gal-item span2w" onclick="openLightbox(14)"><img src="../images/gallery/fair-2025-15.jpg" alt="Children's bouncy castle" loading="lazy"></button>
+        <button class="hf-gal-item" onclick="openLightbox(15)"><img src="../images/gallery/fair-2025-16.jpg" alt="Floral arrangement display" loading="lazy"></button>
+      </div>
+      <div class="hf-cta-row" data-reveal>
+        <span class="hf-sec-lede" style="margin: 0;" data-i18n="gallery_more_text">More photos from the 2025 fair are available on our Facebook page.</span>
+        <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" class="hf-link-line" data-i18n="gallery_fb_btn">View More on Facebook</a>
       </div>
     </div>
   </section>
 
-  <!-- VIDEO SECTION -->
-  <section class="video-section">
-    <div class="container">
-      <h2 data-i18n="video_title">Videos</h2>
-      <p class="video-subtitle" data-i18n="video_subtitle">Watch highlights from past Havelock Fairs</p>
-      <div class="video-grid">
-        <a href="https://www.facebook.com/havelockfair/videos" target="_blank" rel="noopener" class="video-card" style="text-decoration:none;">
-          <div class="video-thumb">
-            <img src="../images/gallery/fair-2025-04.jpg" alt="Havelock Fair video">
-            <div class="video-play">
-              <div class="play-btn">
-                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              </div>
-            </div>
+  <!-- ========== VIDEOS (charcoal) ========== -->
+  <section class="hf-sec hf-sec--charcoal">
+    <div class="hf-sec-inner">
+      <div class="hf-sec-head hf-sec-head--center" data-reveal>
+        <span class="hf-eyebrow" data-i18n="video_subtitle">Watch highlights from past Havelock Fairs</span>
+        <h2 class="hf-sec-h2" data-i18n="video_title">Videos</h2>
+      </div>
+      <div class="hf-vcards" data-reveal>
+        <a href="https://www.facebook.com/havelockfair/videos" target="_blank" rel="noopener" class="hf-vcard">
+          <div class="hf-vcard-thumb">
+            <img src="../images/gallery/fair-2025-04.jpg" alt="Havelock Fair video highlights" loading="lazy">
+            <div class="hf-vcard-play"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></div>
           </div>
-          <div class="video-info">
+          <div class="hf-vcard-info">
             <h3 data-i18n="video1_title">Fair Highlights — Facebook Videos</h3>
             <p data-i18n="video1_desc">Watch videos from the Havelock Fair on our official Facebook page — livestock, music, kids' activities, and more.</p>
           </div>
         </a>
-        <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" class="video-card" style="text-decoration:none;">
-          <div class="video-thumb">
-            <img src="../images/gallery/fair-2025-01.jpg" alt="Havelock Fair">
-            <div class="video-play">
-              <div class="play-btn">
-                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              </div>
-            </div>
+        <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" class="hf-vcard">
+          <div class="hf-vcard-thumb">
+            <img src="../images/gallery/fair-2025-01.jpg" alt="Havelock Fair on Facebook" loading="lazy">
+            <div class="hf-vcard-play"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></div>
           </div>
-          <div class="video-info">
+          <div class="hf-vcard-info">
             <h3 data-i18n="video2_title">Follow Us on Facebook</h3>
             <p data-i18n="video2_desc">Stay up to date with fair announcements, photos, and live coverage. Like and follow our page for the latest news leading up to September.</p>
           </div>
         </a>
       </div>
-      <div class="video-cta">
-        <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="video_fb_cta">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:8px;"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          Follow on Facebook
-        </a>
+      <div class="hf-cta-row" data-reveal>
+        <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" class="hf-btn-gold" data-i18n="video_fb_cta">Follow on Facebook</a>
       </div>
     </div>
   </section>
 
-  <!-- 2026 POSTER -->
-  <section style="padding:80px 0;background:var(--cream);">
-    <div class="container">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;">
-        <div class="fade-in">
-          <span class="about-tag" data-i18n="poster_tag">Official Poster</span>
-          <h2 data-i18n="poster_title">Havelock Fair 2026</h2>
-          <p style="color:var(--text-light);line-height:1.8;margin-bottom:16px;" data-i18n="poster_p1">The 155th edition of the Havelock Fair returns September 12–13, 2026. Mark your calendars and share the news with friends and family.</p>
-          <p style="color:var(--text-light);line-height:1.8;margin-bottom:28px;" data-i18n="poster_p2">With the support of MAPAQ and the Association des expositions agricoles du Québec, the Havelock Fair continues to grow as one of the region's most beloved annual traditions.</p>
-          <a href="schedule.html" class="btn btn-primary" data-i18n="poster_cta">See the Schedule</a>
+  <!-- ========== 2026 POSTER (ivory) ========== -->
+  <section class="hf-sec hf-sec--ivory">
+    <div class="hf-sec-inner">
+      <div class="hf-duo">
+        <div data-reveal>
+          <span class="hf-eyebrow hf-eyebrow--bronze" style="display:block;margin-bottom:16px;" data-i18n="poster_tag">Official Poster</span>
+          <h2 class="hf-sec-h2" data-i18n="poster_title">Havelock Fair 2026</h2>
+          <div class="hf-prose" style="margin-top: 26px;">
+            <p data-i18n="poster_p1">The 155th edition of the Havelock Fair returns September 12–13, 2026. Mark your calendars and share the news with friends and family.</p>
+            <p data-i18n="poster_p2">With the support of MAPAQ and the Association des expositions agricoles du Québec, the Havelock Fair continues to grow as one of the region's most beloved annual traditions.</p>
+          </div>
+          <div class="hf-cta-row" style="justify-content: flex-start;">
+            <a href="schedule.html" class="hf-btn-gold" data-i18n="poster_cta">See the Schedule</a>
+          </div>
         </div>
-        <div class="fade-in">
-          <img src="../images/poster-2026.png" alt="Havelock Fair 2026 Official Poster" style="width:100%;max-width:420px;display:block;margin:0 auto;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);">
+        <div class="hf-frame-img" style="max-width: 440px; margin: 0 auto;" data-reveal>
+          <img src="../images/poster-2026.png" alt="Havelock Fair 2026 official poster">
         </div>
       </div>
     </div>
   </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-brand">Havelock Fair</div>
-          <p class="footer-tagline" data-i18n="footer_tagline">A proud tradition since 1871.</p>
-          <div class="footer-social">
-            <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" aria-label="Facebook">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            </a>
-          </div>
-        </div>
-        <div>
-          <h4 data-i18n="footer_quick">Quick Links</h4>
-          <ul class="footer-links">
-            <li><a href="schedule.html" data-i18n="nav_schedule">Schedule</a></li>
-            <li><a href="directions.html" data-i18n="nav_directions">Directions</a></li>
-            <li><a href="sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
-            <li><a href="about.html" data-i18n="nav_about">About</a></li>
-            <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
-            <li><a href="gallery.html" data-i18n="nav_gallery">Photos</a></li>
-            <li><a href="registration.html" data-i18n="nav_registration">Registration</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 data-i18n="footer_contact">Contact</h4>
-          <div class="footer-contact-info">
-            <span data-i18n="footer_address">455 Route 202, Havelock, Quebec J0S 2C0</span>
-            <a href="tel:+14508261155" data-i18n="footer_phone">(450) 826-1155</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        &copy; 2026 <span data-i18n="footer_copyright">Havelock Fair. All rights reserved.</span>
-      </div>
-    </div>
-  </footer>
 
   <!-- Lightbox -->
   <div class="lightbox" id="lightbox" onclick="closeLightboxOnBg(event)">
-    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
-    <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1)">&#8249;</button>
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
+    <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1)" aria-label="Previous photo">&#8249;</button>
     <img id="lightbox-img" src="" alt="">
-    <button class="lightbox-nav lightbox-next" onclick="navLightbox(1)">&#8250;</button>
+    <button class="lightbox-nav lightbox-next" onclick="navLightbox(1)" aria-label="Next photo">&#8250;</button>
   </div>
 
+  <!-- Scripts (order matters: chrome → i18n) -->
+  <script src="../js/heritage-chrome.js"></script>
   <script src="../js/i18n.js"></script>
-  <script src="../js/main.js"></script>
   <script>
     const galleryImages = [
       '../images/gallery/fair-2025-01.jpg',
@@ -454,6 +167,7 @@
       document.getElementById('lightbox-img').src = galleryImages[currentIndex];
     }
     document.addEventListener('keydown', e => {
+      if (!document.getElementById('lightbox').classList.contains('open')) return;
       if (e.key === 'Escape') closeLightbox();
       if (e.key === 'ArrowLeft') navLightbox(-1);
       if (e.key === 'ArrowRight') navLightbox(1);

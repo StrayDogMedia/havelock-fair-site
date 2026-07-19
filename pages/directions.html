@@ -7,343 +7,77 @@
   <meta name="description" content="Directions and map to the Havelock Fairgrounds at 455 Route 202, Havelock, Quebec. Driving directions from Montreal, Ottawa, and the US border.">
   <meta property="og:title" content="Directions — Havelock Fair 2026">
   <meta property="og:description" content="Find us at 455 Route 202, Havelock, Quebec — minutes from the Canada–US border.">
-  <link rel="canonical" href="https://www.havelockfair.ca/pages/directions.html">
+  <link rel="canonical" href="https://havelockfair.ca/pages/directions.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css">
-  <style>
-    .page-hero {
-      position: relative;
-      padding: 160px 0 80px;
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
-      text-align: center;
-      color: var(--white);
-    }
-    .page-hero h1 { color: var(--white); margin-bottom: 12px; }
-    .page-hero p { opacity: 0.8; font-size: 1.1rem; }
-
-    /* Map */
-    .map-section {
-      padding: 0;
-      background: var(--white);
-    }
-    .map-wrapper {
-      width: 100%;
-      height: 450px;
-      background: var(--cream-dark);
-    }
-    .map-wrapper iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    /* Address bar */
-    .address-bar {
-      background: var(--navy);
-      padding: 32px 0;
-      color: var(--white);
-    }
-    .address-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 24px;
-    }
-    .address-info {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .address-icon {
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(200,146,42,0.2);
-      border-radius: 12px;
-      font-size: 1.4rem;
-      flex-shrink: 0;
-    }
-    .address-text strong {
-      display: block;
-      font-size: 1.1rem;
-      color: var(--white);
-      margin-bottom: 2px;
-    }
-    .address-text span {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.7);
-    }
-
-    /* Directions grid */
-    .directions-section {
-      padding: 80px 0;
-      background: var(--cream);
-    }
-    .directions-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      margin-top: 48px;
-    }
-    .direction-card {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      padding: 32px;
-      box-shadow: var(--shadow);
-      transition: all var(--transition);
-    }
-    .direction-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-    .direction-card-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-    .direction-card-icon {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--cream);
-      border-radius: 10px;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
-    .direction-card h3 {
-      font-size: 1.15rem;
-      margin: 0;
-    }
-    .direction-card .distance {
-      font-size: 0.85rem;
-      color: var(--gold);
-      font-weight: 600;
-      margin-bottom: 16px;
-      padding-left: 52px;
-    }
-    .direction-steps {
-      list-style: none;
-      padding: 0;
-    }
-    .direction-steps li {
-      position: relative;
-      padding: 8px 0 8px 28px;
-      font-size: 0.95rem;
-      color: var(--text-light);
-      line-height: 1.5;
-    }
-    .direction-steps li::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 15px;
-      width: 8px;
-      height: 8px;
-      background: var(--gold);
-      border-radius: 50%;
-    }
-    .direction-steps li + li {
-      border-top: 1px solid var(--cream-dark);
-    }
-
-    /* Info cards */
-    .info-section {
-      padding: 80px 0;
-      background: var(--white);
-    }
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      margin-top: 48px;
-    }
-    .info-card {
-      text-align: center;
-      padding: 36px 28px;
-      background: var(--cream);
-      border-radius: var(--radius-lg);
-    }
-    .info-card-icon {
-      width: 64px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-      font-size: 1.8rem;
-      background: var(--navy);
-      color: var(--gold-light);
-      border-radius: 16px;
-    }
-    .info-card h3 {
-      margin-bottom: 12px;
-      font-size: 1.1rem;
-    }
-    .info-card p {
-      font-size: 0.95rem;
-      color: var(--text-light);
-      line-height: 1.6;
-    }
-
-    /* Border crossing note */
-    .border-note {
-      padding: 48px 0;
-      background: var(--cream-dark);
-    }
-    .border-inner {
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 28px;
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      border-left: 4px solid var(--gold);
-    }
-    .border-icon {
-      font-size: 1.6rem;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .border-inner h3 {
-      margin-bottom: 8px;
-      font-size: 1.05rem;
-    }
-    .border-inner p {
-      font-size: 0.9rem;
-      color: var(--text-light);
-      line-height: 1.6;
-    }
-
-    @media (max-width: 968px) {
-      .directions-grid {
-        grid-template-columns: 1fr;
-      }
-      .info-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-    @media (max-width: 600px) {
-      .address-inner {
-        flex-direction: column;
-        text-align: center;
-      }
-      .address-info {
-        flex-direction: column;
-      }
-      .info-grid {
-        grid-template-columns: 1fr;
-      }
-      .map-wrapper {
-        height: 300px;
-      }
-      .direction-card .distance {
-        padding-left: 0;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400;1,6..72,500&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/heritage.css">
+  <link rel="stylesheet" href="../css/heritage-pages.css">
 </head>
-<body>
+<body data-nav="directions">
 
-  <!-- NAVBAR -->
-  <nav class="navbar scrolled" role="navigation">
-    <div class="nav-inner">
-      <a href="../" class="nav-brand"><span>Havelock Fair</span></a>
-      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-menu">
-        <li><a href="../" data-i18n="nav_home">Home</a></li>
-        <li><a href="schedule.html" data-i18n="nav_schedule">Schedule</a></li>
-        <li><a href="directions.html" class="active" data-i18n="nav_directions">Directions</a></li>
-        <li><a href="sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
-        <li><a href="about.html" data-i18n="nav_about">About</a></li>
-        <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
-        <li><a href="gallery.html" data-i18n="nav_gallery">Photos</a></li>
-        <li><a href="registration.html" data-i18n="nav_registration">Registration</a></li>
-        <li>
-          <div class="lang-switcher">
-            <button class="lang-btn active" data-lang="en">EN</button>
-            <button class="lang-btn" data-lang="fr">FR</button>
-            <button class="lang-btn" data-lang="es">ES</button>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </nav>
-
-  <!-- PAGE HERO -->
-  <section class="page-hero">
-    <div class="container">
-      <h1 data-i18n="dir_title">Directions</h1>
-      <p data-i18n="dir_subtitle">Find us in the heart of the Haut-Saint-Laurent region</p>
+  <!-- ========== PAGE HERO ========== -->
+  <section class="hf-page-hero">
+    <img src="../images/home/finale.jpg" alt="Families gathered on the Havelock fairgrounds">
+    <div class="hf-page-hero-scrim"></div>
+    <div class="hf-frame"></div>
+    <div class="hf-page-hero-copy">
+      <div class="hf-eyebrow hf-eyebrow--bright" data-i18n="hero_eyebrow">Est. 1871 &middot; Haut-Saint-Laurent, Qu&eacute;bec</div>
+      <h1 class="hf-page-title" data-i18n="dir_title">Directions</h1>
+      <p class="hf-page-lede" data-i18n="dir_subtitle">Find us in the heart of the Haut-Saint-Laurent region</p>
     </div>
   </section>
 
-  <!-- FAIRGROUND MAP -->
-  <section style="padding:64px 0;background:var(--cream);">
-    <div class="container">
-      <div class="section-header" style="text-align:center;margin-bottom:32px;">
-        <h2 data-i18n="dir_grounds_title">Fairgrounds Map</h2>
-        <p style="color:var(--text-light);" data-i18n="dir_grounds_subtitle">Find your way around the Havelock Fairgrounds</p>
+  <!-- ========== ADDRESS BAND ========== -->
+  <div class="hf-band">
+    <div class="hf-band-inner">
+      <div>
+        <div class="hf-band-title" data-i18n="dir_address">455 Route 202, Havelock, Quebec J0S 2C0</div>
+        <p data-i18n="dir_border_minutes">Minutes from the Canada&ndash;US border</p>
       </div>
-      <img src="../images/map.png" alt="Havelock Fairgrounds Map" style="width:100%;max-width:860px;display:block;margin:0 auto;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);">
+      <a href="https://www.google.com/maps/dir//455+Route+202,+Havelock,+QC+J0S+2C0" target="_blank" rel="noopener" class="hf-btn-gold" data-i18n="dir_open_maps">Open in Google Maps</a>
     </div>
-  </section>
+  </div>
 
-  <!-- GOOGLE MAP -->
-  <section class="map-section">
-    <div class="map-wrapper">
-      <iframe
-        src="https://www.openstreetmap.org/export/embed.html?bbox=-74.05,45.05,-73.93,45.14&layer=mapnik&marker=45.0967,-73.9897"
-        allowfullscreen=""
-        loading="lazy"
-        title="Havelock Fairgrounds map location">
-      </iframe>
-    </div>
-  </section>
-
-  <!-- ADDRESS BAR -->
-  <section class="address-bar">
-    <div class="container">
-      <div class="address-inner">
-        <div class="address-info">
-          <div class="address-icon">&#x1F4CD;</div>
-          <div class="address-text">
-            <strong data-i18n="dir_address">455 Route 202, Havelock, Quebec J0S 2C0</strong>
-            <span data-i18n="dir_border_minutes">Minutes from the Canada–US border</span>
-          </div>
-        </div>
-        <a href="https://www.google.com/maps/dir//455+Route+202,+Havelock,+QC+J0S+2C0" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="dir_open_maps">Open in Google Maps</a>
+  <!-- ========== FAIRGROUNDS MAP (ivory) ========== -->
+  <section class="hf-sec hf-sec--ivory">
+    <div class="hf-sec-inner">
+      <div class="hf-sec-head" data-reveal>
+        <span class="hf-eyebrow hf-eyebrow--bronze" data-i18n="visit_eyebrow">Plan Your Visit</span>
+        <h2 class="hf-sec-h2" data-i18n="dir_grounds_title">Fairgrounds Map</h2>
+        <p class="hf-sec-lede" data-i18n="dir_grounds_subtitle">Find your way around the Havelock Fairgrounds</p>
+      </div>
+      <div class="hf-frame-img" data-reveal>
+        <img src="../images/map.png" alt="Havelock Fairgrounds site map">
       </div>
     </div>
   </section>
 
-  <!-- DRIVING DIRECTIONS -->
-  <section class="directions-section">
-    <div class="container">
-      <div class="section-header">
-        <h2 data-i18n="dir_driving_title">Getting Here</h2>
-        <p data-i18n="dir_driving_subtitle">Driving directions from nearby cities</p>
-      </div>
-      <div class="directions-grid">
+  <!-- ========== LOCATION MAP ========== -->
+  <div class="hf-map">
+    <iframe
+      src="https://www.openstreetmap.org/export/embed.html?bbox=-74.05,45.05,-73.93,45.14&amp;layer=mapnik&amp;marker=45.0967,-73.9897"
+      allowfullscreen=""
+      loading="lazy"
+      title="Havelock Fairgrounds map location">
+    </iframe>
+  </div>
 
-        <div class="direction-card">
-          <div class="direction-card-header">
-            <div class="direction-card-icon">&#x1F697;</div>
+  <!-- ========== DRIVING DIRECTIONS ========== -->
+  <section class="hf-sec">
+    <div class="hf-sec-inner">
+      <div class="hf-sec-head" data-reveal>
+        <span class="hf-eyebrow" data-i18n="dir_driving_subtitle">Driving directions from nearby cities</span>
+        <h2 class="hf-sec-h2" data-i18n="dir_driving_title">Getting Here</h2>
+      </div>
+      <div class="hf-routes" data-reveal>
+
+        <div class="hf-route">
+          <div class="hf-route-top">
             <h3 data-i18n="dir_from_montreal">From Montreal</h3>
+            <span class="hf-route-dist" data-i18n="dir_montreal_dist">~90 km / ~1 hour</span>
           </div>
-          <div class="distance" data-i18n="dir_montreal_dist">~90 km / ~1 hour</div>
-          <ol class="direction-steps">
+          <ol class="hf-route-steps">
             <li data-i18n="dir_mtl_step1">Take Autoroute 15 South toward the US border</li>
             <li data-i18n="dir_mtl_step2">Exit onto Route 202 West</li>
             <li data-i18n="dir_mtl_step3">Follow Route 202 through Hemmingford to Havelock</li>
@@ -351,13 +85,12 @@
           </ol>
         </div>
 
-        <div class="direction-card">
-          <div class="direction-card-header">
-            <div class="direction-card-icon">&#x1F697;</div>
+        <div class="hf-route">
+          <div class="hf-route-top">
             <h3 data-i18n="dir_from_ottawa">From Ottawa / Gatineau</h3>
+            <span class="hf-route-dist" data-i18n="dir_ottawa_dist">~230 km / ~2.5 hours</span>
           </div>
-          <div class="distance" data-i18n="dir_ottawa_dist">~230 km / ~2.5 hours</div>
-          <ol class="direction-steps">
+          <ol class="hf-route-steps">
             <li data-i18n="dir_ott_step1">Take Highway 417 East to Autoroute 40 East</li>
             <li data-i18n="dir_ott_step2">Continue to Autoroute 30 South, then Autoroute 15 South</li>
             <li data-i18n="dir_ott_step3">Exit onto Route 202 West toward Hemmingford</li>
@@ -365,13 +98,12 @@
           </ol>
         </div>
 
-        <div class="direction-card">
-          <div class="direction-card-header">
-            <div class="direction-card-icon">&#x1F1FA;&#x1F1F8;</div>
+        <div class="hf-route">
+          <div class="hf-route-top">
             <h3 data-i18n="dir_from_us">From New York State (USA)</h3>
+            <span class="hf-route-dist" data-i18n="dir_us_dist">~15 km from the border crossing</span>
           </div>
-          <div class="distance" data-i18n="dir_us_dist">~15 km from the border crossing</div>
-          <ol class="direction-steps">
+          <ol class="hf-route-steps">
             <li data-i18n="dir_us_step1">Take I-87 North to the Champlain / Lacolle border crossing</li>
             <li data-i18n="dir_us_step2">After customs, continue on Autoroute 15 North</li>
             <li data-i18n="dir_us_step3">Exit onto Route 202 West toward Hemmingford</li>
@@ -379,13 +111,12 @@
           </ol>
         </div>
 
-        <div class="direction-card">
-          <div class="direction-card-header">
-            <div class="direction-card-icon">&#x1F697;</div>
+        <div class="hf-route">
+          <div class="hf-route-top">
             <h3 data-i18n="dir_from_sherbrooke">From Sherbrooke</h3>
+            <span class="hf-route-dist" data-i18n="dir_sherbrooke_dist">~200 km / ~2 hours</span>
           </div>
-          <div class="distance" data-i18n="dir_sherbrooke_dist">~200 km / ~2 hours</div>
-          <ol class="direction-steps">
+          <ol class="hf-route-steps">
             <li data-i18n="dir_sher_step1">Take Autoroute 10 West toward Montreal</li>
             <li data-i18n="dir_sher_step2">Merge onto Autoroute 35 South / Autoroute 15 South</li>
             <li data-i18n="dir_sher_step3">Exit onto Route 202 West toward Hemmingford</li>
@@ -397,85 +128,39 @@
     </div>
   </section>
 
-  <!-- VISITOR INFO -->
-  <section class="info-section">
-    <div class="container">
-      <div class="section-header">
-        <h2 data-i18n="dir_info_title">Visitor Information</h2>
+  <!-- ========== VISITOR INFO (ivory) ========== -->
+  <section class="hf-sec hf-sec--ivory">
+    <div class="hf-sec-inner">
+      <div class="hf-sec-head" data-reveal>
+        <h2 class="hf-sec-h2" data-i18n="dir_info_title">Visitor Information</h2>
       </div>
-      <div class="info-grid">
-        <div class="info-card">
-          <div class="info-card-icon">&#x1F17F;</div>
-          <h3 data-i18n="dir_parking_title">Parking</h3>
+      <div class="hf-cells hf-cells--3" data-reveal>
+        <div class="hf-cell">
+          <div class="hf-cell-k" data-i18n="dir_parking_title">Parking</div>
           <p data-i18n="dir_parking_text">Free parking is available on the fairgrounds. Overflow parking with signage along Route 202. Follow the volunteer attendants on arrival.</p>
         </div>
-        <div class="info-card">
-          <div class="info-card-icon">&#x267F;</div>
-          <h3 data-i18n="dir_access_title">Accessibility</h3>
+        <div class="hf-cell">
+          <div class="hf-cell-k" data-i18n="dir_access_title">Accessibility</div>
           <p data-i18n="dir_access_text">Accessible parking near the main entrance. The fairgrounds are mostly flat and grass. Portable washrooms are available on site.</p>
         </div>
-        <div class="info-card">
-          <div class="info-card-icon">&#x1F4DE;</div>
-          <h3 data-i18n="dir_contact_title">Questions?</h3>
-          <p><span data-i18n="dir_contact_text">Call us for directions or information:</span><br><a href="tel:+14508261155" style="color:var(--gold);font-weight:600;">(450) 826-1155</a></p>
+        <div class="hf-cell">
+          <div class="hf-cell-k" data-i18n="dir_contact_title">Questions?</div>
+          <p><span data-i18n="dir_contact_text">Call us for directions or information:</span><br><a href="tel:+14508261155">(450) 826-1155</a></p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- BORDER CROSSING NOTE -->
-  <section class="border-note">
-    <div class="container">
-      <div class="border-inner">
-        <div class="border-icon">&#x1F6C2;</div>
-        <div>
-          <h3 data-i18n="dir_border_title">Crossing the Border?</h3>
-          <p data-i18n="dir_border_text">The Havelock Fairgrounds are just minutes from the Lacolle / Champlain border crossing (I-87 / Autoroute 15). If travelling from the United States, remember to bring valid identification (passport or enhanced driver's licence). Allow extra time for customs during peak weekends.</p>
-        </div>
-      </div>
+  <!-- ========== BORDER NOTE ========== -->
+  <section class="hf-note">
+    <div data-reveal>
+      <h2 class="hf-note-title" data-i18n="dir_border_title">Crossing the Border?</h2>
+      <p data-i18n="dir_border_text">The Havelock Fairgrounds are just minutes from the Lacolle / Champlain border crossing (I-87 / Autoroute 15). If travelling from the United States, remember to bring valid identification (passport or enhanced driver's licence). Allow extra time for customs during peak weekends.</p>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-brand">Havelock Fair</div>
-          <p class="footer-tagline" data-i18n="footer_tagline">A proud tradition since 1871.</p>
-          <div class="footer-social">
-            <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" aria-label="Facebook">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            </a>
-          </div>
-        </div>
-        <div>
-          <h4 data-i18n="footer_quick">Quick Links</h4>
-          <ul class="footer-links">
-            <li><a href="schedule.html" data-i18n="nav_schedule">Schedule</a></li>
-            <li><a href="directions.html" data-i18n="nav_directions">Directions</a></li>
-            <li><a href="sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
-            <li><a href="about.html" data-i18n="nav_about">About</a></li>
-            <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
-            <li><a href="gallery.html" data-i18n="nav_gallery">Photos</a></li>
-        <li><a href="registration.html" data-i18n="nav_registration">Registration</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 data-i18n="footer_contact">Contact</h4>
-          <div class="footer-contact-info">
-            <span data-i18n="footer_address">455 Route 202, Havelock, Quebec J0S 2C0</span>
-            <a href="tel:+14508261155" data-i18n="footer_phone">(450) 826-1155</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        &copy; 2026 <span data-i18n="footer_copyright">Havelock Fair. All rights reserved.</span>
-      </div>
-    </div>
-  </footer>
-
+  <!-- Scripts (order matters: chrome → i18n) -->
+  <script src="../js/heritage-chrome.js"></script>
   <script src="../js/i18n.js"></script>
-  <script src="../js/main.js"></script>
 </body>
 </html>

@@ -7,355 +7,107 @@
   <meta name="description" content="Contact the Havelock Fair. Reach our team for information about registration, sponsorship, vendors, or general inquiries.">
   <meta property="og:title" content="Contact — Havelock Fair 2026">
   <meta property="og:description" content="Get in touch with the Havelock Fair team.">
-  <link rel="canonical" href="https://www.havelockfair.ca/pages/contact.html">
+  <link rel="canonical" href="https://havelockfair.ca/pages/contact.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css">
-  <style>
-    .page-hero {
-      position: relative;
-      padding: 160px 0 80px;
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
-      text-align: center;
-      color: var(--white);
-    }
-    .page-hero h1 { color: var(--white); margin-bottom: 12px; }
-    .page-hero p { opacity: 0.8; font-size: 1.1rem; }
-
-    /* Contact layout */
-    .contact-section {
-      padding: 80px 0;
-      background: var(--cream);
-    }
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: start;
-    }
-    @media (max-width: 768px) {
-      .contact-grid { grid-template-columns: 1fr; gap: 40px; }
-    }
-
-    /* Contact cards */
-    .contact-cards { display: flex; flex-direction: column; gap: 20px; }
-    .contact-card {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      padding: 28px;
-      box-shadow: var(--shadow);
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-    }
-    .contact-card-icon {
-      font-size: 2rem;
-      flex-shrink: 0;
-    }
-    .contact-card-body {}
-    .contact-card-label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--gold);
-      margin-bottom: 4px;
-    }
-    .contact-card-name {
-      font-family: var(--font-heading);
-      font-size: 1.15rem;
-      color: var(--navy);
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-    .contact-card-detail {
-      color: var(--text-light);
-      font-size: 0.9rem;
-      line-height: 1.6;
-    }
-    .contact-card-detail a {
-      color: var(--navy);
-      font-weight: 500;
-    }
-    .contact-card-detail a:hover { color: var(--gold); }
-
-    /* Info panel */
-    .contact-info-panel h2 { margin-bottom: 16px; }
-    .contact-info-panel > p {
-      color: var(--text-light);
-      margin-bottom: 32px;
-      line-height: 1.7;
-    }
-    .contact-info-items { display: flex; flex-direction: column; gap: 24px; }
-    .contact-info-item { display: flex; gap: 16px; align-items: flex-start; }
-    .contact-info-item-icon {
-      font-size: 1.5rem;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .contact-info-item-body {}
-    .contact-info-item-body strong {
-      display: block;
-      color: var(--navy);
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .contact-info-item-body span,
-    .contact-info-item-body a {
-      color: var(--text-light);
-      font-size: 0.95rem;
-    }
-    .contact-info-item-body a:hover { color: var(--gold); }
-
-    /* Social */
-    .contact-social {
-      margin-top: 36px;
-      padding-top: 32px;
-      border-top: 1px solid var(--cream-dark);
-    }
-    .contact-social h3 {
-      font-size: 1rem;
-      margin-bottom: 16px;
-      color: var(--navy);
-    }
-    .social-links { display: flex; gap: 12px; }
-    .social-link {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 18px;
-      background: var(--navy);
-      color: var(--white) !important;
-      border-radius: var(--radius);
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: background var(--transition);
-    }
-    .social-link:hover { background: var(--gold) !important; color: var(--white) !important; }
-
-    /* Map */
-    .map-section {
-      padding: 0;
-      background: var(--white);
-    }
-    .map-wrapper {
-      width: 100%;
-      height: 380px;
-    }
-    .map-wrapper iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    /* Sponsor CTA */
-    .sponsor-cta {
-      padding: 72px 0;
-      background: var(--navy);
-      text-align: center;
-      color: var(--white);
-    }
-    .sponsor-cta h2 { color: var(--white); margin-bottom: 12px; }
-    .sponsor-cta p { color: rgba(255,255,255,0.75); margin-bottom: 28px; max-width: 500px; margin-left: auto; margin-right: auto; }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400;1,6..72,500&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/heritage.css">
+  <link rel="stylesheet" href="../css/heritage-pages.css">
 </head>
-<body>
-
-  <!-- ========== NAVBAR ========== -->
-  <nav class="navbar" role="navigation" aria-label="Main navigation">
-    <div class="nav-inner">
-      <a href="../" class="nav-brand">
-        <span>Havelock Fair</span>
-      </a>
-      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-menu">
-        <li><a href="../" data-i18n="nav_home">Home</a></li>
-        <li><a href="schedule.html" data-i18n="nav_schedule">Schedule</a></li>
-        <li><a href="directions.html" data-i18n="nav_directions">Directions</a></li>
-        <li><a href="sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
-        <li><a href="about.html" data-i18n="nav_about">About</a></li>
-        <li><a href="contact.html" class="active" data-i18n="nav_contact">Contact</a></li>
-        <li><a href="gallery.html" data-i18n="nav_gallery">Photos</a></li>
-        <li><a href="registration.html" data-i18n="nav_registration">Registration</a></li>
-        <li>
-          <div class="lang-switcher">
-            <button class="lang-btn active" data-lang="en">EN</button>
-            <button class="lang-btn" data-lang="fr">FR</button>
-            <button class="lang-btn" data-lang="es">ES</button>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </nav>
+<body data-nav="contact">
 
   <!-- ========== PAGE HERO ========== -->
-  <section class="page-hero">
-    <div class="container">
-      <h1 data-i18n="contact_page_title">Contact Us</h1>
-      <p data-i18n="contact_page_subtitle">Questions, registration inquiries, sponsorship, or just want to say hello</p>
+  <section class="hf-page-hero">
+    <img src="../images/gallery/fair-2025-02.jpg" alt="Children showing a dairy cow at the Havelock Fair">
+    <div class="hf-page-hero-scrim"></div>
+    <div class="hf-frame"></div>
+    <div class="hf-page-hero-copy">
+      <div class="hf-eyebrow hf-eyebrow--bright" data-i18n="hero_eyebrow">Est. 1871 &middot; Haut-Saint-Laurent, Qu&eacute;bec</div>
+      <h1 class="hf-page-title" data-i18n="contact_page_title">Contact Us</h1>
+      <p class="hf-page-lede" data-i18n="contact_page_subtitle">Questions, registration inquiries, sponsorship, or just want to say hello</p>
     </div>
   </section>
 
-  <!-- ========== CONTACT MAIN ========== -->
-  <section class="contact-section">
-    <div class="container">
-      <div class="contact-grid">
-
-        <!-- Contact cards -->
-        <div class="contact-cards fade-in">
-          <div class="contact-card">
-            <div class="contact-card-icon">👩‍💼</div>
-            <div class="contact-card-body">
-              <div class="contact-card-label" data-i18n="board_president">President</div>
-              <div class="contact-card-name">Nadeana Tannahill</div>
-              <div class="contact-card-detail">
-                <span data-i18n="contact_president_desc">General inquiries, fair operations, board matters</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="contact-card">
-            <div class="contact-card-icon">📋</div>
-            <div class="contact-card-body">
-              <div class="contact-card-label" data-i18n="board_secretary">Secretary</div>
-              <div class="contact-card-name">Rommy Hernandez Tenorio</div>
-              <div class="contact-card-detail">
-                <a href="mailto:rommyh@hotmail.com">rommyh@hotmail.com</a><br>
-                <span data-i18n="contact_secretary_desc">Registration, competition entries, administrative inquiries</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="contact-card">
-            <div class="contact-card-icon">🤝</div>
-            <div class="contact-card-body">
-              <div class="contact-card-label" data-i18n="contact_sponsor_label">Sponsorship</div>
-              <div class="contact-card-name" data-i18n="contact_sponsor_name">Become a Sponsor</div>
-              <div class="contact-card-detail">
-                <span data-i18n="contact_sponsor_desc">Interested in supporting the fair? Contact us about sponsorship packages for 2026 and beyond.</span>
-                <br><br>
-                <a href="sponsors.html" data-i18n="contact_sponsor_link">View current sponsors →</a>
-              </div>
-            </div>
-          </div>
+  <!-- ========== PEOPLE ========== -->
+  <section class="hf-sec">
+    <div class="hf-sec-inner">
+      <div class="hf-people" data-reveal>
+        <div class="hf-person">
+          <div class="hf-person-role" data-i18n="board_president">President</div>
+          <div class="hf-person-name">Nadeana Tannahill</div>
+          <p data-i18n="contact_president_desc">General inquiries, fair operations, board matters</p>
         </div>
-
-        <!-- Info panel -->
-        <div class="contact-info-panel fade-in">
-          <h2 data-i18n="contact_info_title">Find Us</h2>
-          <p data-i18n="contact_info_desc">The Havelock Fairgrounds are located in the village of Havelock, in the heart of the Haut-Saint-Laurent region of Quebec.</p>
-
-          <div class="contact-info-items">
-            <div class="contact-info-item">
-              <div class="contact-info-item-icon">📍</div>
-              <div class="contact-info-item-body">
-                <strong data-i18n="contact_address_label">Address</strong>
-                <span data-i18n="footer_address">455 Route 202, Havelock, Quebec J0S 2C0</span>
-              </div>
-            </div>
-            <div class="contact-info-item">
-              <div class="contact-info-item-icon">📞</div>
-              <div class="contact-info-item-body">
-                <strong data-i18n="contact_phone_label">Phone</strong>
-                <a href="tel:+14508261155">(450) 826-1155</a>
-              </div>
-            </div>
-            <div class="contact-info-item">
-              <div class="contact-info-item-icon">📅</div>
-              <div class="contact-info-item-body">
-                <strong data-i18n="contact_fairdate_label">Fair Dates</strong>
-                <span data-i18n="contact_fairdate_value">September 12–13, 2026</span>
-              </div>
-            </div>
-            <div class="contact-info-item">
-              <div class="contact-info-item-icon">🏆</div>
-              <div class="contact-info-item-body">
-                <strong data-i18n="contact_reg_label">Competition Registration</strong>
-                <span data-i18n="contact_reg_desc">To register for competitions, visit our </span><a href="registration.html" data-i18n="nav_registration">Registration page</a>.
-              </div>
-            </div>
-          </div>
-
-          <div class="contact-social">
-            <h3 data-i18n="footer_follow">Follow Us</h3>
-            <div class="social-links">
-              <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" class="social-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                Facebook
-              </a>
-            </div>
-          </div>
+        <div class="hf-person">
+          <div class="hf-person-role" data-i18n="board_secretary">Secretary</div>
+          <div class="hf-person-name">Rommy Hernandez Tenorio</div>
+          <p><a href="mailto:rommyh@hotmail.com">rommyh@hotmail.com</a><br><span data-i18n="contact_secretary_desc">Registration, competition entries, administrative inquiries</span></p>
         </div>
+        <div class="hf-person">
+          <div class="hf-person-role" data-i18n="contact_sponsor_label">Sponsorship</div>
+          <div class="hf-person-name" data-i18n="contact_sponsor_name">Become a Sponsor</div>
+          <p><span data-i18n="contact_sponsor_desc">Interested in supporting the fair? Contact us about sponsorship packages for 2026 and beyond.</span><br><br><a href="sponsors.html" data-i18n="contact_sponsor_link">View current sponsors &rarr;</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- ========== FIND US (ivory info table) ========== -->
+  <section class="hf-sec hf-sec--ivory">
+    <div class="hf-sec-inner">
+      <div class="hf-sec-head" data-reveal>
+        <span class="hf-eyebrow hf-eyebrow--bronze" data-i18n="visit_eyebrow">Plan Your Visit</span>
+        <h2 class="hf-sec-h2" data-i18n="contact_info_title">Find Us</h2>
+        <p class="hf-sec-lede" data-i18n="contact_info_desc">The Havelock Fairgrounds are located in the village of Havelock, in the heart of the Haut-Saint-Laurent region of Quebec.</p>
+      </div>
+      <div class="hf-cells" data-reveal>
+        <div class="hf-cell">
+          <div class="hf-cell-k" data-i18n="contact_address_label">Address</div>
+          <p data-i18n="footer_address">455 Route 202, Havelock, Quebec J0S 2C0</p>
+        </div>
+        <div class="hf-cell">
+          <div class="hf-cell-k" data-i18n="contact_phone_label">Phone</div>
+          <p><a href="tel:+14508261155">(450) 826-1155</a></p>
+        </div>
+        <div class="hf-cell">
+          <div class="hf-cell-k" data-i18n="contact_fairdate_label">Fair Dates</div>
+          <p data-i18n="contact_fairdate_value">September 12&ndash;13, 2026</p>
+        </div>
+        <div class="hf-cell">
+          <div class="hf-cell-k" data-i18n="contact_reg_label">Competition Registration</div>
+          <p><span data-i18n="contact_reg_desc">To register for competitions, visit our </span><a href="registration.html" data-i18n="nav_registration">Registration</a>.</p>
+        </div>
+      </div>
+      <div class="hf-cta-row" style="justify-content: flex-start;" data-reveal>
+        <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" class="hf-link-line" data-i18n="video_fb_cta">Follow on Facebook</a>
       </div>
     </div>
   </section>
 
   <!-- ========== MAP ========== -->
-  <div class="map-section">
-    <div class="map-wrapper">
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2793.123!2d-73.9833!3d45.1167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc94e3e3e3e3e3e%3A0x0!2s455+Route+202%2C+Havelock%2C+QC+J0S+2C0!5e0!3m2!1sen!2sca!4v1234567890"
-        allowfullscreen=""
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
-        title="Havelock Fairgrounds Map"
-      ></iframe>
-    </div>
+  <div class="hf-map">
+    <iframe
+      src="https://www.openstreetmap.org/export/embed.html?bbox=-74.05,45.05,-73.93,45.14&amp;layer=mapnik&amp;marker=45.0967,-73.9897"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="Havelock Fairgrounds Map"
+    ></iframe>
   </div>
 
   <!-- ========== SPONSOR CTA ========== -->
-  <section class="sponsor-cta">
-    <div class="container fade-in">
-      <h2 data-i18n="sponsors_become_title">Become a Sponsor</h2>
-      <p data-i18n="sponsors_become_text">Support one of Canada's oldest agricultural fairs and connect with thousands of visitors from across the region. Sponsorship packages include signage, program placement, and recognition at the event.</p>
-      <a href="mailto:rommyh@hotmail.com?subject=Sponsorship%20Inquiry%20—%20Havelock%20Fair%202026" class="btn btn-primary" data-i18n="sponsors_become_btn">Contact Us About Sponsorship</a>
+  <section class="hf-sec hf-sec--charcoal hf-cta-sec">
+    <div class="hf-sec-inner" data-reveal>
+      <span class="hf-eyebrow hf-eyebrow--bright" data-i18n="contact_sponsor_label">Sponsorship</span>
+      <h2 class="hf-sec-h2" style="margin-top: 16px;" data-i18n="sponsors_become_title">Become a Sponsor</h2>
+      <p class="hf-sec-lede" data-i18n="sponsors_become_text">Support one of Canada's oldest agricultural fairs and connect with thousands of visitors from across the region. Sponsorship packages include signage, program placement, and recognition at the event.</p>
+      <div class="hf-cta-row">
+        <a href="mailto:rommyh@hotmail.com?subject=Sponsorship%20Inquiry%20—%20Havelock%20Fair%202026" class="hf-btn-gold" data-i18n="sponsors_become_btn">Contact Us About Sponsorship</a>
+      </div>
     </div>
   </section>
 
-  <!-- ========== FOOTER ========== -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-brand">Havelock Fair</div>
-          <p class="footer-tagline" data-i18n="footer_tagline">A proud tradition since 1871.</p>
-          <div class="footer-social">
-            <a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener" aria-label="Facebook">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            </a>
-          </div>
-        </div>
-        <div>
-          <h4 data-i18n="footer_quick">Quick Links</h4>
-          <ul class="footer-links">
-            <li><a href="schedule.html" data-i18n="nav_schedule">Schedule</a></li>
-            <li><a href="directions.html" data-i18n="nav_directions">Directions</a></li>
-            <li><a href="sponsors.html" data-i18n="nav_sponsors">Sponsors</a></li>
-            <li><a href="about.html" data-i18n="nav_about">About</a></li>
-            <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
-            <li><a href="gallery.html" data-i18n="nav_gallery">Photos</a></li>
-        <li><a href="registration.html" data-i18n="nav_registration">Registration</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 data-i18n="footer_contact">Contact</h4>
-          <div class="footer-contact-info">
-            <span data-i18n="footer_address">455 Route 202, Havelock, Quebec J0S 2C0</span>
-            <a href="tel:+14508261155" data-i18n="footer_phone">(450) 826-1155</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        &copy; 2026 <span data-i18n="footer_copyright">Havelock Fair. All rights reserved.</span>
-      </div>
-    </div>
-  </footer>
-
+  <!-- Scripts (order matters: chrome → i18n) -->
+  <script src="../js/heritage-chrome.js"></script>
   <script src="../js/i18n.js"></script>
-  <script src="../js/main.js"></script>
 </body>
 </html>
