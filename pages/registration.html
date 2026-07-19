@@ -8,14 +8,31 @@
   <link rel="canonical" href="https://www.havelockfair.ca/pages/registration.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400;1,6..72,500&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/heritage.css">
+  <link rel="stylesheet" href="../css/heritage-pages.css">
   <style>
-    /* Keep focused fields / anchor targets from tucking under the fixed navbar */
-    html { scroll-padding-top: 90px; }
-    .page-hero { position:relative; padding:160px 0 80px; background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%); text-align:center; color:var(--white); }
-    .page-hero h1 { color:var(--white); margin-bottom:12px; }
-    .page-hero p { opacity:.8; font-size:1.1rem; }
+    /* Heritage Noir reskin: remap the style.css tokens the form styles
+       reference, so the working form system keeps its markup/JS while
+       adopting the Heritage palette and type. Square corners (spec). */
+    :root {
+      --navy: #221C15;
+      --navy-light: #3a2f22;
+      --gold: #C6A15B;
+      --gold-light: #E8D3A0;
+      --cream: #F1E8D6;
+      --cream-dark: #e5d9c0;
+      --text: #2a2318;
+      --text-light: #5c5240;
+      --white: #FBF6EA;
+      --shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 28px 60px rgba(0, 0, 0, 0.35);
+      --radius: 0;
+      --radius-lg: 0;
+      --font-heading: 'Newsreader', Georgia, serif;
+      --font-body: 'Manrope', -apple-system, sans-serif;
+    }
     .reg-section { padding:64px 0 80px; }
     .form-tabs { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:40px; }
     .form-tab { display:inline-flex; align-items:center; gap:8px; padding:12px 28px; font-family:var(--font-heading); font-size:1rem; font-weight:600; border:2px solid var(--navy); border-radius:50px; background:transparent; color:var(--navy); cursor:pointer; transition:all var(--transition); white-space:nowrap; }
@@ -86,39 +103,77 @@
     .gymkhana-item input[type=checkbox] { accent-color:var(--navy); width:16px; height:16px; }
     .gymkhana-item span { font-size:.88rem; color:var(--text); }
     .gymkhana-item.checked { border-color:var(--navy); background:var(--cream); }
+
+    /* Elements that sit directly on the dark page background */
+    .reg-section { padding:clamp(56px,8vh,96px) var(--hf-gutter) 90px; }
+    .reg-section .container { margin:0 auto; }
+    .form-tab { border-radius:0; border-width:1px; border-color:var(--hf-frame); color:var(--hf-gold-warm); font-size:.85rem; letter-spacing:.08em; }
+    .form-tab:hover { background:rgba(198,161,91,.1); }
+    .form-tab.active { background:var(--hf-gold); color:var(--hf-espresso); border-color:var(--hf-gold); }
+    .reg-info-box { border-left-color:var(--hf-gold); }
+    .submit-btn { background:var(--hf-gold); color:var(--hf-espresso); border-radius:0; }
+    .submit-btn:hover { background:var(--hf-gold-bright); transform:none; box-shadow:none; }
+    .form-note { color:rgba(241,232,214,.6); }
   </style>
 </head>
 <body>
 
-<nav class="navbar" id="navbar">
-  <div class="nav-inner">
-    <a href="../index.html" class="nav-brand">Havelock Fair</a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-      <span></span><span></span><span></span>
-    </button>
-    <ul class="nav-menu" id="navLinks">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="schedule.html">Schedule</a></li>
-      <li><a href="directions.html">Directions</a></li>
-      <li><a href="sponsors.html">Sponsors</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="gallery.html">Photo Gallery</a></li>
-      <li><a href="registration.html" class="active">Registration</a></li>
-      <li>
-        <div class="lang-switcher">
-          <button class="lang-btn active" onclick="setLang('en')">EN</button>
-          <button class="lang-btn" onclick="setLang('fr')">FR</button>
-        </div>
-      </li>
-    </ul>
+<!-- Heritage chrome inline (this page keeps its own data-en/data-fr i18n
+     and setLang(), so it does not use js/heritage-chrome.js or i18n.js) -->
+<header class="hf-header">
+  <a href="../" class="hf-brand">Havelock&nbsp;Fair</a>
+  <nav class="hf-nav" aria-label="Main navigation">
+    <a href="../" data-en="Home" data-fr="Accueil">Home</a>
+    <a href="schedule.html" data-en="Schedule" data-fr="Horaire">Schedule</a>
+    <a href="directions.html" data-en="Directions" data-fr="Directions">Directions</a>
+    <a href="sponsors.html" data-en="Sponsors" data-fr="Commanditaires">Sponsors</a>
+    <a href="about.html" data-en="About" data-fr="À propos">About</a>
+    <a href="contact.html" data-en="Contact" data-fr="Contact">Contact</a>
+    <a href="gallery.html" data-en="Photos" data-fr="Photos">Photos</a>
+    <a href="registration.html" class="active" data-en="Registration" data-fr="Inscription">Registration</a>
+  </nav>
+  <div class="hf-nav-side">
+    <div class="hf-lang">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    </div>
   </div>
-</nav>
+  <button class="hf-menu-btn" id="hf-menu-open" aria-expanded="false" aria-controls="hf-mobile-menu">
+    <span aria-hidden="true">&#8801;</span> <span data-en="Menu" data-fr="Menu">Menu</span>
+  </button>
+</header>
 
-<section class="page-hero">
-  <div class="container">
-    <h1 data-en="2026 Competition Registration" data-fr="Inscription aux Compétitions 2026">2026 Competition Registration</h1>
-    <p data-en="Register your entries for the Havelock Fair — September 12–13, 2026" data-fr="Inscrivez vos participations à la Foire de Havelock — 12–13 septembre 2026">Register your entries for the Havelock Fair — September 12–13, 2026</p>
+<div class="hf-mobile-menu" id="hf-mobile-menu">
+  <div class="hf-mobile-top">
+    <span class="hf-brand">Havelock&nbsp;Fair</span>
+    <button class="hf-mobile-close" id="hf-menu-close" aria-label="Close menu">&times;</button>
+  </div>
+  <nav class="hf-mobile-nav" aria-label="Mobile navigation">
+    <a href="../" data-en="Home" data-fr="Accueil">Home</a>
+    <a href="schedule.html" data-en="Schedule" data-fr="Horaire">Schedule</a>
+    <a href="directions.html" data-en="Directions" data-fr="Directions">Directions</a>
+    <a href="sponsors.html" data-en="Sponsors" data-fr="Commanditaires">Sponsors</a>
+    <a href="about.html" data-en="About" data-fr="À propos">About</a>
+    <a href="contact.html" data-en="Contact" data-fr="Contact">Contact</a>
+    <a href="gallery.html" data-en="Photos" data-fr="Photos">Photos</a>
+    <a href="registration.html" data-en="Registration" data-fr="Inscription">Registration</a>
+  </nav>
+  <div class="hf-mobile-foot">
+    <div class="hf-lang">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    </div>
+  </div>
+</div>
+
+<section class="hf-page-hero">
+  <img src="../images/home/spotlight/cr-1.jpg" alt="A blue-ribbon quilt in the Havelock Fair exhibit hall">
+  <div class="hf-page-hero-scrim"></div>
+  <div class="hf-frame"></div>
+  <div class="hf-page-hero-copy">
+    <div class="hf-eyebrow hf-eyebrow--bright" data-en="Havelock Fair 2026" data-fr="Foire Havelock 2026">Havelock Fair 2026</div>
+    <h1 class="hf-page-title" data-en="Competition Registration" data-fr="Inscription aux compétitions">Competition Registration</h1>
+    <p class="hf-page-lede" data-en="Register your entries for the Havelock Fair — September 12–13, 2026" data-fr="Inscrivez vos participations à la Foire de Havelock — 12–13 septembre 2026">Register your entries for the Havelock Fair — September 12–13, 2026</p>
   </div>
 </section>
 
@@ -321,8 +376,28 @@
   </div>
 </section>
 
-<footer style="background:var(--navy);color:#fff;text-align:center;padding:32px;font-size:.9rem;opacity:.9;">
-  <p>Foire de Havelock Inc. &bull; 455 Route 202, Havelock, QC J0S 2C0 &bull; info@foirehavelockfair.com</p>
+<footer class="hf-footer">
+  <div class="hf-footer-grid">
+    <div>
+      <div class="hf-footer-brand">Havelock Fair</div>
+      <p class="hf-footer-tagline" data-en="A treasured Canadian tradition since 1871, in the heart of the Haut-Saint-Laurent." data-fr="Une précieuse tradition canadienne depuis 1871, au cœur du Haut-Saint-Laurent.">A treasured Canadian tradition since 1871, in the heart of the Haut-Saint-Laurent.</p>
+    </div>
+    <div>
+      <div class="hf-footer-h" data-en="Explore" data-fr="Explorer">Explore</div>
+      <div class="hf-footer-links">
+        <a href="schedule.html" data-en="Schedule" data-fr="Horaire">Schedule</a>
+        <a href="sponsors.html" data-en="Sponsors" data-fr="Commanditaires">Sponsors</a>
+        <a href="about.html" data-en="About" data-fr="À propos">About</a>
+        <a href="gallery.html" data-en="Photos" data-fr="Photos">Photos</a>
+        <a href="contact.html" data-en="Contact" data-fr="Contact">Contact</a>
+      </div>
+    </div>
+    <div>
+      <div class="hf-footer-h" data-en="Visit" data-fr="Visite">Visit</div>
+      <p class="hf-footer-contact">Foire de Havelock Inc.<br>455 Route 202<br>Havelock, Qu&eacute;bec J0S 2C0<br><a href="tel:+14508261155">(450) 826-1155</a></p>
+    </div>
+  </div>
+  <div class="hf-footer-legal">&copy; 2026 Havelock Fair &middot; Foire Havelock &mdash; With the support of MAPAQ &amp; the Association des expositions agricoles du Qu&eacute;bec.</div>
 </footer>
 
 <script>
@@ -399,12 +474,21 @@ function setLang(lang) {
   currentLang = lang;
   document.querySelectorAll('[data-en]').forEach(el => { el.textContent = lang === 'fr' ? (el.dataset.fr || el.dataset.en) : el.dataset.en; });
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`)?.classList.add('active');
+  document.querySelectorAll(`.lang-btn[onclick="setLang('${lang}')"]`).forEach(b => b.classList.add('active'));
   document.documentElement.lang = lang;
 }
 
-window.addEventListener('scroll', () => { document.getElementById('navbar')?.classList.toggle('scrolled', window.scrollY > 50); });
-document.getElementById('navToggle')?.addEventListener('click', () => { document.getElementById('navLinks')?.classList.toggle('open'); });
+// Heritage chrome mobile menu
+(() => {
+  const menu = document.getElementById('hf-mobile-menu');
+  const openBtn = document.getElementById('hf-menu-open');
+  const closeBtn = document.getElementById('hf-menu-close');
+  if (!menu || !openBtn || !closeBtn) return;
+  const close = () => { menu.classList.remove('open'); openBtn.setAttribute('aria-expanded', 'false'); };
+  openBtn.addEventListener('click', () => { menu.classList.add('open'); openBtn.setAttribute('aria-expanded', 'true'); });
+  closeBtn.addEventListener('click', close);
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+})();
 
 function switchTab(id) {
   document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));

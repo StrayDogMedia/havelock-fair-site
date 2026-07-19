@@ -1,9 +1,10 @@
 /* ============================================================
    Havelock Fair — "Heritage Noir" design system
    Source of truth: design-handoff/README.md (approved spec).
-   Loaded by index.html ONLY. Namespaced (--hf-* tokens, hf-*
-   classes) so it cannot collide with css/style.css on interior
-   pages. Square corners throughout — no border-radius (spec).
+   Loaded site-wide: index.html and (with css/heritage-pages.css)
+   every /pages/*.html. Namespaced (--hf-* tokens, hf-* classes)
+   so it cannot collide with css/style.css, which registration.html
+   still loads. Square corners throughout — no border-radius (spec).
    ============================================================ */
 
 :root {
