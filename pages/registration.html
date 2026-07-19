@@ -96,6 +96,34 @@
     .form-message { display:none; padding:20px 24px; border-radius:var(--radius); margin-top:24px; font-weight:500; }
     .form-message.success { background:#f0fff4; border:2px solid #48bb78; color:#276749; display:block; }
     .form-message.error { background:#fff5f5; border:2px solid #fc8181; color:#9b2c2c; display:block; }
+    /* Confirmation card (shown after successful submission) */
+    .confirm-card { display:none; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow-lg); overflow:hidden; margin-top:8px; }
+    .confirm-card.visible { display:block; }
+    .confirm-head { background:#276749; color:#fff; text-align:center; padding:36px 24px 28px; }
+    .confirm-head .confirm-icon { font-size:2.4rem; display:block; margin-bottom:8px; }
+    .confirm-head h3 { margin:0 0 6px; font-size:1.5rem; color:#fff; }
+    .confirm-head p { margin:0; opacity:.92; font-size:.95rem; }
+    .confirm-exhibitor { display:inline-block; margin-top:14px; background:rgba(255,255,255,.15); border:1.5px dashed rgba(255,255,255,.6); border-radius:8px; padding:8px 20px; font-family:var(--font-heading); font-size:1.15rem; font-weight:700; letter-spacing:.06em; }
+    .confirm-body { padding:28px 28px 32px; color:var(--text); }
+    .confirm-email-note { background:#f0fff4; border:1.5px solid #9ae6b4; border-radius:8px; padding:14px 18px; font-size:.92rem; color:#276749; margin-bottom:22px; }
+    .confirm-section { margin-bottom:22px; }
+    .confirm-section h4 { font-size:.82rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-light); margin:0 0 10px; border-bottom:1px solid #e2e8f0; padding-bottom:6px; }
+    .confirm-section ul { margin:0; padding:0; list-style:none; }
+    .confirm-section li { padding:5px 0; font-size:.93rem; line-height:1.45; }
+    .confirm-section li strong { color:var(--navy); }
+    .confirm-fairday { background:#fffbf0; border-left:4px solid var(--hf-gold, #c6a15b); border-radius:6px; padding:16px 20px; font-size:.92rem; line-height:1.6; margin-bottom:26px; }
+    .confirm-actions { display:flex; gap:12px; flex-wrap:wrap; }
+    .confirm-actions button { flex:1; min-width:180px; padding:14px 20px; border-radius:50px; font-family:var(--font-heading); font-size:.95rem; font-weight:700; cursor:pointer; transition:all .2s; }
+    .confirm-btn-primary { background:var(--navy); color:#fff; border:none; }
+    .confirm-btn-primary:hover { background:var(--navy-light); }
+    .confirm-btn-secondary { background:transparent; color:var(--navy); border:2px solid var(--navy); }
+    .confirm-btn-secondary:hover { background:var(--cream); }
+    @media print {
+      body * { visibility:hidden; }
+      .confirm-card, .confirm-card * { visibility:visible; }
+      .confirm-card { position:absolute; top:0; left:0; width:100%; box-shadow:none; }
+      .confirm-actions { display:none; }
+    }
     .gymkhana-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
     @media(max-width:600px){ .gymkhana-grid { grid-template-columns:1fr; } }
     .gymkhana-item { display:flex; align-items:center; gap:8px; background:#f7f8fa; border:1.5px solid #e2e8f0; border-radius:6px; padding:10px 14px; cursor:pointer; }
@@ -199,7 +227,7 @@
             </div>
             <div class="form-row cols-2">
               <div class="form-group"><label data-en="Phone *" data-fr="Téléphone *">Phone *</label><input type="tel" name="phone" required></div>
-              <div class="form-group"><label data-en="Email" data-fr="Courriel">Email</label><input type="email" name="email"></div>
+              <div class="form-group"><label data-en="Email *" data-fr="Courriel *">Email *</label><input type="email" name="email" required></div>
             </div>
             <div class="form-row"><div class="form-group"><label data-en="Address" data-fr="Adresse">Address</label><input type="text" name="address"></div></div>
           </div>
@@ -247,7 +275,7 @@
             </div>
             <div class="form-row cols-2">
               <div class="form-group"><label data-en="Phone *" data-fr="Téléphone *">Phone *</label><input type="tel" name="youthPhone" required></div>
-              <div class="form-group"><label data-en="Email" data-fr="Courriel">Email</label><input type="email" name="youthEmail"></div>
+              <div class="form-group"><label data-en="Email *" data-fr="Courriel *">Email *</label><input type="email" name="youthEmail" required></div>
             </div>
           </div>
         </div>
@@ -280,9 +308,10 @@
               <div class="form-group"><label data-en="4-H Club Name *" data-fr="Nom du club 4-H *">4-H Club Name *</label><input type="text" name="fhClub" required></div>
               <div class="form-group"><label data-en="ATQ Site Number *" data-fr="No. de site ATQ *">ATQ Site Number *</label><input type="text" name="fhATQSite" required></div>
             </div>
-            <div class="form-row cols-2">
+            <div class="form-row cols-3">
               <div class="form-group"><label data-en="ATQ Registration Number *" data-fr="No. d'enregistrement ATQ *">ATQ Registration Number *</label><input type="text" name="fhATQReg" required></div>
               <div class="form-group"><label data-en="Phone *" data-fr="Téléphone *">Phone *</label><input type="tel" name="fhPhone" required></div>
+              <div class="form-group"><label data-en="Email *" data-fr="Courriel *">Email *</label><input type="email" name="fhEmail" required></div>
             </div>
           </div>
         </div>
@@ -336,7 +365,7 @@
                 </select>
               </div>
               <div class="form-group"><label data-en="Phone *" data-fr="Téléphone *">Phone *</label><input type="tel" name="eqPhone" required></div>
-              <div class="form-group"><label data-en="Email" data-fr="Courriel">Email</label><input type="email" name="eqEmail"></div>
+              <div class="form-group"><label data-en="Email *" data-fr="Courriel *">Email *</label><input type="email" name="eqEmail" required></div>
             </div>
           </div>
         </div>
@@ -632,9 +661,84 @@ function collectGeneralEntries() {
   return entries;
 }
 
-async function postToSheet(payload, formType, btnId, msgId) {
+// Bilingual helper — reads the same language setting as i18n.js
+function L(en, fr) {
+  return (localStorage.getItem('hf-lang') || 'en') === 'fr' ? fr : en;
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s == null ? '' : String(s);
+  return d.innerHTML;
+}
+
+// Builds and shows the post-submission confirmation card in place of the form.
+// summary = { name, email, contact: [[label,value],...], entries: [string,...], resetFn }
+function showConfirmation(formEl, data, summary) {
+  const exhibitorId = data.exhibitorId || (Array.isArray(data.exhibitorIds) ? data.exhibitorIds[0] : null);
+  const card = document.createElement('div');
+  card.className = 'confirm-card visible';
+
+  const contactRows = summary.contact
+    .filter(([, v]) => v)
+    .map(([label, v]) => `<li><strong>${esc(label)}:</strong> ${esc(v)}</li>`).join('');
+  const entryRows = summary.entries.map(e => `<li>• ${esc(e)}</li>`).join('');
+
+  const emailNote = data.emailSent
+    ? `<div class="confirm-email-note">📧 ${L(
+        `A confirmation email with all of these details has been sent to <strong>${esc(summary.email)}</strong>. If you don't see it within a few minutes, please check your spam or junk folder.`,
+        `Un courriel de confirmation contenant tous ces détails a été envoyé à <strong>${esc(summary.email)}</strong>. Si vous ne le voyez pas d'ici quelques minutes, vérifiez votre dossier de courrier indésirable.`)}</div>`
+    : `<div class="confirm-email-note">📄 ${L(
+        'Please keep this page for your records — you can print it using the button below.',
+        'Veuillez conserver cette page pour vos dossiers — vous pouvez l’imprimer à l’aide du bouton ci-dessous.')}</div>`;
+
+  card.innerHTML = `
+    <div class="confirm-head">
+      <span class="confirm-icon">🎉</span>
+      <h3>${L('Thank you, ' + esc(summary.name) + '!', 'Merci, ' + esc(summary.name) + ' !')}</h3>
+      <p>${L('Your registration for the 2026 Havelock Fair has been received.', 'Votre inscription à la Foire de Havelock 2026 a bien été reçue.')}</p>
+      ${exhibitorId ? `<span class="confirm-exhibitor">${L('Exhibitor #', 'Exposant no ')}${esc(exhibitorId)}</span>` : ''}
+    </div>
+    <div class="confirm-body">
+      ${emailNote}
+      <div class="confirm-section">
+        <h4>${L('Your Information', 'Vos coordonnées')}</h4>
+        <ul>${contactRows}</ul>
+      </div>
+      <div class="confirm-section">
+        <h4>${L('Your Entries', 'Vos inscriptions')}</h4>
+        <ul>${entryRows}</ul>
+      </div>
+      <div class="confirm-fairday">
+        <strong>${L('Fair Day Information', 'Informations pour le jour de la foire')}</strong><br>
+        📅 ${L('September 12–13, 2026', '12 et 13 septembre 2026')}<br>
+        📍 455 Route 202, Havelock, QC J0S 2C0<br>
+        ⏰ ${L('Judging begins at 11:00 a.m. — please check in at the office beforehand.', 'Le jugement débute à 11 h — veuillez vous présenter au bureau avant.')}<br>
+        💵 ${L('Exhibitors aged 13 and over require a $15 membership, deducted from prize winnings.', 'Les exposants de 13 ans et plus doivent adhérer (15 $), montant déduit des gains.')}
+      </div>
+      <div class="confirm-actions">
+        <button type="button" class="confirm-btn-secondary" onclick="window.print()">🖨️ ${L('Print This Page', 'Imprimer cette page')}</button>
+        <button type="button" class="confirm-btn-primary" id="confirm-again-btn">➕ ${L('Register Another Exhibitor', 'Inscrire un autre exposant')}</button>
+      </div>
+    </div>`;
+
+  formEl.style.display = 'none';
+  formEl.parentNode.insertBefore(card, formEl.nextSibling);
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  card.querySelector('#confirm-again-btn').addEventListener('click', () => {
+    card.remove();
+    formEl.reset();
+    if (summary.resetFn) summary.resetFn();
+    formEl.style.display = '';
+    formEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+
+async function postToSheet(payload, formType, btnId, msgId, summary) {
   const btn = document.getElementById(btnId);
   const msg = document.getElementById(msgId);
+  const formEl = btn.closest('form');
   btn.disabled = true; btn.innerHTML = '<span>⏳</span> Submitting…';
   msg.className = 'form-message';
   try {
@@ -645,12 +749,12 @@ async function postToSheet(payload, formType, btnId, msgId) {
     const res = await fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ formType, ...payload }) });
     const data = await res.json();
     if (data.result === 'success') {
-      msg.textContent = '✅ Registration submitted! Please bring this form to the office before judging begins at 11:00 a.m.';
-      msg.className = 'form-message success';
-      msg.scrollIntoView({behavior:'smooth', block:'center'});
+      msg.className = 'form-message';
+      msg.textContent = '';
+      showConfirmation(formEl, data, summary);
     } else { throw new Error(data.message || 'Unknown error'); }
   } catch(err) {
-    msg.textContent = '❌ Submission failed: ' + err.message + ' — please try again or bring your form to the office.';
+    msg.textContent = '❌ ' + L('Submission failed: ', 'Échec de l’envoi : ') + err.message + L(' — please try again or contact the office.', ' — veuillez réessayer ou contacter le bureau.');
     msg.className = 'form-message error';
   }
   btn.disabled = false; btn.innerHTML = '<span>📋</span> Submit Registration';
@@ -661,7 +765,13 @@ document.getElementById('form-general')?.addEventListener('submit', async (e) =>
   const fd = new FormData(e.target);
   const entries = collectGeneralEntries();
   if (!entries.length) { alert('Please add at least one class entry.'); return; }
-  await postToSheet({ firstName:fd.get('firstName'), lastName:fd.get('lastName'), phone:fd.get('phone'), email:fd.get('email'), address:fd.get('address'), notes:fd.get('notes'), entries }, 'General', 'submit-general', 'msg-general');
+  await postToSheet({ firstName:fd.get('firstName'), lastName:fd.get('lastName'), phone:fd.get('phone'), email:fd.get('email'), address:fd.get('address'), notes:fd.get('notes'), entries }, 'General', 'submit-general', 'msg-general', {
+    name: fd.get('firstName'),
+    email: fd.get('email'),
+    contact: [[L('Name','Nom'), fd.get('firstName')+' '+fd.get('lastName')], [L('Phone','Téléphone'), fd.get('phone')], [L('Email','Courriel'), fd.get('email')], [L('Address','Adresse'), fd.get('address')]],
+    entries: entries.map(en => `${L('Class','Classe')} ${en.classId} — ${en.className}${en.breeds ? ' ('+en.breeds+')' : ''}${en.sections ? ' — '+L('Sections','Sections')+': '+en.sections : ''}${en.animalName ? ' — '+en.animalName : ''}`),
+    resetFn: () => { document.getElementById('entries-general').innerHTML=''; entryCount = 0; addEntry(); }
+  });
 });
 
 document.getElementById('form-youth')?.addEventListener('submit', async (e) => {
@@ -669,7 +779,13 @@ document.getElementById('form-youth')?.addEventListener('submit', async (e) => {
   const fd = new FormData(e.target);
   const sections = [...document.querySelectorAll('[name="youth_section[]"]:checked')].map(c=>c.value);
   if (!sections.length) { alert('Please select at least one section.'); return; }
-  await postToSheet({ youthFirstName:fd.get('youthFirstName'), youthLastName:fd.get('youthLastName'), youthDOB:fd.get('youthDOB'), youthClass:fd.get('youthClass'), youthGuardian:fd.get('youthGuardian'), youthPhone:fd.get('youthPhone'), youthEmail:fd.get('youthEmail'), youthNotes:fd.get('youthNotes'), sections:sections.join(' | ') }, 'Youth', 'submit-youth', 'msg-youth');
+  await postToSheet({ youthFirstName:fd.get('youthFirstName'), youthLastName:fd.get('youthLastName'), youthDOB:fd.get('youthDOB'), youthClass:fd.get('youthClass'), youthGuardian:fd.get('youthGuardian'), youthPhone:fd.get('youthPhone'), youthEmail:fd.get('youthEmail'), youthNotes:fd.get('youthNotes'), sections:sections.join(' | ') }, 'Youth', 'submit-youth', 'msg-youth', {
+    name: fd.get('youthFirstName'),
+    email: fd.get('youthEmail'),
+    contact: [[L('Name','Nom'), fd.get('youthFirstName')+' '+fd.get('youthLastName')], [L('Class','Classe'), fd.get('youthClass')], [L('Parent/Guardian','Parent/Tuteur'), fd.get('youthGuardian')], [L('Phone','Téléphone'), fd.get('youthPhone')], [L('Email','Courriel'), fd.get('youthEmail')]],
+    entries: sections,
+    resetFn: null
+  });
 });
 
 document.getElementById('form-fourh')?.addEventListener('submit', async (e) => {
@@ -680,13 +796,35 @@ document.getElementById('form-fourh')?.addEventListener('submit', async (e) => {
     const id = card.id.replace('fh-entry-','');
     heiferEntries.push({ section:card.querySelector(`[name="fh_${id}_section"]`)?.value||'', breed:card.querySelector(`[name="fh_${id}_breed"]`)?.value||'', name:card.querySelector(`[name="fh_${id}_name"]`)?.value||'', atq:card.querySelector(`[name="fh_${id}_atq"]`)?.value||'', dob:card.querySelector(`[name="fh_${id}_dob"]`)?.value||'' });
   });
-  await postToSheet({ fhFirstName:fd.get('fhFirstName'), fhLastName:fd.get('fhLastName'), fhDOB:fd.get('fhDOB'), fhClub:fd.get('fhClub'), fhATQSite:fd.get('fhATQSite'), fhATQReg:fd.get('fhATQReg'), fhPhone:fd.get('fhPhone'), fhShowmanship:fd.get('fhShowmanship'), fhGroupClass:fd.get('fhGroupClass')?'Yes':'No', fhCloverbud:fd.get('fhCloverbud')?'Yes':'No', heiferEntries }, '4H', 'submit-fourh', 'msg-fourh');
+  await postToSheet({ fhFirstName:fd.get('fhFirstName'), fhLastName:fd.get('fhLastName'), fhDOB:fd.get('fhDOB'), fhClub:fd.get('fhClub'), fhATQSite:fd.get('fhATQSite'), fhATQReg:fd.get('fhATQReg'), fhPhone:fd.get('fhPhone'), fhEmail:fd.get('fhEmail'), fhShowmanship:fd.get('fhShowmanship'), fhGroupClass:fd.get('fhGroupClass')?'Yes':'No', fhCloverbud:fd.get('fhCloverbud')?'Yes':'No', heiferEntries }, '4H', 'submit-fourh', 'msg-fourh', {
+    name: fd.get('fhFirstName'),
+    email: fd.get('fhEmail'),
+    contact: [[L('Name','Nom'), fd.get('fhFirstName')+' '+fd.get('fhLastName')], [L('4-H Club','Club 4-H'), fd.get('fhClub')], [L('Phone','Téléphone'), fd.get('fhPhone')], [L('Email','Courriel'), fd.get('fhEmail')]],
+    entries: [
+      ...heiferEntries.map(h => `${L('Heifer','Génisse')} — ${L('Section','Section')} ${h.section}${h.breed ? ' ('+h.breed+')' : ''}${h.name ? ' — '+h.name : ''}`),
+      ...(fd.get('fhShowmanship') ? [L('Showmanship: ','Présentation : ') + fd.get('fhShowmanship')] : []),
+      ...(fd.get('fhGroupClass') ? [L('Group Class','Classe de groupe')] : []),
+      ...(fd.get('fhCloverbud') ? [L('Cloverbud','Cloverbud')] : [])
+    ],
+    resetFn: () => { document.getElementById('entries-fourh').innerHTML=''; fhCount = 0; addFHEntry(); }
+  });
 });
 
 document.getElementById('form-equestrian')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const fd = new FormData(e.target);
-  await postToSheet({ eqFirstName:fd.get('eqFirstName'), eqLastName:fd.get('eqLastName'), eqCategory:fd.get('eqCategory'), eqPhone:fd.get('eqPhone'), eqEmail:fd.get('eqEmail'), eqHorseName:fd.get('eqHorseName'), eqBreed:fd.get('eqBreed'), eqType:fd.get('eqType'), eqHelmet:fd.get('eqHelmet')?'Confirmed':'Not confirmed', eqEmergencyName:fd.get('eqEmergencyName'), eqEmergencyPhone:fd.get('eqEmergencyPhone'), showSections:[...document.querySelectorAll('[name="eq_section[]"]:checked')].map(c=>c.value).join(' | '), gymkhana:[...document.querySelectorAll('[name="eq_gymkhana[]"]:checked')].map(c=>c.value).join(' | ') }, 'Equestrian', 'submit-equestrian', 'msg-equestrian');
+  const eqShow = [...document.querySelectorAll('[name="eq_section[]"]:checked')].map(c=>c.value);
+  const eqGym = [...document.querySelectorAll('[name="eq_gymkhana[]"]:checked')].map(c=>c.value);
+  await postToSheet({ eqFirstName:fd.get('eqFirstName'), eqLastName:fd.get('eqLastName'), eqCategory:fd.get('eqCategory'), eqPhone:fd.get('eqPhone'), eqEmail:fd.get('eqEmail'), eqHorseName:fd.get('eqHorseName'), eqBreed:fd.get('eqBreed'), eqType:fd.get('eqType'), eqHelmet:fd.get('eqHelmet')?'Confirmed':'Not confirmed', eqEmergencyName:fd.get('eqEmergencyName'), eqEmergencyPhone:fd.get('eqEmergencyPhone'), showSections:eqShow.join(' | '), gymkhana:eqGym.join(' | ') }, 'Equestrian', 'submit-equestrian', 'msg-equestrian', {
+    name: fd.get('eqFirstName'),
+    email: fd.get('eqEmail'),
+    contact: [[L('Name','Nom'), fd.get('eqFirstName')+' '+fd.get('eqLastName')], [L('Phone','Téléphone'), fd.get('eqPhone')], [L('Email','Courriel'), fd.get('eqEmail')], [L('Horse/Pony','Cheval/Poney'), fd.get('eqHorseName')]],
+    entries: [
+      ...eqShow.map(s => L('Horse Show — ','Concours hippique — ') + s),
+      ...eqGym.map(g => 'Gymkhana — ' + g)
+    ],
+    resetFn: null
+  });
 });
 
 document.addEventListener('DOMContentLoaded', () => {
