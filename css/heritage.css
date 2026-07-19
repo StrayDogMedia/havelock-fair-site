@@ -598,21 +598,22 @@ img { display: block; }
   z-index: -2;
   background-size: cover;
   background-position: center;
-  opacity: 0.38;
+  opacity: 0.72;
   transform: scale(1.04);
   transition: opacity 0.45s ease, transform 0.9s ease;
-  filter: saturate(0.9);
+  filter: saturate(0.94);
 }
 .hf-card-scrim {
   position: absolute;
   inset: 0;
   z-index: -1;
   background: linear-gradient(180deg,
-    rgba(27, 22, 17, 0.5) 0%,
-    rgba(27, 22, 17, 0.94) 88%);
+    rgba(27, 22, 17, 0.12) 0%,
+    rgba(27, 22, 17, 0.42) 52%,
+    rgba(27, 22, 17, 0.88) 100%);
 }
 .hf-card:hover { border-color: var(--hf-gold); }
-.hf-card:hover .hf-card-bg { opacity: 0.62; transform: scale(1.1); }
+.hf-card:hover .hf-card-bg { opacity: 0.92; transform: scale(1.1); }
 .hf-card-num {
   font-family: var(--hf-serif);
   font-weight: 300;
