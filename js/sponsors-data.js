@@ -22,13 +22,19 @@ const sponsorTiers = [
     i18n: "sponsors_bronze",
     color: "#a0704a",
     icon: "award"
+  },
+  {
+    key: "community",
+    i18n: "sponsors_community",
+    color: "#4a5568",
+    icon: "shield"
   }
 ];
 
 const sponsors = {
   featured: [
-    { name: "MAPAQ", url: "#", initials: "MQ", logo: null },
-    { name: "Local Representative", url: "#", initials: "LR", logo: null }
+    { name: "MAPAQ · Gouvernement du Québec", url: "#", initials: "MQ", logo: "../images/sponsors/featured/gouvernement-quebec.jpg" },
+    { name: "Carole Mallette — Députée de Huntingdon", url: "#", initials: "CM", logo: "../images/sponsors/featured/carole-mallette.jpg" }
   ],
   gold: [
     { name: "Gosselin Photo", url: "#", initials: "GP", logo: "../images/sponsors/gold/gosselin.png" },
@@ -47,7 +53,7 @@ const sponsors = {
     { name: "M. Derick Transport", url: "#", initials: "MD", logo: "../images/sponsors/silver/m-derick-transport.jpg" },
     { name: "Nussey", url: "#", initials: "NU", logo: "../images/sponsors/silver/nussey.jpg" },
     { name: "RONA D'Amour", url: "#", initials: "RD", logo: "../images/sponsors/silver/rona-damour.jpg" },
-    { name: "Rankin", url: "#", initials: "RK", logo: "../images/sponsors/silver/rankin.jpg" },
+    { name: "Sun Life — McIntyre & Rankin", url: "#", initials: "SL", logo: "../images/sponsors/silver/sun-life.jpg" },
     { name: "Bourgon", url: "#", initials: "BG", logo: "../images/sponsors/silver/bourgon.jpg" },
     { name: "BIL", url: "#", initials: "BIL", logo: "../images/sponsors/silver/bil.png" },
     { name: "Bill Anderson", url: "#", initials: "BA", logo: "../images/sponsors/silver/bill-anderson-logo.png" },
@@ -77,6 +83,20 @@ const sponsors = {
     { name: "Taillefer", url: "#", initials: "TF", logo: "../images/sponsors/bronze/taillefer.jpg" },
     { name: "Chiropratique", url: "#", initials: "CH", logo: "../images/sponsors/bronze/chiro.png" },
     { name: "Vallée des Travailleurs", url: "#", initials: "VT", logo: "../images/sponsors/bronze/vallee-des-travailleurs.jpg" },
-    { name: "Petch", url: "#", initials: "PT", logo: "../images/sponsors/bronze/petch.jpg" }
+    { name: "Petch", url: "#", initials: "PT", logo: "../images/sponsors/bronze/petch.jpg" },
+    { name: "Pharmacie Brunet — Catherine Plamondon", url: "#", initials: "PB", logo: "../images/sponsors/bronze/brunet-pharmacy.jpg" },
+    { name: "Patterson Produce", url: "#", initials: "PP", logo: "../images/sponsors/bronze/patterson-produce.jpg" },
+    { name: "Les autobus Sébastien Morand", url: "#", initials: "SM", logo: "../images/sponsors/bronze/autobus-sebastien-morand.jpg" },
+    { name: "Ducharme — Pierre naturelle", url: "#", initials: "DU", logo: "../images/sponsors/bronze/ducharme.jpg" },
+    { name: "Isolation TK", url: "#", initials: "TK", logo: "../images/sponsors/bronze/isolation-tk.jpg" },
+    { name: "RE/MAX — Michael Hadley", url: "#", initials: "RM", logo: "../images/sponsors/bronze/remax-michael-hadley.jpg" },
+    { name: "Arneg Canada", url: "#", initials: "AC", logo: "../images/sponsors/bronze/arneg-canada.jpg" },
+    { name: "G.P.A.G. Distribution", url: "#", initials: "GD", logo: "../images/sponsors/bronze/gpag-distribution.jpg" },
+    { name: "C.K. Blair Transport", url: "#", initials: "CB", logo: "../images/sponsors/bronze/ck-blair-transport.jpg" }
+  ],
+  community: [
+    { name: "Municipalité du Canton de Havelock", url: "#", initials: "CH", logo: "../images/sponsors/community/canton-de-havelock.jpg" },
+    { name: "4-H Québec", url: "#", initials: "4H", logo: "../images/sponsors/community/4h-quebec.jpg" },
+    { name: "Association des expositions agricoles du Québec", url: "#", initials: "AE", logo: "../images/sponsors/community/aeaq.jpg" }
   ]
 };

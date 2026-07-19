@@ -693,6 +693,7 @@
 .sponsor-grid.gold { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 .sponsor-grid.silver { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
 .sponsor-grid.bronze { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.sponsor-grid.community { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 .sponsor-card {
   display: flex;
   align-items: center;
@@ -747,6 +748,6 @@
 .sponsor-card:hover .sponsor-link-hint { opacity: 1; }
 .sponsor-card[href="#"] .sponsor-link-hint { display: none; }
 @media (max-width: 560px) {
-  .sponsor-grid.featured, .sponsor-grid.gold,
-  .sponsor-grid.silver, .sponsor-grid.bronze { grid-template-columns: 1fr; }
+  .sponsor-grid.featured, .sponsor-grid.gold, .sponsor-grid.silver,
+  .sponsor-grid.bronze, .sponsor-grid.community { grid-template-columns: 1fr; }
 }
