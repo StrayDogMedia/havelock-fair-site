@@ -59,7 +59,7 @@ Minimum shot list for a homepage change: desktop full page (pinned), 500px mobil
 
 ```bash
 curl -s "https://havelockfair.ca/?v=$(date +%s)" | grep -q "heritage.css" && echo live
-for a in css/heritage.css js/heritage-home.js images/home/hero.jpg; do
+for a in css/heritage.css js/heritage-home.js images/home/hero/hero-1.jpg; do
   curl -s -o /dev/null -w "%{http_code} $a\n" "https://havelockfair.ca/$a"; done
 ```
 

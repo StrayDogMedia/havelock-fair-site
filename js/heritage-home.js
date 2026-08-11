@@ -211,5 +211,82 @@
       else if (e.key === 'ArrowRight') step(1);
       else if (e.key === 'ArrowLeft') step(-1);
     });
+
+    /* ---------------- hero photo rotation ----------------
+       Slide 1 ships with its src in the HTML (it is the LCP image);
+       slides 2+ carry data-src and are only fetched once the page has
+       loaded, so the extra photos never compete with first paint. */
+    initHeroRotation();
+
+    /* ---------------- the film ---------------- */
+    initFilm();
   });
+
+  function initHeroRotation() {
+    var media = document.getElementById('hf-hero-media');
+    if (!media) return;
+    var slides = Array.prototype.slice.call(media.querySelectorAll('.hf-hero-slide'));
+    if (reduce || slides.length < 2) return;
+
+    var HOLD = 7000;   /* time each photo holds, ms (fade included) */
+    var FADE = 1600;   /* must match the opacity transition in heritage.css */
+    var index = 0;
+    var timer = null;
+
+    function load(slide) {
+      if (!slide || slide.dataset.loaded) return;
+      slide.dataset.loaded = '1';
+      if (slide.dataset.srcset) slide.srcset = slide.dataset.srcset;
+      if (slide.dataset.src) slide.src = slide.dataset.src;
+    }
+
+    function advance() {
+      if (document.hidden) return;              /* don't burn frames on a background tab */
+      var next = (index + 1) % slides.length;
+      var incoming = slides[next];
+      if (!incoming.complete || !incoming.naturalWidth) return;  /* not ready — hold */
+      var outgoing = slides[index];
+      outgoing.classList.remove('is-active');
+      /* let the outgoing photo keep panning until it has fully faded,
+         otherwise its transform snaps back mid-crossfade */
+      setTimeout(function () { outgoing.classList.remove('is-panning'); }, FADE);
+      incoming.classList.add('is-active');
+      /* restart the Ken Burns pan on the incoming photo */
+      incoming.classList.remove('is-panning');
+      void incoming.offsetWidth;
+      incoming.classList.add('is-panning');
+      index = next;
+      load(slides[(index + 1) % slides.length]);  /* keep one photo ahead */
+    }
+
+    function start() {
+      load(slides[1]);
+      if (!timer) timer = setInterval(advance, HOLD);
+    }
+
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start);
+  }
+
+  function initFilm() {
+    var btn = document.getElementById('hf-film-player');
+    var stage = document.getElementById('hf-film-stage');
+    if (!btn || !stage) return;
+
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-video');
+      if (!id) return;
+      var lang = (typeof currentLang !== 'undefined' && currentLang) || 'en';
+      var frame = document.createElement('iframe');
+      frame.className = 'hf-film-embed';
+      frame.src = 'https://www.youtube-nocookie.com/embed/' + id +
+                  '?autoplay=1&rel=0&modestbranding=1&playsinline=1&hl=' + lang;
+      frame.title = t('film_card_title') || 'Havelock Fair 2025 — Highlights';
+      frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      frame.setAttribute('allowfullscreen', '');
+      frame.setAttribute('loading', 'lazy');
+      stage.replaceChild(frame, btn);
+      frame.focus();
+    });
+  }
 })();

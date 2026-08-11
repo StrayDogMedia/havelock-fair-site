@@ -251,6 +251,13 @@ const translations = {
     her_body: "Heavy horses in the morning mist. The Chateauguay Valley tractors polished to a shine. The same maple, the same music, the same welcome — carried forward, year after year, by the people who call this place home.",
     her_link: "Explore the archive",
     break_quote: "“You don't visit the Havelock Fair. You return to it.”",
+    film_eyebrow: "The Film",
+    film_title: "Two Days, in Motion",
+    film_lede: "Live music on the outdoor stage, the show ring at full tilt, the barns, the midway — two minutes from last September's fair.",
+    film_card_title: "Havelock Fair 2025 — Highlights",
+    film_card_meta: "2 min · Film by Stray Dog Media",
+    film_play_label: "Play the film: Havelock Fair 2025 highlights",
+    film_youtube: "Watch on YouTube",
     fair_eyebrow: "The Experience",
     fair_title: "What Awaits You",
     sp_open: "Take a look",
@@ -574,6 +581,13 @@ const translations = {
     her_body: "Les chevaux lourds dans la brume du matin. Les tracteurs de la vallée de la Châteauguay astiqués. Le même érable, la même musique, le même accueil — transmis d'année en année par les gens d'ici.",
     her_link: "Explorer les archives",
     break_quote: "« On ne visite pas la Foire Havelock. On y revient. »",
+    film_eyebrow: "Le film",
+    film_title: "Deux jours, en mouvement",
+    film_lede: "La musique sur la scène extérieure, l'arène de jugement, les étables, le site en fête — deux minutes de la foire de septembre dernier.",
+    film_card_title: "Foire Havelock 2025 — Faits saillants",
+    film_card_meta: "2 min · Film de Stray Dog Media",
+    film_play_label: "Lancer le film : faits saillants de la Foire Havelock 2025",
+    film_youtube: "Regarder sur YouTube",
     fair_eyebrow: "L'expérience",
     fair_title: "Ce qui vous attend",
     sp_open: "Voir de plus près",
@@ -897,6 +911,13 @@ const translations = {
     her_body: "Caballos pesados en la bruma de la mañana. Los tractores del valle de Chateauguay relucientes. El mismo arce, la misma música, la misma bienvenida — transmitidos año tras año por la gente de aquí.",
     her_link: "Explorar el archivo",
     break_quote: "«A la Feria Havelock no se la visita. Se vuelve a ella.»",
+    film_eyebrow: "El film",
+    film_title: "Dos días, en movimiento",
+    film_lede: "La música en el escenario al aire libre, la pista de juzgamiento, los establos, la feria entera — dos minutos del pasado septiembre.",
+    film_card_title: "Feria Havelock 2025 — Momentos destacados",
+    film_card_meta: "2 min · Film de Stray Dog Media",
+    film_play_label: "Reproducir el film: momentos destacados de la Feria Havelock 2025",
+    film_youtube: "Ver en YouTube",
     fair_eyebrow: "La experiencia",
     fair_title: "Lo que le espera",
     sp_open: "Ver más",
@@ -996,6 +1017,14 @@ function setLanguage(lang) {
     const key = el.getAttribute("data-i18n-placeholder");
     if (translations[lang] && translations[lang][key]) {
       el.placeholder = translations[lang][key];
+    }
+  });
+
+  // Accessible names for icon-only controls (e.g. the film play button)
+  document.querySelectorAll("[data-i18n-label]").forEach(el => {
+    const key = el.getAttribute("data-i18n-label");
+    if (translations[lang] && translations[lang][key]) {
+      el.setAttribute("aria-label", translations[lang][key]);
     }
   });
 

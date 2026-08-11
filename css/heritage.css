@@ -237,12 +237,19 @@ img { display: block; }
   overflow: hidden;
 }
 .hf-hero-media { position: absolute; inset: 0; }
+/* Rotating hero: slides stack, crossfade, and Ken-Burns while visible.
+   The first slide carries .is-active in the HTML so it shows without JS. */
 .hf-hero-media img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: hfKen 22s ease-out forwards;
+  opacity: 0;
+  transition: opacity 1600ms ease-in-out;
 }
+.hf-hero-media img.is-active { opacity: 1; }
+.hf-hero-media img.is-panning { animation: hfKen 12s ease-out forwards; }
 @keyframes hfKen {
   0%   { transform: scale(1.02) translate(0, 0); }
   100% { transform: scale(1.14) translate(-1.5%, -1.5%); }
@@ -557,6 +564,131 @@ img { display: block; }
   line-height: 1.18;
   color: var(--hf-ivory-bright);
   margin: 0;
+}
+
+/* ============================================================
+   THE FILM — click-to-load YouTube facade (no third-party
+   requests until the visitor presses play)
+   ============================================================ */
+.hf-film {
+  background: var(--hf-charcoal);
+  padding: clamp(100px, 15vh, 200px) var(--hf-gutter);
+}
+.hf-film-inner { max-width: var(--hf-max); margin: 0 auto; }
+.hf-film-head { text-align: center; margin-bottom: clamp(44px, 7vh, 78px); }
+.hf-film-head .hf-eyebrow { letter-spacing: 0.32em; margin-bottom: 18px; }
+.hf-film-lede {
+  font-family: var(--hf-body-serif);
+  font-size: 18px;
+  line-height: 1.62;
+  font-weight: 300;
+  color: var(--hf-body-on-dark);
+  max-width: 620px;
+  margin: 24px auto 0;
+  text-wrap: pretty;
+}
+.hf-film-stage {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  background: var(--hf-espresso);
+  border: 1px solid var(--hf-rule);
+  overflow: hidden;
+}
+/* the poster + play affordance, replaced by the iframe on click */
+.hf-film-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  color: inherit;
+}
+.hf-film-player > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 900ms cubic-bezier(.2,.6,.2,1), filter 600ms ease;
+  filter: saturate(0.88) contrast(1.02);
+}
+.hf-film-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(27, 22, 17, 0.34) 0%,
+    rgba(27, 22, 17, 0.18) 40%,
+    rgba(27, 22, 17, 0.82) 100%);
+  transition: background 600ms ease;
+}
+.hf-film-inset {
+  position: absolute;
+  inset: 16px;
+  border: 1px solid var(--hf-frame);
+  pointer-events: none;
+}
+.hf-film-play {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(66px, 7vw, 92px);
+  height: clamp(66px, 7vw, 92px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--hf-gold);
+  background: rgba(27, 22, 17, 0.42);
+  color: var(--hf-gold-bright);
+  transition: background 380ms ease, color 380ms ease, border-color 380ms ease;
+}
+.hf-film-cap {
+  position: absolute;
+  left: clamp(26px, 3.4vw, 46px);
+  bottom: clamp(24px, 3.4vw, 42px);
+  right: clamp(26px, 3.4vw, 46px);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  text-align: left;
+}
+.hf-film-cap-title {
+  font-family: var(--hf-serif);
+  font-size: clamp(19px, 2.1vw, 27px);
+  font-weight: 400;
+  color: var(--hf-ivory-bright);
+  line-height: 1.15;
+}
+.hf-film-cap-meta {
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--hf-gold-warm);
+}
+.hf-film-player:hover > img,
+.hf-film-player:focus-visible > img { transform: scale(1.035); filter: saturate(1) contrast(1.02); }
+.hf-film-player:hover .hf-film-play,
+.hf-film-player:focus-visible .hf-film-play {
+  background: var(--hf-gold);
+  border-color: var(--hf-gold);
+  color: var(--hf-espresso);
+}
+.hf-film-embed {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.hf-film-foot { text-align: center; margin-top: clamp(28px, 4vh, 44px); }
+@media (max-width: 700px) {
+  .hf-film-inset { inset: 10px; }
+  .hf-film-cap { gap: 5px; }
 }
 
 /* ============================================================
@@ -1105,6 +1237,7 @@ img { display: block; }
   html { scroll-behavior: auto; }
   .hf-hero-media img,
   .hf-spot-stage img.on { animation: none !important; }
+  .hf-hero-media img { transition: none; }
   .hf-hero-cue { animation: none; }
   .hf-spot.open, .hf-spot-panel { animation: none; }
 }

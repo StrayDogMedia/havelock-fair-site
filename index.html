@@ -107,8 +107,23 @@
 
   <!-- ========== HERO ========== -->
   <section class="hf-hero">
-    <div class="hf-hero-media">
-      <img src="images/home/hero.jpg" alt="Riders on horseback at the Havelock Fairgrounds">
+    <div class="hf-hero-media" id="hf-hero-media">
+      <img class="hf-hero-slide is-active is-panning" fetchpriority="high"
+           src="images/home/hero/hero-1.jpg"
+           srcset="images/home/hero/hero-1-1100.jpg 1100w, images/home/hero/hero-1.jpg 1600w"
+           sizes="100vw" alt="Riders on horseback at the Havelock Fairgrounds">
+      <img class="hf-hero-slide" alt="" aria-hidden="true" sizes="100vw"
+           data-src="images/home/hero/hero-2.jpg"
+           data-srcset="images/home/hero/hero-2-1100.jpg 1100w, images/home/hero/hero-2.jpg 1600w">
+      <img class="hf-hero-slide" alt="" aria-hidden="true" sizes="100vw"
+           data-src="images/home/hero/hero-3.jpg"
+           data-srcset="images/home/hero/hero-3-1100.jpg 1100w, images/home/hero/hero-3.jpg 1600w">
+      <img class="hf-hero-slide" alt="" aria-hidden="true" sizes="100vw"
+           data-src="images/home/hero/hero-4.jpg"
+           data-srcset="images/home/hero/hero-4-1100.jpg 1100w, images/home/hero/hero-4.jpg 1600w">
+      <img class="hf-hero-slide" alt="" aria-hidden="true" sizes="100vw"
+           data-src="images/home/hero/hero-5.jpg"
+           data-srcset="images/home/hero/hero-5-1100.jpg 1100w, images/home/hero/hero-5.jpg 1600w">
     </div>
     <div class="hf-hero-scrim"></div>
     <div class="hf-frame"></div>
@@ -223,6 +238,40 @@
     <div class="hf-break-scrim"></div>
     <div class="hf-break-line">
       <p data-i18n="break_quote">&ldquo;You don't visit the Havelock Fair. You return to it.&rdquo;</p>
+    </div>
+  </section>
+
+  <!-- ========== THE FILM (click-to-load YouTube) ========== -->
+  <section class="hf-film" id="film">
+    <div class="hf-film-inner">
+      <div class="hf-film-head" data-reveal>
+        <div class="hf-eyebrow" data-i18n="film_eyebrow">The Film</div>
+        <h2 class="hf-h2" data-i18n="film_title">Two Days, in Motion</h2>
+        <p class="hf-film-lede" data-i18n="film_lede">Live music on the outdoor stage, the show ring at full tilt, the barns, the midway &mdash; two minutes from last September's fair.</p>
+      </div>
+
+      <div class="hf-film-stage" id="hf-film-stage" data-reveal>
+        <button type="button" class="hf-film-player" id="hf-film-player"
+                data-video="I6Xw78VUZSo"
+                data-i18n-label="film_play_label"
+                aria-label="Play the film: Havelock Fair 2025 highlights">
+          <img src="images/home/film-poster.jpg" alt="" width="1280" height="720" loading="lazy">
+          <span class="hf-film-scrim" aria-hidden="true"></span>
+          <span class="hf-film-inset" aria-hidden="true"></span>
+          <span class="hf-film-play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="34" height="34" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          </span>
+          <span class="hf-film-cap">
+            <span class="hf-film-cap-title" data-i18n="film_card_title">Havelock Fair 2025 &mdash; Highlights</span>
+            <span class="hf-film-cap-meta" data-i18n="film_card_meta">2 min &middot; Film by Stray Dog Media</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="hf-film-foot" data-reveal>
+        <a class="hf-link-line" href="https://www.youtube.com/watch?v=I6Xw78VUZSo"
+           target="_blank" rel="noopener" data-i18n="film_youtube">Watch on YouTube</a>
+      </div>
     </div>
   </section>
 
