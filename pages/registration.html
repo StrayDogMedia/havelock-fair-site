@@ -38,10 +38,38 @@
       --font-body: 'Manrope', -apple-system, sans-serif;
     }
     .reg-section { padding:64px 0 80px; }
-    .form-tabs { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:40px; }
-    .form-tab { display:inline-flex; align-items:center; gap:8px; padding:12px 28px; font-family:var(--font-heading); font-size:1rem; font-weight:600; border:2px solid var(--navy); border-radius:50px; background:transparent; color:var(--navy); cursor:pointer; transition:all var(--transition); white-space:nowrap; }
-    .form-tab:hover { background:var(--cream-dark); }
-    .form-tab.active { background:var(--navy); color:var(--white); }
+    /* ---- welcome intro (above the chooser) ---- */
+    .reg-intro { max-width:62ch; margin:0 auto 44px; text-align:center; }
+    .reg-intro .hf-eyebrow { display:block; margin-bottom:14px; }
+    .reg-intro h2 { font-family:var(--hf-serif); font-weight:500; line-height:1.2; font-size:clamp(26px,3.2vw,38px); color:var(--hf-ivory-bright); margin:0 0 16px; text-wrap:balance; }
+    .reg-intro p { font-family:'Spectral',Georgia,serif; font-weight:300; font-size:16.5px; line-height:1.75; color:rgba(241,232,214,.74); margin:0 0 16px; text-wrap:pretty; }
+    .reg-intro .reg-intro-fine { font-family:var(--font-body); font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:rgba(241,232,214,.5); margin:0; }
+    /* ---- category cards (replace the old .form-tabs strip) ---- */
+    .cat-chooser { margin-bottom:44px; }
+    .cat-grid { display:grid; gap:12px; }
+    .cat-grid--2 { grid-template-columns:1fr 1fr; margin-bottom:12px; }
+    .cat-grid--3 { grid-template-columns:repeat(3,1fr); }
+    @media(max-width:760px){ .cat-grid--3 { grid-template-columns:1fr; } }
+    @media(max-width:560px){ .cat-grid--2 { grid-template-columns:1fr; } }
+    .cat-card { position:relative; display:grid; grid-template-columns:auto 1fr; grid-template-areas:"icon title" "icon sub" "icon meta"; column-gap:14px; row-gap:4px; align-content:start; text-align:left; padding:20px 22px; background:var(--hf-charcoal); border:1px solid var(--hf-rule); border-radius:0; color:var(--hf-ivory); font:inherit; cursor:pointer; transition:border-color .3s ease, background .3s ease; }
+    .cat-card:hover { border-color:var(--hf-gold); background:rgba(198,161,91,.06); }
+    .cat-card-icon { grid-area:icon; font-size:1.7rem; line-height:1.1; }
+    .cat-card-title { grid-area:title; font-family:var(--hf-serif); font-weight:500; font-size:1.2rem; color:var(--hf-ivory-bright); }
+    .cat-card-sub { grid-area:sub; font-family:var(--font-body); font-weight:300; font-size:.84rem; line-height:1.5; color:rgba(241,232,214,.72); }
+    .cat-card-meta { grid-area:meta; font-family:var(--font-body); font-size:10px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(232,211,160,.62); margin-top:4px; }
+    .cat-card.is-active { border-color:var(--hf-gold); background:rgba(198,161,91,.10); box-shadow:inset 0 -3px 0 var(--hf-gold); }
+    .cat-card.is-active .cat-card-title { color:var(--hf-gold-bright); }
+    .cat-card.is-active .cat-card-meta { color:var(--hf-gold); }
+    .cat-grid--3 .cat-card { padding:16px 18px; }
+    .cat-grid--3 .cat-card-icon { font-size:1.35rem; }
+    .cat-grid--3 .cat-card-title { font-size:1.05rem; }
+    .cat-grid--3 .cat-card-sub { font-size:.8rem; }
+    .cat-card-count { position:absolute; top:10px; right:10px; display:none; font-family:var(--font-body); font-size:10px; font-weight:700; letter-spacing:.08em; padding:3px 9px; background:var(--hf-gold); color:var(--hf-espresso); }
+    .cat-card-count.on { display:inline-block; }
+    /* ---- entry groups inside the shared general panel ---- */
+    .entries-group { display:none; }
+    .entries-group.active { display:block; }
+    .entries-summary { margin:2px 0 14px; font-size:.85rem; color:var(--text-light); }
     .form-panel { display:none; }
     .form-panel.active { display:block; }
     .reg-info-box { background:var(--white); border-left:4px solid var(--gold); border-radius:var(--radius); padding:20px 24px; margin-bottom:32px; font-size:.95rem; color:var(--text-light); }
@@ -142,9 +170,6 @@
     /* Elements that sit directly on the dark page background */
     .reg-section { padding:clamp(56px,8vh,96px) var(--hf-gutter) 90px; }
     .reg-section .container { margin:0 auto; }
-    .form-tab { border-radius:0; border-width:1px; border-color:var(--hf-frame); color:var(--hf-gold-warm); font-size:.85rem; letter-spacing:.08em; }
-    .form-tab:hover { background:rgba(198,161,91,.1); }
-    .form-tab.active { background:var(--hf-gold); color:var(--hf-espresso); border-color:var(--hf-gold); }
     .reg-info-box { border-left-color:var(--hf-gold); }
     .submit-btn { background:var(--hf-gold); color:var(--hf-espresso); border-radius:0; }
     .submit-btn:hover { background:var(--hf-gold-bright); transform:none; box-shadow:none; }
@@ -214,16 +239,58 @@
 
 <section class="reg-section">
   <div class="container" style="max-width:860px;">
-    <div class="form-tabs">
-      <button class="form-tab active" onclick="switchTab('general')" id="tab-general"><span class="tab-icon">🐄</span><span data-en="General / Livestock" data-fr="Général / Bétail">General / Livestock</span></button>
-      <button class="form-tab" onclick="switchTab('youth')" id="tab-youth"><span class="tab-icon">🌟</span><span data-en="Youth" data-fr="Jeunes">Youth</span></button>
-      <button class="form-tab" onclick="switchTab('fourh')" id="tab-fourh"><span class="tab-icon">🍀</span><span>4-H</span></button>
-      <button class="form-tab" onclick="switchTab('equestrian')" id="tab-equestrian"><span class="tab-icon">🐴</span><span data-en="Equestrian / Gymkhana" data-fr="Équestre / Gymkhana">Equestrian / Gymkhana</span></button>
+    <div class="reg-intro">
+      <span class="hf-eyebrow hf-eyebrow--bright" data-en="Open to everyone" data-fr="Ouvert à tous">Open to everyone</span>
+      <h2 data-en="If you grew it, baked it, made it or raised it — enter it." data-fr="Si vous l'avez cultivé, cuisiné, fabriqué ou élevé — présentez-le !">If you grew it, baked it, made it or raised it — enter it.</h2>
+      <p data-en="You don't need a farm or years of practice. Every September, neighbours of every age take home a ribbon for a jar of preserves, a knitted scarf, a plate of apples, a photograph or a prize heifer. Choose a category below — most entries take about five minutes." data-fr="Pas besoin d'une ferme ni de longues années d'expérience. Chaque septembre, des voisins de tous les âges repartent avec un ruban pour un pot de conserves, une écharpe tricotée, une assiette de pommes, une photo ou une génisse primée. Choisissez une catégorie ci-dessous — la plupart des inscriptions prennent environ cinq minutes.">You don't need a farm or years of practice. Every September, neighbours of every age take home a ribbon for a jar of preserves, a knitted scarf, a plate of apples, a photograph or a prize heifer. Choose a category below — most entries take about five minutes.</p>
+      <p class="reg-intro-fine" data-en="Judging begins at 11 a.m. · Exhibitors 13 and over take out a $15 membership, deducted from any prize winnings." data-fr="Le jugement débute à 11 h · Les exposants de 13 ans et plus doivent adhérer (15 $), montant déduit des gains.">Judging begins at 11 a.m. · Exhibitors 13 and over take out a $15 membership, deducted from any prize winnings.</p>
     </div>
 
-    <!-- GENERAL TAB -->
-    <div class="form-panel active" id="panel-general">
-      <div class="reg-info-box"><strong data-en="How to register:" data-fr="Comment s'inscrire :">How to register:</strong><span data-en=' Select a class, choose your sections (and breed if applicable), then click "Add Another Class" to enter more. Livestock fields appear automatically for animal classes.' data-fr=" Choisissez une classe, sélectionnez vos sections (et race si applicable), puis cliquez sur « Ajouter une autre classe » pour en ajouter d'autres."> Select a class, choose your sections (and breed if applicable), then click "Add Another Class" to enter more. Livestock fields appear automatically for animal classes.</span></div>
+    <div class="cat-chooser">
+      <div class="cat-grid cat-grid--2">
+        <button type="button" class="cat-card is-active" id="tab-livestock" aria-pressed="true" aria-controls="panel-general" onclick="switchTab('livestock')">
+          <span class="cat-card-icon" aria-hidden="true">🐄</span>
+          <span class="cat-card-title" data-en="Livestock" data-fr="Bétail">Livestock</span>
+          <span class="cat-card-sub" data-en="Cattle, horses, sheep, goats, swine, rabbits and poultry — shown in the ring and the barns." data-fr="Bovins, chevaux, moutons, chèvres, porcs, lapins et volaille — présentés au manège et aux étables.">Cattle, horses, sheep, goats, swine, rabbits and poultry — shown in the ring and the barns.</span>
+          <span class="cat-card-meta" data-en="Classes 1–10" data-fr="Classes 1 à 10">Classes 1–10</span>
+          <span class="cat-card-count" id="count-livestock"></span>
+        </button>
+        <button type="button" class="cat-card" id="tab-homegarden" aria-pressed="false" aria-controls="panel-general" onclick="switchTab('homegarden')">
+          <span class="cat-card-icon" aria-hidden="true">🧺</span>
+          <span class="cat-card-title" data-en="Home &amp; Garden" data-fr="Maison et jardin">Home &amp; Garden</span>
+          <span class="cat-card-sub" data-en="Baking, preserves, vegetables, fruit, flowers, quilting, knitting and art." data-fr="Pâtisserie, conserves, légumes, fruits, fleurs, courtepointe, tricot et arts.">Baking, preserves, vegetables, fruit, flowers, quilting, knitting and art.</span>
+          <span class="cat-card-meta" data-en="Classes 11–25" data-fr="Classes 11 à 25">Classes 11–25</span>
+          <span class="cat-card-count" id="count-homegarden"></span>
+        </button>
+      </div>
+      <div class="cat-grid cat-grid--3">
+        <button type="button" class="cat-card" id="tab-youth" aria-pressed="false" aria-controls="panel-youth" onclick="switchTab('youth')">
+          <span class="cat-card-icon" aria-hidden="true">🌟</span>
+          <span class="cat-card-title" data-en="Youth" data-fr="Jeunes">Youth</span>
+          <span class="cat-card-sub" data-en="For exhibitors 17 and under — crafts, baking, plants and art." data-fr="Pour les exposants de 17 ans et moins — artisanat, pâtisserie, plantes et arts.">For exhibitors 17 and under — crafts, baking, plants and art.</span>
+          <span class="cat-card-meta" data-en="Classes 26–27" data-fr="Classes 26 et 27">Classes 26–27</span>
+        </button>
+        <button type="button" class="cat-card" id="tab-fourh" aria-pressed="false" aria-controls="panel-fourh" onclick="switchTab('fourh')">
+          <span class="cat-card-icon" aria-hidden="true">🍀</span>
+          <span class="cat-card-title">4-H</span>
+          <span class="cat-card-sub" data-en="Heifer classes and showmanship for 4-H members aged 6 to 21." data-fr="Génisses et présentation pour les membres 4-H de 6 à 21 ans.">Heifer classes and showmanship for 4-H members aged 6 to 21.</span>
+          <span class="cat-card-meta" data-en="ATQ required" data-fr="ATQ requis">ATQ required</span>
+        </button>
+        <button type="button" class="cat-card" id="tab-equestrian" aria-pressed="false" aria-controls="panel-equestrian" onclick="switchTab('equestrian')">
+          <span class="cat-card-icon" aria-hidden="true">🐴</span>
+          <span class="cat-card-title" data-en="Equestrian &amp; Gymkhana" data-fr="Équestre et gymkhana">Equestrian &amp; Gymkhana</span>
+          <span class="cat-card-sub" data-en="Horse show and gymkhana, English or Western, all ages." data-fr="Concours hippique et gymkhana, style anglais ou western, tous les âges.">Horse show and gymkhana, English or Western, all ages.</span>
+          <span class="cat-card-meta" data-en="Sections 1–13" data-fr="Sections 1 à 13">Sections 1–13</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- GENERAL PANEL — shared by the Livestock and Home & Garden cards.
+         One form, one exhibitor block, one submit; only the entries GROUP
+         swaps with the category. Both categories submit formType 'General'
+         with the unchanged payload shape (backend constraint — do not add
+         keys or new formType values). -->
+    <div class="form-panel active" id="panel-general" role="region" aria-label="Registration form" tabindex="-1">
       <form id="form-general" novalidate>
         <div class="form-card">
           <div class="form-card-header"><h3 data-en="Exhibitor Information" data-fr="Renseignements de l'exposant">Exhibitor Information</h3></div>
@@ -242,8 +309,16 @@
         <div class="form-card">
           <div class="form-card-header"><h3 data-en="Your Entries" data-fr="Vos inscriptions">Your Entries</h3></div>
           <div class="form-card-body">
-            <div class="entries-container" id="entries-general"></div>
-            <button type="button" class="add-entry-btn" onclick="addEntry()"><span>＋</span><span data-en="Add Another Class" data-fr="Ajouter une autre classe">Add Another Class</span></button>
+            <div class="entries-group active" id="group-livestock">
+              <div class="reg-info-box"><strong data-en="How to enter:" data-fr="Comment s'inscrire :">How to enter:</strong><span data-en=' Choose a class, tick the sections you want (and breed, if the class has them), then use "Add Another Class" for each additional animal. Animal details appear automatically. Entering baking, produce or crafts too? Switch to Home &amp; Garden above — your details carry over and everything is submitted together.' data-fr=" Choisissez une classe, cochez les sections souhaitées (et la race, s'il y a lieu), puis utilisez « Ajouter une autre classe » pour chaque animal supplémentaire. Les champs sur l'animal apparaissent automatiquement. Vous présentez aussi de la pâtisserie, des récoltes ou de l'artisanat ? Passez à Maison et jardin ci-dessus — vos coordonnées sont conservées et tout est soumis ensemble."> Choose a class, tick the sections you want (and breed, if the class has them), then use "Add Another Class" for each additional animal. Animal details appear automatically. Entering baking, produce or crafts too? Switch to Home &amp; Garden above — your details carry over and everything is submitted together.</span></div>
+              <div class="entries-container" id="entries-livestock"></div>
+              <button type="button" class="add-entry-btn" onclick="addEntry('livestock')"><span>＋</span><span data-en="Add Another Class" data-fr="Ajouter une autre classe">Add Another Class</span></button>
+            </div>
+            <div class="entries-group" id="group-homegarden">
+              <div class="reg-info-box"><strong data-en="How to enter:" data-fr="Comment s'inscrire :">How to enter:</strong><span data-en=' Choose a class, tick every section you want to enter, then use "Add Another Class" to enter more classes. There is no limit on how many sections you enter. Showing an animal too? Switch to Livestock above — your details carry over and everything is submitted together.' data-fr=" Choisissez une classe, cochez toutes les sections souhaitées, puis utilisez « Ajouter une autre classe » pour en ajouter d'autres. Il n'y a pas de limite au nombre de sections. Vous présentez aussi un animal ? Passez à Bétail ci-dessus — vos coordonnées sont conservées et tout est soumis ensemble."> Choose a class, tick every section you want to enter, then use "Add Another Class" to enter more classes. There is no limit on how many sections you enter. Showing an animal too? Switch to Livestock above — your details carry over and everything is submitted together.</span></div>
+              <div class="entries-container" id="entries-homegarden"></div>
+              <button type="button" class="add-entry-btn" onclick="addEntry('homegarden')"><span>＋</span><span data-en="Add Another Class" data-fr="Ajouter une autre classe">Add Another Class</span></button>
+            </div>
           </div>
         </div>
         <div class="form-card">
@@ -251,6 +326,7 @@
           <div class="form-card-body"><div class="form-group"><label data-en="Notes / Comments" data-fr="Notes / Commentaires">Notes / Comments</label><textarea name="notes" rows="3" style="resize:vertical;"></textarea></div></div>
         </div>
         <div class="submit-section">
+          <p class="entries-summary" id="entries-summary" aria-live="polite"></p>
           <button type="submit" class="submit-btn" id="submit-general"><span>📋</span><span data-en="Submit Registration" data-fr="Soumettre l'inscription">Submit Registration</span></button>
           <p class="form-note" data-en="All registrations must be brought to the office before judging begins at 11:00 a.m." data-fr="Tous les formulaires doivent être remis au bureau avant le début du jugement à 11h00.">All registrations must be brought to the office before judging begins at 11:00 a.m.</p>
         </div>
@@ -259,7 +335,7 @@
     </div>
 
     <!-- YOUTH TAB -->
-    <div class="form-panel" id="panel-youth">
+    <div class="form-panel" id="panel-youth" role="region" aria-labelledby="tab-youth" tabindex="-1">
       <div class="reg-info-box"><strong data-en="Youth Classes:" data-fr="Classes Jeunes :">Youth Classes:</strong><span data-en=" Class 26 (Junior, 12 &amp; under) and Class 27 (Intermediate, 13–17 years). Select all sections you wish to enter." data-fr=" Classe 26 (Junior, 12 ans et moins) et Classe 27 (Intermédiaire, 13–17 ans)."> Class 26 (Junior, 12 &amp; under) and Class 27 (Intermediate, 13–17 years). Select all sections you wish to enter.</span></div>
       <form id="form-youth" novalidate>
         <div class="form-card">
@@ -300,7 +376,7 @@
     </div>
 
     <!-- 4-H TAB -->
-    <div class="form-panel" id="panel-fourh">
+    <div class="form-panel" id="panel-fourh" role="region" aria-labelledby="tab-fourh" tabindex="-1">
       <div class="reg-info-box"><strong>4-H</strong><span data-en=" — Contestants must be 6–21 years old as of January 1, 2026. ATQ site and registration numbers required for all entries." data-fr=" — Les concurrents doivent avoir entre 6 et 21 ans au 1er janvier 2026. Numéros de site et d'enregistrement ATQ requis."> — Contestants must be 6–21 years old as of January 1, 2026. ATQ site and registration numbers required for all entries.</span></div>
       <form id="form-fourh" novalidate>
         <div class="form-card">
@@ -352,7 +428,7 @@
     </div>
 
     <!-- EQUESTRIAN TAB -->
-    <div class="form-panel" id="panel-equestrian">
+    <div class="form-panel" id="panel-equestrian" role="region" aria-labelledby="tab-equestrian" tabindex="-1">
       <div class="reg-info-box"><strong data-en="Horse Show &amp; Gymkhana" data-fr="Spectacle équestre &amp; Gymkhana">Horse Show &amp; Gymkhana</strong><span data-en=" — All classes English or Western style. A. Adults (19+), B. Intermediate (13–18), C. Junior (12 &amp; under)." data-fr=" — Toutes classes style anglais ou western. A. Adultes (19+), B. Intermédiaire (13–18), C. Junior (12 ans et moins)."> — All classes English or Western style. A. Adults (19+), B. Intermediate (13–18), C. Junior (12 &amp; under).</span></div>
       <form id="form-equestrian" novalidate>
         <div class="form-card">
@@ -505,13 +581,15 @@ const GYMKHANA_SECTIONS = ['10. Barrel race / Course de barils','11. Musical pad
 const FH_SECTIONS = ['1. Junior Heifer — born Mar 1–May 31, 2026','2. Intermediate Heifer — born Dec 1, 2025–Feb 28, 2026','3. Senior Heifer — born Sept 1–Nov 30, 2025','4. Summer Yearling Heifer — born Jun 1–Aug 31, 2025','5. Junior Yearling Heifer — born Mar 1–May 31, 2025'];
 const FH_BREEDS = ['A. Ayrshire','B. Holstein','C. Jersey','D. Canadiens','E. Guernsey'];
 
-let currentLang = 'en';
+let currentLang = (() => { try { return localStorage.getItem('hf-lang') || 'en'; } catch (e) { return 'en'; } })();
 function setLang(lang) {
   currentLang = lang;
+  try { localStorage.setItem('hf-lang', lang); } catch (e) {} // keep L() and the other pages in sync
   document.querySelectorAll('[data-en]').forEach(el => { el.textContent = lang === 'fr' ? (el.dataset.fr || el.dataset.en) : el.dataset.en; });
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll(`.lang-btn[onclick="setLang('${lang}')"]`).forEach(b => b.classList.add('active'));
   document.documentElement.lang = lang;
+  if (typeof updateCatCounts === 'function') updateCatCounts(); // re-render badges + recap in the new language
 }
 
 // Heritage chrome mobile menu
@@ -526,25 +604,68 @@ function setLang(lang) {
   menu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
 })();
 
+// Front-end grouping ONLY. Both categories submit formType 'General' with the
+// identical payload shape — the sheet already distinguishes them by Class ID.
+// The predicates are deliberately asymmetric: a future class missing the
+// `livestock` flag lands in Home & Garden instead of vanishing from both.
+const GENERAL_CATS = {
+  livestock:  { group: 'group-livestock',  container: 'entries-livestock',  count: 'count-livestock',  match: c => c.livestock === true },
+  homegarden: { group: 'group-homegarden', container: 'entries-homegarden', count: 'count-homegarden', match: c => !c.livestock }
+};
+
 function switchTab(id) {
-  document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+  const isGeneralCat = !!GENERAL_CATS[id];
+  document.querySelectorAll('.cat-card').forEach(c => { c.classList.remove('is-active'); c.setAttribute('aria-pressed', 'false'); });
   document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + id)?.classList.add('active');
-  document.getElementById('panel-' + id)?.classList.add('active');
+  const card = document.getElementById('tab-' + id);
+  if (card) { card.classList.add('is-active'); card.setAttribute('aria-pressed', 'true'); }
+  const panel = document.getElementById(isGeneralCat ? 'panel-general' : 'panel-' + id);
+  if (panel) { panel.classList.add('active'); panel.focus({ preventScroll: true }); }
+  if (isGeneralCat) {
+    Object.values(GENERAL_CATS).forEach(conf => document.getElementById(conf.group).classList.remove('active'));
+    document.getElementById(GENERAL_CATS[id].group).classList.add('active');
+  }
+  updateCatCounts();
+}
+
+// Count badges on the two general cards + the recap line above Submit, so
+// entries sitting in the hidden group are never submitted unnoticed.
+function updateCatCounts() {
+  let liv = 0, hg = 0;
+  for (const [cat, conf] of Object.entries(GENERAL_CATS)) {
+    const n = [...document.querySelectorAll(`#${conf.container} .entry-card`)]
+      .filter(card => card.querySelector('[name$="_class"]')?.value).length;
+    if (cat === 'livestock') liv = n; else hg = n;
+    const badge = document.getElementById(conf.count);
+    if (badge) {
+      badge.textContent = n ? (n + ' ' + L(n > 1 ? 'entries' : 'entry', n > 1 ? 'inscriptions' : 'inscription')) : '';
+      badge.classList.toggle('on', n > 0);
+    }
+  }
+  const sum = document.getElementById('entries-summary');
+  if (sum) {
+    if (liv && hg) {
+      sum.textContent = L(`Submitting ${liv + hg} entries — ${liv} Livestock and ${hg} Home & Garden — under one exhibitor number.`,
+                          `Envoi de ${liv + hg} inscriptions — ${liv} Bétail et ${hg} Maison et jardin — sous un seul numéro d'exposant.`);
+    } else { sum.textContent = ''; }
+  }
 }
 
 let entryCount = 0;
-function addEntry() {
-  const container = document.getElementById('entries-general');
-  const idx = ++entryCount;
-  const classOptions = CLASSES.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+function addEntry(cat) {
+  const conf = GENERAL_CATS[cat];
+  const container = document.getElementById(conf.container);
+  const isFirst = container.children.length === 0;
+  const entryNum = container.children.length + 1; // per-group display number
+  const idx = ++entryCount;                        // global — keeps ids unique across both groups
+  const classOptions = CLASSES.filter(conf.match).map(c => `<option value="${c.id}">${c.name}</option>`).join('');
   const card = document.createElement('div');
   card.className = 'entry-card';
   card.id = `entry-${idx}`;
   card.innerHTML = `
     <div class="entry-card-header">
-      <h4>Entry ${idx}</h4>
-      ${idx > 1 ? `<button type="button" class="remove-entry-btn" onclick="document.getElementById('entry-${idx}').remove()">✕</button>` : ''}
+      <h4>Entry ${entryNum}</h4>
+      ${!isFirst ? `<button type="button" class="remove-entry-btn" onclick="document.getElementById('entry-${idx}').remove(); updateCatCounts()">✕</button>` : ''}
     </div>
     <div class="entry-card-body">
       <div class="class-selector-row">
@@ -592,6 +713,7 @@ function onClassChange(idx) {
   const livestockDiv = document.getElementById(`livestock-${idx}`);
   breedDiv.classList.remove('visible'); sectionsDiv.classList.remove('visible'); livestockDiv.classList.remove('visible');
   breedList.innerHTML = ''; sectionList.innerHTML = '';
+  updateCatCounts();
   if (!classData) return;
   if (classData.breeds) {
     breedList.innerHTML = classData.breeds.map(b => `<label class="breed-checkbox-item" onclick="this.classList.toggle('checked')"><input type="checkbox" name="entry_${idx}_breed[]" value="${b}"><span>${b}</span></label>`).join('');
@@ -649,7 +771,8 @@ function buildEquestrianSections() {
 
 function collectGeneralEntries() {
   const entries = [];
-  document.querySelectorAll('#entries-general .entry-card').forEach(card => {
+  // Both groups — entries added under the hidden category are still submitted
+  document.querySelectorAll('#panel-general .entry-card').forEach(card => {
     const id = card.id.replace('entry-','');
     const classVal = card.querySelector(`[name="entry_${id}_class"]`)?.value;
     if (!classVal) return;
@@ -668,9 +791,9 @@ function collectGeneralEntries() {
   return entries;
 }
 
-// Bilingual helper — reads the same language setting as i18n.js
+// Bilingual helper for JS-generated strings — follows this page's language state
 function L(en, fr) {
-  return (localStorage.getItem('hf-lang') || 'en') === 'fr' ? fr : en;
+  return currentLang === 'fr' ? fr : en;
 }
 
 function esc(s) {
@@ -746,7 +869,8 @@ async function postToSheet(payload, formType, btnId, msgId, summary) {
   const btn = document.getElementById(btnId);
   const msg = document.getElementById(msgId);
   const formEl = btn.closest('form');
-  btn.disabled = true; btn.innerHTML = '<span>⏳</span> Submitting…';
+  const originalBtnHTML = btn.innerHTML; // restore the real (possibly FR) label afterwards
+  btn.disabled = true; btn.innerHTML = '<span>⏳</span> ' + L('Submitting…', 'Envoi en cours…');
   msg.className = 'form-message';
   try {
     // NOTE: use text/plain (not application/json) so the browser skips the CORS
@@ -764,20 +888,27 @@ async function postToSheet(payload, formType, btnId, msgId, summary) {
     msg.textContent = '❌ ' + L('Submission failed: ', 'Échec de l’envoi : ') + err.message + L(' — please try again or contact the office.', ' — veuillez réessayer ou contacter le bureau.');
     msg.className = 'form-message error';
   }
-  btn.disabled = false; btn.innerHTML = '<span>📋</span> Submit Registration';
+  btn.disabled = false; btn.innerHTML = originalBtnHTML;
 }
 
-document.getElementById('form-general')?.addEventListener('submit', async (e) => {
+const generalForm = document.getElementById('form-general');
+if (!generalForm) console.error('registration: #form-general missing — submit handler not bound');
+generalForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const fd = new FormData(e.target);
   const entries = collectGeneralEntries();
-  if (!entries.length) { alert('Please add at least one class entry.'); return; }
+  if (!entries.length) { alert(L('Please add at least one class entry.', 'Veuillez ajouter au moins une classe.')); return; }
   await postToSheet({ firstName:fd.get('firstName'), lastName:fd.get('lastName'), phone:fd.get('phone'), email:fd.get('email'), address:fd.get('address'), notes:fd.get('notes'), entries }, 'General', 'submit-general', 'msg-general', {
     name: fd.get('firstName'),
     email: fd.get('email'),
     contact: [[L('Name','Nom'), fd.get('firstName')+' '+fd.get('lastName')], [L('Phone','Téléphone'), fd.get('phone')], [L('Email','Courriel'), fd.get('email')], [L('Address','Adresse'), fd.get('address')]],
     entries: entries.map(en => `${L('Class','Classe')} ${en.classId} — ${en.className}${en.breeds ? ' ('+en.breeds+')' : ''}${en.sections ? ' — '+L('Sections','Sections')+': '+en.sections : ''}${en.animalName ? ' — '+en.animalName : ''}`),
-    resetFn: () => { document.getElementById('entries-general').innerHTML=''; entryCount = 0; addEntry(); }
+    // NOTE: entryCount is deliberately NOT reset — the counter must stay
+    // monotonic so ids never collide across the two entry groups.
+    resetFn: () => {
+      Object.keys(GENERAL_CATS).forEach(cat => { document.getElementById(GENERAL_CATS[cat].container).innerHTML = ''; addEntry(cat); });
+      updateCatCounts();
+    }
   });
 });
 
@@ -835,7 +966,9 @@ document.getElementById('form-equestrian')?.addEventListener('submit', async (e)
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  addEntry();
+  if (currentLang === 'fr') setLang('fr'); // honour the language chosen on other pages
+  addEntry('livestock');
+  addEntry('homegarden');
   addFHEntry();
   buildYouthSections();
   buildEquestrianSections();
