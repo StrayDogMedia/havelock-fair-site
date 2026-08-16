@@ -349,7 +349,7 @@
               <div class="form-group"><label data-en="Date of Birth *" data-fr="Date de naissance *">Date of Birth *</label><input type="date" name="youthDOB" required></div>
               <div class="form-group"><label data-en="Class *" data-fr="Classe *">Class *</label>
                 <select name="youthClass" required>
-                  <option value="">-- Select --</option>
+                  <option value="" data-en="-- Select --" data-fr="-- Choisir --">-- Select --</option>
                   <option value="26" data-en="Class 26 — Junior (12 &amp; under)" data-fr="Classe 26 — Junior (12 ans et moins)">Class 26 — Junior (12 &amp; under)</option>
                   <option value="27" data-en="Class 27 — Intermediate (13–17)" data-fr="Classe 27 — Intermédiaire (13–17)">Class 27 — Intermediate (13–17)</option>
                 </select>
@@ -412,10 +412,10 @@
               <label data-en="Showmanship Division" data-fr="Division de présentation">Showmanship Division</label>
               <select name="fhShowmanship">
                 <option value="" data-en="-- Not entering --" data-fr="-- Ne participe pas --">-- Not entering --</option>
-                <option value="A-Peewee">A. Peewee</option>
-                <option value="B-Junior">B. Junior</option>
-                <option value="C-Intermediate">C. Intermediate</option>
-                <option value="D-Senior">D. Senior</option>
+                <option value="A-Peewee" data-en="A. Peewee" data-fr="A. Peewee">A. Peewee</option>
+                <option value="B-Junior" data-en="B. Junior" data-fr="B. Junior">B. Junior</option>
+                <option value="C-Intermediate" data-en="C. Intermediate" data-fr="C. Intermédiaire">C. Intermediate</option>
+                <option value="D-Senior" data-en="D. Senior" data-fr="D. Sénior">D. Senior</option>
               </select>
             </div>
             <div class="form-group" style="margin-top:16px;"><label><input type="checkbox" name="fhGroupClass" style="accent-color:var(--navy);margin-right:8px;"><span data-en="Group Class (club enters 4 heifers)" data-fr="Classe de groupe (club présente 4 génisses)">Group Class (club enters 4 heifers)</span></label></div>
@@ -441,7 +441,7 @@
             <div class="form-row cols-3">
               <div class="form-group"><label data-en="Age Category *" data-fr="Catégorie d'âge *">Age Category *</label>
                 <select name="eqCategory" required>
-                  <option value="">-- Select --</option>
+                  <option value="" data-en="-- Select --" data-fr="-- Choisir --">-- Select --</option>
                   <option value="A" data-en="A. Adults (19+)" data-fr="A. Adultes (19+)">A. Adults (19+)</option>
                   <option value="B" data-en="B. Intermediate (13–18)" data-fr="B. Intermédiaire (13–18)">B. Intermediate (13–18)</option>
                   <option value="C" data-en="C. Junior (12 &amp; under)" data-fr="C. Junior (12 ans et moins)">C. Junior (12 &amp; under)</option>
@@ -460,7 +460,7 @@
               <div class="form-group"><label data-en="Breed" data-fr="Race">Breed</label><input type="text" name="eqBreed"></div>
               <div class="form-group"><label data-en="Type *" data-fr="Type *">Type *</label>
                 <select name="eqType" required>
-                  <option value="">-- Select --</option>
+                  <option value="" data-en="-- Select --" data-fr="-- Choisir --">-- Select --</option>
                   <option value="horse" data-en="Horse" data-fr="Cheval">Horse</option>
                   <option value="pony" data-en="Pony" data-fr="Poney">Pony</option>
                 </select>
@@ -569,11 +569,11 @@ const CLASSES = [
 ];
 
 const YOUTH_SECTIONS = {
-  flowers: { label:'Flowers & Plants', items:['1. Bouquet of garden flowers','2. Flower arrangement in a boot','3. Flower arrangement in a hand made vase','4. Arrangement of greenery in a pumpkin','5. Herb garden (min. 3 varieties)','6. Cactus','7. Plant with flower','8. Any other plant'] },
-  produce: { label:'Vegetables & Giant Produce', items:['9. Giant Pumpkin — heaviest specimen (min 100 lbs)','10. Best display of vegetables 2x2ft (10 vegetables, 2 each)','11. Squash, Giant — heaviest specimen','12. Scarecrow (leave at sugar shanty)'] },
-  crafts:  { label:'Crafts & Clothing', items:['13. Knitted article','14. Crocheted article','15. Amigurumi / Stuffed toy','16. Decorated article of clothing','17. Handmade article of clothing','18. Handmade costume','19. Candle — any kind','20. Handmade jewellery','21. Article made from nature','22. Article made from Lego (less than 10in)','23. Creature made from Play-Doh','24. Windchime','25. Handmade doll clothing','26. Any miscellaneous article'] },
-  baking:  { label:'Baking', items:['27. Chocolate cake, iced','28. White cake, iced','29. Drop cookies, one variety — 6','30. Plate of squares, one variety — 6','31. Muffins, any kind — 6','32. Tea biscuits — 6','33. Brownies, iced — 6','34. Fancy decorated cupcakes (icing judged only) — 6','35. Box of edible goodies for Grandma','36. Nutritious snack','37. Creative fun food (e.g. Rice Krispie squares)','38. Puff Pastry Monster'] },
-  arts:    { label:'Arts (Theme: Peace / Paix)', items:['39. Watercolour','40. Acrylic','41. Oil','42. Pastel, graphite, or charcoal','43. Mixed media','44. Photo, 8x10','45. Greeting Card (original or print)','46. Painted Rock','47. Article of wood, sculpted','48. Article of wood, made by hand','49. Article of wood, painted','50. Article of wood, recycled','51. Article of wood, with Resin','52. Barn Quilt','53. Pottery (cup — Cl 26 / any — Cl 27)','54. Pottery, bowl (Class 26 only)','55. Pottery, artistic (Class 26 only)'] }
+  flowers: { label:'Flowers & Plants', labelFr:'Fleurs et plantes', items:['1. Bouquet of garden flowers','2. Flower arrangement in a boot','3. Flower arrangement in a hand made vase','4. Arrangement of greenery in a pumpkin','5. Herb garden (min. 3 varieties)','6. Cactus','7. Plant with flower','8. Any other plant'] },
+  produce: { label:'Vegetables & Giant Produce', labelFr:'Légumes et produits géants', items:['9. Giant Pumpkin — heaviest specimen (min 100 lbs)','10. Best display of vegetables 2x2ft (10 vegetables, 2 each)','11. Squash, Giant — heaviest specimen','12. Scarecrow (leave at sugar shanty)'] },
+  crafts:  { label:'Crafts & Clothing', labelFr:'Artisanat et vêtements', items:['13. Knitted article','14. Crocheted article','15. Amigurumi / Stuffed toy','16. Decorated article of clothing','17. Handmade article of clothing','18. Handmade costume','19. Candle — any kind','20. Handmade jewellery','21. Article made from nature','22. Article made from Lego (less than 10in)','23. Creature made from Play-Doh','24. Windchime','25. Handmade doll clothing','26. Any miscellaneous article'] },
+  baking:  { label:'Baking', labelFr:'Pâtisserie', items:['27. Chocolate cake, iced','28. White cake, iced','29. Drop cookies, one variety — 6','30. Plate of squares, one variety — 6','31. Muffins, any kind — 6','32. Tea biscuits — 6','33. Brownies, iced — 6','34. Fancy decorated cupcakes (icing judged only) — 6','35. Box of edible goodies for Grandma','36. Nutritious snack','37. Creative fun food (e.g. Rice Krispie squares)','38. Puff Pastry Monster'] },
+  arts:    { label:'Arts (Theme: Peace / Paix)', labelFr:'Arts (Thème : Paix / Peace)', items:['39. Watercolour','40. Acrylic','41. Oil','42. Pastel, graphite, or charcoal','43. Mixed media','44. Photo, 8x10','45. Greeting Card (original or print)','46. Painted Rock','47. Article of wood, sculpted','48. Article of wood, made by hand','49. Article of wood, painted','50. Article of wood, recycled','51. Article of wood, with Resin','52. Barn Quilt','53. Pottery (cup — Cl 26 / any — Cl 27)','54. Pottery, bowl (Class 26 only)','55. Pottery, artistic (Class 26 only)'] }
 };
 
 const EQ_SHOW_SECTIONS = ['1. Showmanship at halter, horse or pony','2. Pleasure, horse or pony','3. Command class, horse or pony','4. Pony equitation walk/trot (juniors only)','5. Pony pleasure walk/trot (juniors only)','6. Equitation English/Western all ages together','7. Lead line (guide, 16 years minimum)','8. Costume class, all ages together','9. Walk/trot, novices only, all ages together'];
@@ -664,39 +664,39 @@ function addEntry(cat) {
   card.id = `entry-${idx}`;
   card.innerHTML = `
     <div class="entry-card-header">
-      <h4>Entry ${entryNum}</h4>
-      ${!isFirst ? `<button type="button" class="remove-entry-btn" onclick="document.getElementById('entry-${idx}').remove(); updateCatCounts()">✕</button>` : ''}
+      ${bi('Entry ' + entryNum, 'Inscription ' + entryNum, 'h4')}
+      ${!isFirst ? `<button type="button" class="remove-entry-btn" aria-label="${escAttr(L('Remove this entry', 'Retirer cette inscription'))}" onclick="document.getElementById('entry-${idx}').remove(); updateCatCounts()">✕</button>` : ''}
     </div>
     <div class="entry-card-body">
       <div class="class-selector-row">
         <div class="form-group">
-          <label>Class *</label>
+          ${bi('Class *', 'Classe *')}
           <select name="entry_${idx}_class" onchange="onClassChange(${idx})" required>
-            <option value="">-- Select a class --</option>
+            ${biOpt('', '-- Select a class --', '-- Choisir une classe --')}
             ${classOptions}
           </select>
         </div>
       </div>
       <div class="breed-selector" id="breeds-${idx}">
-        <label>Breed(s) — select all that apply</label>
+        ${bi('Breed(s) — select all that apply', 'Race(s) — cochez tout ce qui s\'applique')}
         <div class="breed-checkboxes" id="breed-list-${idx}"></div>
       </div>
       <div class="sections-area" id="sections-${idx}">
-        <span class="sections-area-label">Sections to enter — check all that apply *</span>
+        ${bi('Sections to enter — check all that apply *', 'Sections à inscrire — cochez tout ce qui s\'applique *', 'span', 'class="sections-area-label"')}
         <div class="section-checkboxes" id="section-list-${idx}"></div>
       </div>
       <div class="livestock-fields" id="livestock-${idx}">
-        <h5>Animal Information</h5>
+        ${bi('Animal Information', 'Renseignements sur l\'animal', 'h5')}
         <div class="form-row cols-2">
-          <div class="form-group"><label>Animal Name</label><input type="text" name="entry_${idx}_animalName"></div>
-          <div class="form-group"><label>Registration # / ATQ #</label><input type="text" name="entry_${idx}_regNum"></div>
+          <div class="form-group">${bi('Animal Name', 'Nom de l\'animal')}<input type="text" name="entry_${idx}_animalName"></div>
+          <div class="form-group">${bi('Registration # / ATQ #', 'No. d\'enregistrement / No. ATQ')}<input type="text" name="entry_${idx}_regNum"></div>
         </div>
         <div class="form-row cols-3">
-          <div class="form-group"><label>Animal Date of Birth</label><input type="date" name="entry_${idx}_animalDOB"></div>
-          <div class="form-group"><label>Sex</label>
-            <select name="entry_${idx}_sex"><option value="">-- Select --</option><option value="Female">Female / Femelle</option><option value="Male">Male / Mâle</option></select>
+          <div class="form-group">${bi('Animal Date of Birth', 'Date de naissance de l\'animal')}<input type="date" name="entry_${idx}_animalDOB"></div>
+          <div class="form-group">${bi('Sex', 'Sexe')}
+            <select name="entry_${idx}_sex">${biOpt('', '-- Select --', '-- Choisir --')}${biOpt('Female', 'Female / Femelle', 'Femelle')}${biOpt('Male', 'Male / Mâle', 'Mâle')}</select>
           </div>
-          <div class="form-group"><label>Date came into your possession</label><input type="date" name="entry_${idx}_possDate"></div>
+          <div class="form-group">${bi('Date came into your possession', 'Date de prise de possession')}<input type="date" name="entry_${idx}_possDate"></div>
         </div>
       </div>
     </div>`;
@@ -735,18 +735,18 @@ function addFHEntry() {
   card.id = `fh-entry-${idx}`;
   card.innerHTML = `
     <div class="entry-card-header">
-      <h4>Heifer Entry ${idx}</h4>
-      ${idx > 1 ? `<button type="button" class="remove-entry-btn" onclick="document.getElementById('fh-entry-${idx}').remove()">✕</button>` : ''}
+      ${bi('Heifer Entry ' + idx, 'Génisse ' + idx, 'h4')}
+      ${idx > 1 ? `<button type="button" class="remove-entry-btn" aria-label="${escAttr(L('Remove this entry', 'Retirer cette inscription'))}" onclick="document.getElementById('fh-entry-${idx}').remove()">✕</button>` : ''}
     </div>
     <div class="entry-card-body">
       <div class="form-row cols-2">
-        <div class="form-group"><label>Section *</label><select name="fh_${idx}_section" required><option value="">-- Select section --</option>${sectionOpts}</select></div>
-        <div class="form-group"><label>Breed *</label><select name="fh_${idx}_breed" required><option value="">-- Select breed --</option>${breedOpts}</select></div>
+        <div class="form-group">${bi('Section *', 'Section *')}<select name="fh_${idx}_section" required>${biOpt('', '-- Select section --', '-- Choisir une section --')}${sectionOpts}</select></div>
+        <div class="form-group">${bi('Breed *', 'Race *')}<select name="fh_${idx}_breed" required>${biOpt('', '-- Select breed --', '-- Choisir une race --')}${breedOpts}</select></div>
       </div>
       <div class="form-row cols-3">
-        <div class="form-group"><label>Animal Name</label><input type="text" name="fh_${idx}_name"></div>
-        <div class="form-group"><label>ATQ # *</label><input type="text" name="fh_${idx}_atq" required></div>
-        <div class="form-group"><label>Date of Birth</label><input type="date" name="fh_${idx}_dob"></div>
+        <div class="form-group">${bi('Animal Name', 'Nom de l\'animal')}<input type="text" name="fh_${idx}_name"></div>
+        <div class="form-group">${bi('ATQ # *', 'No. ATQ *')}<input type="text" name="fh_${idx}_atq" required></div>
+        <div class="form-group">${bi('Date of Birth', 'Date de naissance')}<input type="date" name="fh_${idx}_dob"></div>
       </div>
     </div>`;
   container.appendChild(card);
@@ -757,7 +757,7 @@ function buildYouthSections() {
   if (!c) return;
   c.innerHTML = Object.entries(YOUTH_SECTIONS).map(([,g]) => `
     <div style="margin-bottom:24px;">
-      <div class="sections-area-label" style="font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:10px;">${g.label}</div>
+      ${bi(g.label, g.labelFr || g.label, 'div', 'class="sections-area-label" style="font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:10px;"')}
       <div class="section-checkboxes">${g.items.map(s=>`<label class="section-checkbox-item" onclick="this.classList.toggle('checked')"><input type="checkbox" name="youth_section[]" value="${s}"><span>${s}</span></label>`).join('')}</div>
     </div>`).join('');
 }
@@ -794,6 +794,22 @@ function collectGeneralEntries() {
 // Bilingual helper for JS-generated strings — follows this page's language state
 function L(en, fr) {
   return currentLang === 'fr' ? fr : en;
+}
+
+// Attribute-safe escape (esc() leaves the double quote alone)
+function escAttr(s) { return esc(s).replace(/"/g, '&quot;'); }
+
+// Bilingual element for JS-generated markup. Renders in the current language AND
+// carries data-en/data-fr, so setLang()'s sweep swaps it in place — the card is
+// never re-rendered, so nothing the exhibitor has already typed is lost.
+function bi(en, fr, tag = 'label', attrs = '') {
+  const a = attrs ? ' ' + attrs : '';
+  return `<${tag}${a} data-en="${escAttr(en)}" data-fr="${escAttr(fr)}">${esc(L(en, fr))}</${tag}>`;
+}
+
+// Same, for <option> — the value never changes, only the visible text
+function biOpt(value, en, fr) {
+  return `<option value="${escAttr(value)}" data-en="${escAttr(en)}" data-fr="${escAttr(fr)}">${esc(L(en, fr))}</option>`;
 }
 
 function esc(s) {
