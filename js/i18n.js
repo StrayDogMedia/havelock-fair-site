@@ -63,6 +63,7 @@ const translations = {
     adm_food_text: "BBQ chicken dinner, canteen, sugar shanty, and local vendors. No outside food restrictions.",
     adm_parking_title: "Parking",
     adm_parking_text: "Free parking on-site. Follow volunteer attendants. Overflow parking available along Route 202.",
+    enter_note: "No entry deadline — competition entries are accepted right up to fair day. Enter a class \u2192",
     adm_schedule_cta: "View Full Schedule",
 
     // CTA section
@@ -396,6 +397,7 @@ const translations = {
     adm_food_text: "Souper de poulet BBQ, cantine, cabane à sucre et vendeurs locaux. Aucune restriction sur la nourriture apportée.",
     adm_parking_title: "Stationnement",
     adm_parking_text: "Stationnement gratuit sur place. Suivez les préposés bénévoles. Stationnement supplémentaire le long de la route 202.",
+    enter_note: "Aucune date limite — les inscriptions aux concours sont acceptées jusqu'au jour de la foire. Inscrire une classe \u2192",
     adm_schedule_cta: "Voir l'horaire complet",
 
     cta_title: "Rejoignez-nous en septembre",
@@ -726,6 +728,7 @@ const translations = {
     adm_food_text: "Cena de pollo a la barbacoa, cantina, cabaña de azúcar y vendedores locales. Sin restricciones de comida externa.",
     adm_parking_title: "Estacionamiento",
     adm_parking_text: "Estacionamiento gratuito en el lugar. Siga a los asistentes voluntarios. Estacionamiento adicional a lo largo de la Route 202.",
+    enter_note: "Sin fecha límite — las inscripciones a los concursos se aceptan hasta el día de la feria. Inscribir una clase \u2192",
     adm_schedule_cta: "Ver el horario completo",
 
     cta_title: "Acompáñenos este septiembre",

@@ -82,6 +82,9 @@
             '<a href="https://www.facebook.com/havelockfair" target="_blank" rel="noopener">facebook.com/havelockfair</a></p>' +
         '</div>' +
       '</div>' +
+      '<div class="hf-footer-partners">' +
+        '<span class="hf-footer-partner"><img src="' + HOME + 'images/sponsors/featured/gouvernement-quebec.jpg" alt="Gouvernement du Qu&eacute;bec" width="600" height="180" loading="lazy"></span>' +
+      '</div>' +
       '<div class="hf-footer-legal" data-i18n="hfoot_credit">&copy; 2026 Havelock Fair &middot; Foire Havelock &mdash; With the support of MAPAQ &amp; the Association des expositions agricoles du Qu&eacute;bec.</div>' +
     '</footer>';
 
