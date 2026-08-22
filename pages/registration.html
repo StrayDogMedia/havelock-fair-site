@@ -523,7 +523,9 @@
 const ENDPOINT = 'https://script.google.com/macros/s/AKfycbz8svcPhVhbqck8wcSB_llZD5eesr9n3ifKZrkqm6IFoGADCd67826MzBnHgrsRcoIcwg/exec';
 
 const CLASSES = [
-  { id:1,  name:'Class 1 — Draft Horses / Chevaux de trait', livestock:true, breeds:['A. Léger/Light','B. Lourd/Heavy'],
+  { id:1,  name:'Class 1 — Draft Horses / Chevaux de trait', livestock:true,
+    breedLabel:['Division — select all that apply','Division — cochez tout ce qui s\'applique'],
+    breeds:['A. Léger/Light','B. Lourd/Heavy'],
     sections:['1. Yearling Stallion / Poulain d\'un an','2. Yearling Filly / Jument d\'un an','3. Mares (open) / Jument (ouvert)','4. Gelding / Hongre','5. Mare with Foal / Jument avec poulain','6. Four Horse Hitch / Attelage à quatre chevaux','7. Team / Équipe','8. Cart / Chariot','9. Halter / Licou'] },
   { id:2,  name:'Class 2 — Miniature Horse & Pony / Cheval Miniature & Poney', livestock:true, breeds:null,
     sections:['1. Halter / Licou','2. Conformation','3. Showmanship / Présentation','4. Long Rein / Longues rênes','5. Driving / Attelage','6. Trail / Obstacles','7. In Hand Agility / Agilité en main','8. In Hand Jumping / Saut en main'] },
@@ -541,7 +543,13 @@ const CLASSES = [
     sections:['1. Sow aged one year and over / Truie 1 an et plus','2. Boar aged one year and over / Verrat 1 an et plus','3. Sow aged less than one year / Truie moins d\'un an','4. Boar aged less than one year / Verrat moins d\'un an'] },
   { id:9,  name:'Class 9 — Rabbits / Lapins', livestock:true, breeds:null,
     sections:['1. Adult Female / Femelle adulte','2. Adult Male / Mâle adulte','3. Young female / Jeune femelle','4. Young male / Jeune mâle'] },
-  { id:10, name:'Class 10 — Fowl / Volaille', livestock:true, breeds:null,
+  /* Fowl is judged as 9 separate bird types x 4 sections = 36 sections in the
+     fair book. The form used to ask only the 4 sections, so a chicken and a
+     goose landed in the sheet indistinguishable. Bird type rides the existing
+     breeds field, so the payload shape is unchanged. */
+  { id:10, name:'Class 10 — Fowl / Volaille', livestock:true,
+    breedLabel:['Type of bird — select all that apply','Type de volaille — cochez tout ce qui s\'applique'],
+    breeds:['Chickens / Poulets','Turkeys / Dindons','Guineas / Pintades','Ducks / Canards','Geese / Oies','Swans / Cygnes','Pheasants / Faisans','Peacocks / Paons','Pigeons'],
     sections:['1. Adult Female / Femelle adulte','2. Adult Male / Mâle adulte','3. Young female / Jeune femelle','4. Young male / Jeune mâle'] },
   { id:11, name:'Class 11 — Fruits', livestock:false, breeds:null,
     sections:['1. Apples — Ambrosia (plate of 5)','2. Apples — Jerseymac (plate of 5)','3. Apples — Paula Red (plate of 5)','4. Apples — Lobo (plate of 5)','5. Apples — McIntosh (plate of 5)','6. Apples — Cortland (plate of 5)','7. Apples — Spartan (plate of 5)','8. Apples — Red Delicious (plate of 5)','9. Apples — Empire (plate of 5)','10. Apples — Ida Red (plate of 5)','11. Apples — Gala (plate of 5)','12. Apples — Honeycrisp (plate of 5)','13. Apples — New varieties (plate of 5)','14. Apples — Heritage varieties (plate of 5)','15. Crabapples (plate of 5)','16. McIntosh tray (6 apples)','17. Cortland tray (6 apples)','18. Lobo tray (6 apples)','19. Spartan tray (6 apples)','20. McIntosh 3L basket','21. Cortland 3L basket','22. Lobo 3L basket','23. Plums, any variety (10)','24. Plums — Collection, 3 varieties (5 each)','25. Grapes — 3 bunches, blue','26. Grapes — 3 bunches, white','27. Pears — Best plate of five','28. Pears — Collection, 2 varieties (3 each)','29. Raspberries (10)','30. Any other berry (10)','31. Apples — 5 varieties, 5 each','32. Apples — 3 commercial varieties (3L)','33. McIntosh tray (20 apples)','34. Cortland tray (20 apples)','35. Lobo tray (20 apples)','36. Spartan tray (20 apples)','37. Apple display 3x4ft (5 domestic varieties)'] },
@@ -764,6 +772,13 @@ function onClassChange(idx) {
   updateCatCounts();
   if (!classData) return;
   if (classData.breeds) {
+    const bl = breedDiv.querySelector('[data-en]');
+    if (bl) {
+      const en = classData.breedLabel ? classData.breedLabel[0] : 'Breed(s) — select all that apply';
+      const fr = classData.breedLabel ? classData.breedLabel[1] : 'Race(s) — cochez tout ce qui s\'applique';
+      bl.setAttribute('data-en', en); bl.setAttribute('data-fr', fr);
+      bl.textContent = L(en, fr);
+    }
     breedList.innerHTML = classData.breeds.map(b => `<label class="breed-checkbox-item" onclick="this.classList.toggle('checked')"><input type="checkbox" name="entry_${idx}_breed[]" value="${b}"><span>${b}</span></label>`).join('');
     breedDiv.classList.add('visible');
   }
