@@ -28,3 +28,20 @@ browser and quietly lose exhibitor names in the sheet. Both site categories
 
 Content-type must stay `text/plain;charset=utf-8` — `application/json` triggers a
 CORS preflight that Apps Script answers with 405.
+
+## verify-entry-count.js
+
+Functional check of the entry counter (not a payload test).
+
+```sh
+NODE_PATH=/path/to/node_modules node tools/verify-entry-count.js pages/registration.html
+```
+
+**A judgeable entry is one (breed × section) pair.** Ruling from Jesse,
+2026-08-22: ticking 2 breeds and 2 sections in one card is **4 entries**, not 1.
+That is how the fair counts entries and how prize money is awarded, so the
+badge and the per-card note must show the product, never the number of cards.
+
+The counter previously counted entry *cards*, so a card with three sections
+ticked displayed "1 entry". Cases covered: no-breed class, breed cross-product,
+singular wording, and a class picked with no sections yet (contributes 0).

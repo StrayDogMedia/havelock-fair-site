@@ -43,6 +43,8 @@
     .reg-intro .hf-eyebrow { display:block; margin-bottom:14px; }
     .reg-intro h2 { font-family:var(--hf-serif); font-weight:500; line-height:1.2; font-size:clamp(26px,3.2vw,38px); color:var(--hf-ivory-bright); margin:0 0 16px; text-wrap:balance; }
     .reg-intro p { font-family:'Spectral',Georgia,serif; font-weight:300; font-size:16.5px; line-height:1.75; color:rgba(241,232,214,.74); margin:0 0 16px; text-wrap:pretty; }
+    .entry-count-note { margin:12px 0 0; font-family:var(--font-body); font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--navy); opacity:0; transition:opacity .2s; }
+    .entry-count-note.on { opacity:.75; }
     .reg-intro .reg-intro-open { display:inline-block; font-family:var(--font-body); font-size:14px; font-weight:600; letter-spacing:.02em; color:var(--gold, #C6A15B); border:1px solid rgba(198,161,91,.35); border-radius:4px; padding:9px 16px; margin:0 0 18px; }
     .reg-intro .reg-intro-fine { font-family:var(--font-body); font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:rgba(241,232,214,.5); margin:0; }
     /* ---- category cards (replace the old .form-tabs strip) ---- */
@@ -635,11 +637,43 @@ function switchTab(id) {
 
 // Count badges on the two general cards + the recap line above Submit, so
 // entries sitting in the hidden group are never submitted unnoticed.
+/* A judgeable entry is ONE (breed x section) pair — that is how the fair
+   counts entries and how prize money is awarded, so 2 breeds with 3 sections
+   ticked is 6 entries, not 1. Counting entry CARDS understated this badly. */
+function countCardEntries(card) {
+  if (!card.querySelector('[name$="_class"]')?.value) return 0;
+  const secs   = card.querySelectorAll('[name$="_section[]"]:checked').length;
+  const breeds = card.querySelectorAll('[name$="_breed[]"]:checked').length;
+  return secs * Math.max(breeds, 1);
+}
+
+function updateCardNote(card) {
+  const secs   = card.querySelectorAll('[name$="_section[]"]:checked').length;
+  const breeds = card.querySelectorAll('[name$="_breed[]"]:checked').length;
+  const total  = countCardEntries(card);
+  const host   = card.querySelector('.sections-area');
+  if (!host) return;
+  let note = card.querySelector('.entry-count-note');
+  if (!note) {
+    note = document.createElement('p');
+    note.className = 'entry-count-note';
+    host.appendChild(note);
+  }
+  if (!total) { note.textContent = ''; note.classList.remove('on'); return; }
+  note.classList.add('on');
+  note.textContent = breeds > 1
+    ? L(`${breeds} breeds \u00d7 ${secs} section${secs > 1 ? 's' : ''} = ${total} entries`,
+        `${breeds} races \u00d7 ${secs} section${secs > 1 ? 's' : ''} = ${total} inscriptions`)
+    : L(`${total} entr${total > 1 ? 'ies' : 'y'} in this class`,
+        `${total} inscription${total > 1 ? 's' : ''} dans cette classe`);
+}
+
 function updateCatCounts() {
   let liv = 0, hg = 0;
   for (const [cat, conf] of Object.entries(GENERAL_CATS)) {
-    const n = [...document.querySelectorAll(`#${conf.container} .entry-card`)]
-      .filter(card => card.querySelector('[name$="_class"]')?.value).length;
+    const cards = [...document.querySelectorAll(`#${conf.container} .entry-card`)];
+    cards.forEach(updateCardNote);
+    const n = cards.reduce((t, card) => t + countCardEntries(card), 0);
     if (cat === 'livestock') liv = n; else hg = n;
     const badge = document.getElementById(conf.count);
     if (badge) {
@@ -655,6 +689,15 @@ function updateCatCounts() {
     } else { sum.textContent = ''; }
   }
 }
+
+/* Section/breed boxes are rendered with inline onclick handlers that only
+   toggle styling; listen for the real change event instead so the counts
+   follow the checkbox state rather than click ordering. */
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.type === 'checkbox' && /_(section|breed)\[\]$/.test(e.target.name || '')) {
+    updateCatCounts();
+  }
+});
 
 let entryCount = 0;
 function addEntry(cat) {
