@@ -43,6 +43,9 @@
     .reg-intro .hf-eyebrow { display:block; margin-bottom:14px; }
     .reg-intro h2 { font-family:var(--hf-serif); font-weight:500; line-height:1.2; font-size:clamp(26px,3.2vw,38px); color:var(--hf-ivory-bright); margin:0 0 16px; text-wrap:balance; }
     .reg-intro p { font-family:'Spectral',Georgia,serif; font-weight:300; font-size:16.5px; line-height:1.75; color:rgba(241,232,214,.74); margin:0 0 16px; text-wrap:pretty; }
+    .checkbox-line { display:flex; align-items:center; gap:10px; font-weight:600; cursor:pointer; }
+    .checkbox-line input { width:18px; height:18px; accent-color:var(--navy); cursor:pointer; }
+    .field-hint { margin:8px 0 0 28px; font-size:12px; font-weight:400; opacity:.7; line-height:1.5; }
     .entry-count-note { margin:12px 0 0; font-family:var(--font-body); font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--navy); opacity:0; transition:opacity .2s; }
     .entry-count-note.on { opacity:.75; }
     .reg-intro .reg-intro-open { display:inline-block; font-family:var(--font-body); font-size:14px; font-weight:600; letter-spacing:.02em; color:var(--gold, #C6A15B); border:1px solid rgba(198,161,91,.35); border-radius:4px; padding:9px 16px; margin:0 0 18px; }
@@ -307,7 +310,22 @@
               <div class="form-group"><label data-en="Phone *" data-fr="Téléphone *">Phone *</label><input type="tel" name="phone" required></div>
               <div class="form-group"><label data-en="Email *" data-fr="Courriel *">Email *</label><input type="email" name="email" required></div>
             </div>
-            <div class="form-row"><div class="form-group"><label data-en="Address" data-fr="Adresse">Address</label><input type="text" name="address"></div></div>
+            <!-- Structured so the treasurer can print mailing labels for prize cheques.
+                 A composed one-line "address" is still sent for backward compatibility. -->
+            <div class="form-row cols-2">
+              <div class="form-group"><label data-en="Street Address *" data-fr="Adresse (num&eacute;ro et rue) *">Street Address *</label><input type="text" name="street" placeholder="123 Route 202" required></div>
+              <div class="form-group"><label data-en="Apartment / Unit" data-fr="Appartement / Unit&eacute;">Apartment / Unit</label><input type="text" name="unit"></div>
+            </div>
+            <div class="form-row cols-3">
+              <div class="form-group"><label data-en="City / Town *" data-fr="Ville / Municipalit&eacute; *">City / Town *</label><input type="text" name="city" required></div>
+              <div class="form-group"><label data-en="Province / State" data-fr="Province / &Eacute;tat">Province / State</label><select name="province"><option value="QC" selected>Qu&eacute;bec</option><option value="ON">Ontario</option><option value="NB">New Brunswick / Nouveau-Brunswick</option><option value="NS">Nova Scotia / Nouvelle-Écosse</option><option value="PE">Prince Edward Island / Île-du-Prince-Édouard</option><option value="NL">Newfoundland &amp; Labrador / Terre-Neuve-et-Labrador</option><option value="MB">Manitoba</option><option value="SK">Saskatchewan</option><option value="AB">Alberta</option><option value="BC">British Columbia / Colombie-Britannique</option><option value="YT">Yukon</option><option value="NT">Northwest Territories / Territoires du Nord-Ouest</option><option value="NU">Nunavut</option><option value="US">United States / États-Unis</option></select></div>
+              <div class="form-group"><label data-en="Postal Code *" data-fr="Code postal *">Postal Code *</label><input type="text" name="postal" placeholder="J0S 2C0" required></div>
+            </div>
+            <div class="form-row"><div class="form-group age-check">
+              <label class="checkbox-line"><input type="checkbox" name="under13" value="Yes">
+                <span data-en="This exhibitor is under 13 years of age" data-fr="Cet exposant a moins de 13 ans">This exhibitor is under 13 years of age</span></label>
+              <p class="field-hint" data-en="Exhibitors 13 and over take out a $15 membership, deducted from any prize winnings. Under 13s pay nothing." data-fr="Les exposants de 13 ans et plus doivent adh&eacute;rer (15 $), montant d&eacute;duit des gains. Aucuns frais pour les moins de 13 ans.">Exhibitors 13 and over take out a $15 membership, deducted from any prize winnings. Under 13s pay nothing.</p>
+            </div></div>
           </div>
         </div>
         <div class="form-card">
@@ -363,6 +381,17 @@
             <div class="form-row cols-2">
               <div class="form-group"><label data-en="Phone *" data-fr="Téléphone *">Phone *</label><input type="tel" name="youthPhone" required></div>
               <div class="form-group"><label data-en="Email *" data-fr="Courriel *">Email *</label><input type="email" name="youthEmail" required></div>
+            </div>
+            <!-- Youth exhibitors win prize money, so a mailing address is needed
+                 for the cheque. The form previously collected none at all. -->
+            <div class="form-row cols-2">
+              <div class="form-group"><label data-en="Street Address *" data-fr="Adresse (num&eacute;ro et rue) *">Street Address *</label><input type="text" name="youthstreet" placeholder="123 Route 202" required></div>
+              <div class="form-group"><label data-en="Apartment / Unit" data-fr="Appartement / Unit&eacute;">Apartment / Unit</label><input type="text" name="youthunit"></div>
+            </div>
+            <div class="form-row cols-3">
+              <div class="form-group"><label data-en="City / Town *" data-fr="Ville / Municipalit&eacute; *">City / Town *</label><input type="text" name="youthcity" required></div>
+              <div class="form-group"><label data-en="Province / State" data-fr="Province / &Eacute;tat">Province / State</label><select name="youthprovince"><option value="QC" selected>Qu&eacute;bec</option><option value="ON">Ontario</option><option value="NB">New Brunswick / Nouveau-Brunswick</option><option value="NS">Nova Scotia / Nouvelle-Écosse</option><option value="PE">Prince Edward Island / Île-du-Prince-Édouard</option><option value="NL">Newfoundland &amp; Labrador / Terre-Neuve-et-Labrador</option><option value="MB">Manitoba</option><option value="SK">Saskatchewan</option><option value="AB">Alberta</option><option value="BC">British Columbia / Colombie-Britannique</option><option value="YT">Yukon</option><option value="NT">Northwest Territories / Territoires du Nord-Ouest</option><option value="NU">Nunavut</option><option value="US">United States / États-Unis</option></select></div>
+              <div class="form-group"><label data-en="Postal Code *" data-fr="Code postal *">Postal Code *</label><input type="text" name="youthpostal" placeholder="J0S 2C0" required></div>
             </div>
           </div>
         </div>
@@ -944,6 +973,16 @@ function showConfirmation(formEl, data, summary) {
   });
 }
 
+/* One-line address for the existing "Address" column, so the payload stays
+   backward compatible: if the Apps Script has not yet been extended with the
+   granular columns, nothing about the mailing address is lost. */
+function composeAddress(fd, p) {
+  const g = k => String(fd.get(p + k) || '').trim();
+  const street = [g('street'), g('unit')].filter(Boolean).join(', ');
+  const tail = [g('city'), g('province'), g('postal')].filter(Boolean).join(' ');
+  return [street, tail].filter(Boolean).join(', ');
+}
+
 async function postToSheet(payload, formType, btnId, msgId, summary) {
   const btn = document.getElementById(btnId);
   const msg = document.getElementById(msgId);
@@ -977,7 +1016,7 @@ generalForm?.addEventListener('submit', async (e) => {
   const fd = new FormData(e.target);
   const entries = collectGeneralEntries();
   if (!entries.length) { alert(L('Please add at least one class entry.', 'Veuillez ajouter au moins une classe.')); return; }
-  await postToSheet({ firstName:fd.get('firstName'), lastName:fd.get('lastName'), phone:fd.get('phone'), email:fd.get('email'), address:fd.get('address'), notes:fd.get('notes'), entries }, 'General', 'submit-general', 'msg-general', {
+  await postToSheet({ firstName:fd.get('firstName'), lastName:fd.get('lastName'), phone:fd.get('phone'), email:fd.get('email'), address:composeAddress(fd,''), street:fd.get('street'), unit:fd.get('unit'), city:fd.get('city'), province:fd.get('province'), postal:fd.get('postal'), under13:fd.get('under13') ? 'Yes' : 'No', notes:fd.get('notes'), entries }, 'General', 'submit-general', 'msg-general', {
     name: fd.get('firstName'),
     email: fd.get('email'),
     contact: [[L('Name','Nom'), fd.get('firstName')+' '+fd.get('lastName')], [L('Phone','Téléphone'), fd.get('phone')], [L('Email','Courriel'), fd.get('email')], [L('Address','Adresse'), fd.get('address')]],
@@ -996,7 +1035,7 @@ document.getElementById('form-youth')?.addEventListener('submit', async (e) => {
   const fd = new FormData(e.target);
   const sections = [...document.querySelectorAll('[name="youth_section[]"]:checked')].map(c=>c.value);
   if (!sections.length) { alert('Please select at least one section.'); return; }
-  await postToSheet({ youthFirstName:fd.get('youthFirstName'), youthLastName:fd.get('youthLastName'), youthDOB:fd.get('youthDOB'), youthClass:fd.get('youthClass'), youthGuardian:fd.get('youthGuardian'), youthPhone:fd.get('youthPhone'), youthEmail:fd.get('youthEmail'), youthNotes:fd.get('youthNotes'), sections:sections.join(' | ') }, 'Youth', 'submit-youth', 'msg-youth', {
+  await postToSheet({ youthFirstName:fd.get('youthFirstName'), youthLastName:fd.get('youthLastName'), youthDOB:fd.get('youthDOB'), youthClass:fd.get('youthClass'), youthGuardian:fd.get('youthGuardian'), youthPhone:fd.get('youthPhone'), youthEmail:fd.get('youthEmail'), address:composeAddress(fd,'youth'), street:fd.get('youthstreet'), unit:fd.get('youthunit'), city:fd.get('youthcity'), province:fd.get('youthprovince'), postal:fd.get('youthpostal'), youthNotes:fd.get('youthNotes'), sections:sections.join(' | ') }, 'Youth', 'submit-youth', 'msg-youth', {
     name: fd.get('youthFirstName'),
     email: fd.get('youthEmail'),
     contact: [[L('Name','Nom'), fd.get('youthFirstName')+' '+fd.get('youthLastName')], [L('Class','Classe'), fd.get('youthClass')], [L('Parent/Guardian','Parent/Tuteur'), fd.get('youthGuardian')], [L('Phone','Téléphone'), fd.get('youthPhone')], [L('Email','Courriel'), fd.get('youthEmail')]],

@@ -73,7 +73,10 @@ function drive(file) {
         const set = (n, v) => { const el = f.querySelector(`[name="${n}"]`); if (el) el.value = v; };
         set('firstName', 'HARNESS'); set('lastName', 'COMPARE');
         set('phone', '000-000-0000'); set('email', 'harness@example.invalid');
-        set('address', '1 Test Road, Havelock QC'); set('notes', 'harness run — not submitted anywhere');
+        set('notes', 'harness run — not submitted anywhere');
+        // structured mailing-address fields (added 2026-08-22)
+        set('street', '1 Test Road'); set('unit', 'Apt 2');
+        set('city', 'Havelock'); set('province', 'QC'); set('postal', 'J0S 2C0');
 
         f.dispatchEvent(new w.Event('submit', { bubbles: true, cancelable: true }));
 
