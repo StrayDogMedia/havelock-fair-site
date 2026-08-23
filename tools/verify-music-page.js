@@ -39,13 +39,15 @@ function boot(rel){
   w.setLanguage('fr');
   await new Promise(r=>setTimeout(r,200));
   const fr=snap();
-  const BANDS=['music_act_ramblers','music_act_bbking','music_act_stewalice','music_act_durham','music_act_lachance'];
+  // Proper nouns: band names and the song title stay byte-identical in every language.
+  const BANDS=['music_act_ramblers','music_act_bbking','music_act_stewalice','music_act_durham','music_act_lachance',
+               'music_video_title','music_video_card_title'];
   // Identical in EN and FR by nature -- not translation failures.
   const SAME_IN_FR=['nav_directions','nav_contact','nav_menu'];
   const shouldChange=keys.filter(k=>!BANDS.includes(k)&&!SAME_IN_FR.includes(k));
   const unchanged=shouldChange.filter(k=>en[k]===fr[k]);
   ck('every translatable string swapped to FR', unchanged.length===0, 'unchanged: '+unchanged.join(', '));
-  ck('band names did NOT change with language', BANDS.every(k=>en[k]===fr[k]), BANDS.filter(k=>en[k]!==fr[k]).join(','));
+  ck('band + track names did NOT change with language', BANDS.every(k=>en[k]===fr[k]), BANDS.filter(k=>en[k]!==fr[k]).join(','));
   ck('FR actually French (page title)', /Musique en direct/.test(fr['music_title']), fr['music_title']);
   ck('FR nav label', /Musique/.test(d.querySelector('.hf-nav a[href$="music.html"]').textContent));
   w.setLanguage('es');

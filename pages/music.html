@@ -13,6 +13,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400;1,6..72,500&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/heritage.css">
   <link rel="stylesheet" href="../css/heritage-pages.css">
+  <style>
+    /* The shared .hf-film-player derives its height from a poster <img>.
+       This one has none by design, so give it an explicit aspect box. */
+    .music-video-stage { max-width: 860px; margin: 0 auto; }
+    .music-video-player { aspect-ratio: 16 / 9; width: 100%; background: #14110D; }
+    @supports not (aspect-ratio: 16 / 9) { .music-video-player { min-height: 420px; } }
+  </style>
 </head>
 <body data-nav="music">
 
@@ -115,8 +122,70 @@
     </div>
   </section>
 
+
+  <!-- ========== LISTEN (click-to-load embed) ==========
+       Deliberately an EMBED, not a re-hosted file. The video is the band's
+       recording, uploaded by Volts (@voltsstudios552) — neither SDM's nor the
+       fair's to redistribute. Nothing loads from Google until a visitor
+       presses play, and there is no poster image because hotlinking YouTube's
+       thumbnail would fire the very request this facade exists to avoid. -->
+  <section class="hf-sec hf-sec--ivory hf-sec--tight">
+    <div class="hf-sec-inner">
+      <div class="hf-sec-head hf-sec-head--center" data-reveal>
+        <span class="hf-eyebrow hf-eyebrow--bronze" data-i18n="music_video_eyebrow">Have a listen</span>
+        <h2 class="hf-sec-h2" data-i18n="music_video_title">Hand Me Down Blues</h2>
+        <p class="hf-sec-lede" style="margin:18px auto 0;" data-i18n="music_video_lede">The title track from the Durham County Poets&rsquo; Juno-nominated album. They play the outdoor stage Sunday afternoon.</p>
+      </div>
+
+      <div class="hf-film-stage music-video-stage" id="hf-film-stage" data-reveal>
+        <button type="button" class="hf-film-player music-video-player" id="hf-film-player"
+                data-video="ivvA1uyZ1GI"
+                data-i18n-label="music_video_play_label"
+                aria-label="Play: Hand Me Down Blues by the Durham County Poets">
+          <span class="hf-film-inset" aria-hidden="true"></span>
+          <span class="hf-film-play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="34" height="34" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          </span>
+          <span class="hf-film-cap">
+            <span class="hf-film-cap-title" data-i18n="music_video_card_title">Durham County Poets &mdash; Hand Me Down Blues</span>
+            <span class="hf-film-cap-meta" data-i18n="music_video_card_meta">Video by Volts &middot; Plays on YouTube</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="hf-film-foot" data-reveal>
+        <a class="hf-link-line" href="https://www.youtube.com/watch?v=ivvA1uyZ1GI"
+           target="_blank" rel="noopener" data-i18n="music_video_youtube">Watch on YouTube</a>
+      </div>
+    </div>
+  </section>
+
   <!-- Scripts (order matters: chrome → i18n) -->
   <script src="../js/heritage-chrome.js"></script>
   <script src="../js/i18n.js"></script>
+  <script>
+    // Same contract as the homepage film: build the youtube-nocookie iframe
+    // only on click, then swap it in place of the button.
+    (function () {
+      var btn = document.getElementById('hf-film-player');
+      var stage = document.getElementById('hf-film-stage');
+      if (!btn || !stage) return;
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-video');
+        if (!id) return;
+        var lang = (typeof currentLang !== 'undefined' && currentLang) || 'en';
+        var frame = document.createElement('iframe');
+        frame.className = 'hf-film-embed';
+        frame.src = 'https://www.youtube-nocookie.com/embed/' + id +
+                    '?autoplay=1&rel=0&modestbranding=1&playsinline=1&hl=' + lang;
+        frame.title = 'Durham County Poets — Hand Me Down Blues';
+        frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        frame.setAttribute('allowfullscreen', '');
+        frame.setAttribute('loading', 'lazy');
+        stage.replaceChild(frame, btn);
+        frame.focus();
+      });
+    })();
+  </script>
 </body>
 </html>
