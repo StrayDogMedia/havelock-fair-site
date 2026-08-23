@@ -49,7 +49,12 @@ Template:
 ```
 
 **State variants** (write temp `__tmp_*.html` copies, delete before committing):
-- Language: inject `<script>localStorage.setItem("hf-lang","fr");</script>` *before* the `i18n.js` tag (same for `es`).
+- Language: the switch function is **`setLanguage(lang)`**, NOT `setLang` — `setLang` exists only inside
+  `pages/registration.html`, which has its own private i18n. Calling the wrong name throws silently
+  inside an injected script and you get an English screenshot that looks like a translation bug.
+  **Injecting `localStorage.setItem("hf-lang","fr")` does not work over `file://`** — that is an opaque
+  origin, `localStorage` throws, and `i18n.js` falls back to `en`. Serve the site and call
+  `setLanguage("fr")` after load instead (see "Serve it, don't file:// it" below).
 - Spotlight modal open: append before `</body>`: `<script>setTimeout(()=>{document.querySelectorAll(".hf-card")[0].click();},700);</script>`
 - Mobile menu open: `document.getElementById("hf-menu-open").click()`.
 
@@ -71,3 +76,70 @@ Cache-bust with a query param; Pages typically serves the new version in ~30–6
 - Script order on the homepage matters: `i18n.js` → `countdown.js` → `heritage-home.js` (countdown and the modal read the `translations`/`currentLang` globals).
 - `pages/registration.html` is self-contained (own inline JS/i18n, posts to Google Apps Script) — never assume shared-file changes reach it.
 - Image tooling: no ImageMagick; use `sips` or a scratchpad venv with Pillow (`python3 -m venv "$SP/venv" && "$SP/venv/bin/pip" install Pillow`).
+
+## Serve it, don't `file://` it  (learned 2026-08-23)
+
+Verifying anything that touches i18n, chrome injection or relative assets is far more reliable over a
+real origin than off disk:
+
+```bash
+python3 -m http.server 8765   # from the repo root; background it
+# ...verify against http://localhost:8765/pages/whatever.html
+pkill -f "http.server 8765"
+```
+
+Why it matters: `file://` is an **opaque origin**, so `localStorage` throws. `js/i18n.js` line ~1110 does
+`let currentLang = localStorage.getItem("hf-lang") || "en";` **unguarded**, so the throw kills the whole
+i18n layer and every later reference dies with `Cannot access 'currentLang' before initialization`.
+(That unguarded read is also a real, if minor, production risk for visitors who block site data — worth a
+`try/catch` some day.)
+
+## Screenshot polling: delete the old file first
+
+The launch-and-poll pattern below is right, but `until [ -f "$OUT.png" ]` **exits instantly if a previous
+run left the file there**, so you silently screenshot nothing and compare two identical stale images.
+Always `rm -f "$OUT.png"` before launching. Same for `--dump-dom` — it hangs like `--screenshot` does, so
+background it and poll for a **non-empty** file (`until [ -s "$OUT" ]`).
+
+## jsdom notes for this repo
+
+- `require('jsdom')` here exports only `JSDOM, VirtualConsole, CookieJar, requestInterceptor, toughCookie`
+  — there is **no `ResourceLoader`** to subclass. To prove a page makes no third-party request, assert
+  statically over the loaded DOM instead: collect every `src`/`href`/`poster`/`data-src` and check none
+  point at the host in question.
+- Stub `IntersectionObserver` in `beforeParse` — `heritage-chrome.js` uses it for `[data-reveal]` and
+  throws without it.
+- Interior pages load `heritage-chrome.js` + `i18n.js` only. **`heritage-home.js` is homepage-only**, so
+  any behaviour defined there (e.g. the click-to-load film facade) must be re-inited on an interior page.
+
+## The trap DOM tests cannot catch: contrast
+
+`.hf-sec` is **`--hf-espresso`-backgrounded** (dark). `.hf-sec--ivory` flips it light. Headings inside a
+dark section must use `--hf-ivory-bright` with a `.hf-sec--ivory` override — copy the `.hf-sec-h2`
+convention rather than guessing a colour.
+
+On 2026-08-23 a new page styled act names with `--hf-espresso` and rendered them **invisible, dark on
+dark**. All 27 DOM assertions passed, because they check `textContent`, not colour. **Only the screenshot
+caught it.** If you add a page and only run scripted checks, you have not verified it — take the shot.
+
+## Verifying against the live page, not just the repo
+
+After a push, download the served HTML and run the same harnesses against *that* file. It catches deploy
+lag and any Pages-side surprise, and costs one `curl`:
+
+```bash
+curl -s "https://havelockfair.ca/pages/PAGE.html?v=$(date +%s)" -o live.html
+NODE_PATH=/path/to/node_modules node tools/verify-PAGE.js live.html
+```
+
+## Harnesses that live in `tools/`
+
+`verify-registration.js` (payload byte-compare — run before **every** commit touching
+`pages/registration.html`), `verify-entry-count.js`, `verify-class-divisions.js`,
+`verify-address-fields.js`, `verify-music-page.js`, `verify-music-embed.js`, `verify-results-entry.js`.
+They need `jsdom`, which is not vendored: `npm install jsdom` somewhere and pass `NODE_PATH`.
+
+**Proper nouns must not "translate".** Band names, act names and song titles are pinned byte-identical
+across `en`/`fr`/`es`. A blanket "every string changed under FR" assertion will fail on them — and on
+`nav_directions`, `nav_contact`, `nav_menu`, which are genuinely the same word in French. Exclude, do not
+"fix".
