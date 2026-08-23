@@ -43,7 +43,7 @@ function boot(rel){
   const BANDS=['music_act_ramblers','music_act_bbking','music_act_stewalice','music_act_durham','music_act_lachance',
                'music_video_title','music_video_card_title'];
   // Identical in EN and FR by nature -- not translation failures.
-  const SAME_IN_FR=['nav_directions','nav_contact','nav_menu'];
+  const SAME_IN_FR=['nav_directions','nav_contact','nav_menu','nav_photos'];
   const shouldChange=keys.filter(k=>!BANDS.includes(k)&&!SAME_IN_FR.includes(k));
   const unchanged=shouldChange.filter(k=>en[k]===fr[k]);
   ck('every translatable string swapped to FR', unchanged.length===0, 'unchanged: '+unchanged.join(', '));

@@ -180,73 +180,94 @@
     .submit-btn { background:var(--hf-gold); color:var(--hf-espresso); border-radius:0; }
     .submit-btn:hover { background:var(--hf-gold-bright); transform:none; box-shadow:none; }
     .form-note { color:rgba(241,232,214,.6); }
+
+  /* Spanish-only explainer above the form (see #es-form-notice) */
+  .reg-lang-notice {
+    margin: 0 0 28px;
+    padding: 16px 20px;
+    border-left: 3px solid var(--hf-gold, #c6a15b);
+    background: rgba(198, 161, 91, 0.12);
+    color: var(--hf-ivory-bright, #f5ecd8);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .reg-lang-notice[hidden] { display: none; }
+  .reg-lang-notice a { color: var(--hf-gold-bright, #d8bb78); text-decoration: underline; }
   </style>
 </head>
 <body>
 
 <!-- Heritage chrome inline (this page keeps its own data-en/data-fr i18n
      and setLang(), so it does not use js/heritage-chrome.js or i18n.js) -->
-<header class="hf-header">
-  <a href="../" class="hf-brand">Havelock&nbsp;Fair</a>
+<a class="hf-skip" href="#main" data-en="Skip to content" data-fr="Aller au contenu" data-es="Ir al contenido">Skip to content</a>
+
+<header class="hf-header" id="hf-header">
+  <a href="../" class="hf-brand" data-en="Havelock Fair" data-fr="Foire Havelock" data-es="Feria de Havelock">Havelock&nbsp;Fair</a>
   <nav class="hf-nav" aria-label="Main navigation">
-    <a href="../" data-en="Home" data-fr="Accueil">Home</a>
-    <a href="schedule.html" data-en="Schedule" data-fr="Horaire">Schedule</a>
-    <a href="music.html" data-en="Music" data-fr="Musique">Music</a>
-    <a href="directions.html" data-en="Directions" data-fr="Directions">Directions</a>
-    <a href="sponsors.html" data-en="Sponsors" data-fr="Commanditaires">Sponsors</a>
-    <a href="about.html" data-en="About" data-fr="À propos">About</a>
-    <a href="contact.html" data-en="Contact" data-fr="Contact">Contact</a>
-    <a href="gallery.html" data-en="Photos" data-fr="Photos">Photos</a>
-    <a href="registration.html" class="active" data-en="Registration" data-fr="Inscription">Registration</a>
+    <a href="../" data-en="Home" data-fr="Accueil" data-es="Inicio">Home</a>
+    <a href="schedule.html" data-en="Schedule" data-fr="Horaire" data-es="Horario">Schedule</a>
+    <a href="music.html" data-en="Music" data-fr="Musique" data-es="Música">Music</a>
+    <a href="directions.html" data-en="Directions" data-fr="Directions" data-es="Cómo llegar">Directions</a>
+    <a href="about.html" data-en="About" data-fr="À propos" data-es="Acerca de">About</a>
+    <a href="gallery.html" data-en="Photos" data-fr="Photos" data-es="Fotos">Photos</a>
+    <a href="contact.html" data-en="Contact" data-fr="Contact" data-es="Contacto">Contact</a>
   </nav>
+  <div class="hf-lang" role="group" aria-label="Language">
+    <button class="lang-btn active" type="button" onclick="setLang('en')" aria-pressed="true" lang="en">EN</button>
+    <button class="lang-btn" type="button" onclick="setLang('fr')" aria-pressed="false" lang="fr">FR</button>
+    <button class="lang-btn" type="button" onclick="setLang('es')" aria-pressed="false" lang="es">ES</button>
+  </div>
   <div class="hf-nav-side">
-    <div class="hf-lang">
-      <button class="lang-btn active" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('fr')">FR</button>
-    </div>
+    <a href="registration.html" class="hf-tickets" data-en="Register" data-fr="S&rsquo;inscrire" data-es="Inscribirse">Register</a>
   </div>
   <button class="hf-menu-btn" id="hf-menu-open" aria-expanded="false" aria-controls="hf-mobile-menu">
-    <span aria-hidden="true">&#8801;</span> <span data-en="Menu" data-fr="Menu">Menu</span>
+    <span aria-hidden="true">&#8801;</span> <span data-en="Menu" data-fr="Menu" data-es="Menú">Menu</span>
   </button>
 </header>
 
 <div class="hf-mobile-menu" id="hf-mobile-menu">
   <div class="hf-mobile-top">
-    <span class="hf-brand">Havelock&nbsp;Fair</span>
+    <span class="hf-brand" data-en="Havelock Fair" data-fr="Foire Havelock" data-es="Feria de Havelock">Havelock&nbsp;Fair</span>
     <button class="hf-mobile-close" id="hf-menu-close" aria-label="Close menu">&times;</button>
   </div>
   <nav class="hf-mobile-nav" aria-label="Mobile navigation">
-    <a href="../" data-en="Home" data-fr="Accueil">Home</a>
-    <a href="schedule.html" data-en="Schedule" data-fr="Horaire">Schedule</a>
-    <a href="music.html" data-en="Music" data-fr="Musique">Music</a>
-    <a href="directions.html" data-en="Directions" data-fr="Directions">Directions</a>
-    <a href="sponsors.html" data-en="Sponsors" data-fr="Commanditaires">Sponsors</a>
-    <a href="about.html" data-en="About" data-fr="À propos">About</a>
-    <a href="contact.html" data-en="Contact" data-fr="Contact">Contact</a>
-    <a href="gallery.html" data-en="Photos" data-fr="Photos">Photos</a>
-    <a href="registration.html" data-en="Registration" data-fr="Inscription">Registration</a>
+    <a href="../" data-en="Home" data-fr="Accueil" data-es="Inicio">Home</a>
+    <a href="schedule.html" data-en="Schedule" data-fr="Horaire" data-es="Horario">Schedule</a>
+    <a href="music.html" data-en="Music" data-fr="Musique" data-es="Música">Music</a>
+    <a href="directions.html" data-en="Directions" data-fr="Directions" data-es="Cómo llegar">Directions</a>
+    <a href="about.html" data-en="About" data-fr="À propos" data-es="Acerca de">About</a>
+    <a href="sponsors.html" data-en="Sponsors" data-fr="Commanditaires" data-es="Patrocinadores">Sponsors</a>
+    <a href="gallery.html" data-en="Photos" data-fr="Photos" data-es="Fotos">Photos</a>
+    <a href="contact.html" data-en="Contact" data-fr="Contact" data-es="Contacto">Contact</a>
   </nav>
   <div class="hf-mobile-foot">
-    <div class="hf-lang">
-      <button class="lang-btn active" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('fr')">FR</button>
-    </div>
+    <a href="registration.html" class="hf-tickets" data-en="Register" data-fr="S&rsquo;inscrire" data-es="Inscribirse">Register</a>
   </div>
 </div>
 
-<section class="hf-page-hero">
+<section class="hf-page-hero" id="main" tabindex="-1">
   <img src="../images/home/spotlight/cr-1.jpg" alt="A blue-ribbon quilt in the Havelock Fair exhibit hall">
   <div class="hf-page-hero-scrim"></div>
   <div class="hf-frame"></div>
   <div class="hf-page-hero-copy">
-    <div class="hf-eyebrow hf-eyebrow--bright" data-en="Havelock Fair 2026" data-fr="Foire Havelock 2026">Havelock Fair 2026</div>
-    <h1 class="hf-page-title" data-en="Competition Registration" data-fr="Inscription aux compétitions">Competition Registration</h1>
-    <p class="hf-page-lede" data-en="Register your entries for the Havelock Fair — September 12–13, 2026" data-fr="Inscrivez vos participations à la Foire de Havelock — 12–13 septembre 2026">Register your entries for the Havelock Fair — September 12–13, 2026</p>
+    <div class="hf-eyebrow hf-eyebrow--bright" data-en="Havelock Fair 2026" data-fr="Foire Havelock 2026" data-es="Feria de Havelock 2026">Havelock Fair 2026</div>
+    <h1 class="hf-page-title" data-en="Competition Registration" data-fr="Inscription aux compétitions" data-es="Inscripción a los concursos">Competition Registration</h1>
+    <p class="hf-page-lede" data-en="Register your entries for the Havelock Fair — September 12–13, 2026" data-fr="Inscrivez vos participations à la Foire de Havelock — 12–13 septembre 2026" data-es="Inscriba sus participaciones en la Feria de Havelock — 12 y 13 de septiembre de 2026">Register your entries for the Havelock Fair — September 12–13, 2026</p>
   </div>
 </section>
 
 <section class="reg-section">
   <div class="container" style="max-width:860px;">
+    <!-- Shown only in ES. The entry form is EN/FR because every class and
+         section name below is quoted verbatim from the printed bilingual
+         prize book and has to match the judging sheets. Saying so beats
+         silently serving English, which is what happened before. -->
+    <p class="reg-lang-notice" id="es-form-notice" hidden lang="es">
+      El formulario de inscripci&oacute;n est&aacute; disponible en ingl&eacute;s y franc&eacute;s &uacute;nicamente:
+      los nombres de las clases y secciones provienen del cat&aacute;logo oficial biling&uuml;e del concurso.
+      Si necesita ayuda para inscribirse, <a href="contact.html">escr&iacute;banos</a> y le ayudamos con gusto.
+    </p>
+
     <div class="reg-intro">
       <span class="hf-eyebrow hf-eyebrow--bright" data-en="Open to everyone" data-fr="Ouvert à tous">Open to everyone</span>
       <h2 data-en="If you grew it, baked it, made it or raised it — enter it." data-fr="Si vous l'avez cultivé, cuisiné, fabriqué ou élevé — présentez-le !">If you grew it, baked it, made it or raised it — enter it.</h2>
@@ -629,26 +650,61 @@ const FH_SECTIONS = ['1. Junior Heifer — born Mar 1–May 31, 2026','2. Interm
 const FH_BREEDS = ['A. Ayrshire','B. Holstein','C. Jersey','D. Canadiens','E. Guernsey'];
 
 let currentLang = (() => { try { return localStorage.getItem('hf-lang') || 'en'; } catch (e) { return 'en'; } })();
+/* The chrome carries data-es; the FORM deliberately does not — the class and
+   section names are quoted verbatim from the printed bilingual prize book and
+   must match the judging sheets, so Spanish falls back to English there and
+   #es-form-notice says so out loud. Before this, 'es' fell through silently
+   and the EN button stayed lit, so a Spanish visitor could not tell. */
 function setLang(lang) {
+  if (!['en', 'fr', 'es'].includes(lang)) lang = 'en';
   currentLang = lang;
   try { localStorage.setItem('hf-lang', lang); } catch (e) {} // keep L() and the other pages in sync
-  document.querySelectorAll('[data-en]').forEach(el => { el.textContent = lang === 'fr' ? (el.dataset.fr || el.dataset.en) : el.dataset.en; });
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll(`.lang-btn[onclick="setLang('${lang}')"]`).forEach(b => b.classList.add('active'));
+  document.querySelectorAll('[data-en]').forEach(el => { el.textContent = el.dataset[lang] || el.dataset.en; });
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    const on = b.getAttribute('onclick') === `setLang('${lang}')`;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  const notice = document.getElementById('es-form-notice');
+  if (notice) notice.hidden = lang !== 'es';
   document.documentElement.lang = lang;
   if (typeof updateCatCounts === 'function') updateCatCounts(); // re-render badges + recap in the new language
 }
 
-// Heritage chrome mobile menu
+// Heritage chrome: sticky header + mobile menu (mirrors js/heritage-chrome.js)
 (() => {
+  const header = document.getElementById('hf-header');
+  if (header) {
+    let stuck = false, ticking = false;
+    const sync = () => {
+      const on = window.scrollY > 90;
+      if (on !== stuck) { stuck = on; header.classList.toggle('is-stuck', on); }
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(() => { sync(); ticking = false; }); ticking = true; }
+    }, { passive: true });
+    sync();
+  }
+
   const menu = document.getElementById('hf-mobile-menu');
   const openBtn = document.getElementById('hf-menu-open');
   const closeBtn = document.getElementById('hf-menu-close');
   if (!menu || !openBtn || !closeBtn) return;
-  const close = () => { menu.classList.remove('open'); openBtn.setAttribute('aria-expanded', 'false'); };
-  openBtn.addEventListener('click', () => { menu.classList.add('open'); openBtn.setAttribute('aria-expanded', 'true'); });
+  const close = () => {
+    menu.classList.remove('open');
+    openBtn.setAttribute('aria-expanded', 'false');
+    openBtn.focus();
+  };
+  openBtn.addEventListener('click', () => {
+    menu.classList.add('open');
+    openBtn.setAttribute('aria-expanded', 'true');
+    closeBtn.focus();
+  });
   closeBtn.addEventListener('click', close);
   menu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && menu.classList.contains('open')) close();
+  });
 })();
 
 // Front-end grouping ONLY. Both categories submit formType 'General' with the
@@ -1087,7 +1143,7 @@ document.getElementById('form-equestrian')?.addEventListener('submit', async (e)
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (currentLang === 'fr') setLang('fr'); // honour the language chosen on other pages
+  setLang(currentLang); // honour whatever language was chosen on the other pages
   addEntry('livestock');
   addEntry('homegarden');
   addFHEntry();

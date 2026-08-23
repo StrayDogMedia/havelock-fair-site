@@ -8,6 +8,7 @@ const translations = {
     nav_music: "Music",
     nav_sponsors: "Sponsors",
     nav_gallery: "Photo Gallery",
+    nav_photos: "Photos",
     nav_registration: "Registration",
     nav_vendors: "Vendors",
     nav_history: "History",
@@ -18,6 +19,10 @@ const translations = {
     hero_date: "September 12–13, 2026",
     hero_cta: "View Schedule",
     hero_cta2: "Get Directions",
+    hero_cta3: "Enter a Class",
+    brand_name: "Havelock Fair",
+    brand_h1_a: "Havelock",
+    brand_h1_b: "Fair",
 
     // Countdown
     countdown_title: "The Fair Begins In",
@@ -257,8 +262,10 @@ const translations = {
     schedule_download_btn: "Download Full Program (PDF)",
 
     // Heritage Noir homepage
-    nav_tickets: "Tickets",
+    nav_tickets: "Register",
     nav_menu: "Menu",
+    nav_lang_label: "Language",
+    skip_to_content: "Skip to content",
     hero_eyebrow: "Est. 1871 · Haut-Saint-Laurent, Québec",
     hero_lede: "One of Canada's oldest continuously held agricultural fairs — a living tradition in the heart of rural Québec.",
     edition_label: "155th Edition · Since 1871",
@@ -368,6 +375,7 @@ const translations = {
     nav_music: "Musique",
     nav_sponsors: "Commanditaires",
     nav_gallery: "Galerie photos",
+    nav_photos: "Photos",
     nav_registration: "Inscription",
     nav_vendors: "Exposants",
     nav_history: "Histoire",
@@ -377,6 +385,10 @@ const translations = {
     hero_date: "12–13 septembre 2026",
     hero_cta: "Voir l'horaire",
     hero_cta2: "Itinéraire",
+    hero_cta3: "Inscrire une classe",
+    brand_name: "Foire Havelock",
+    brand_h1_a: "Foire",
+    brand_h1_b: "Havelock",
 
     countdown_title: "La foire commence dans",
     countdown_days: "Jours",
@@ -609,8 +621,10 @@ const translations = {
     schedule_download_btn: "Télécharger le programme complet (PDF)",
 
     // Page d'accueil Heritage Noir
-    nav_tickets: "Billetterie",
+    nav_tickets: "S'inscrire",
     nav_menu: "Menu",
+    nav_lang_label: "Langue",
+    skip_to_content: "Aller au contenu",
     hero_eyebrow: "Depuis 1871 · Haut-Saint-Laurent (Québec)",
     hero_lede: "L'une des plus anciennes foires agricoles du Canada tenue sans interruption — une tradition vivante au cœur du Québec rural.",
     edition_label: "155e édition · Depuis 1871",
@@ -720,6 +734,7 @@ const translations = {
     nav_music: "Música",
     nav_sponsors: "Patrocinadores",
     nav_gallery: "Galería de fotos",
+    nav_photos: "Fotos",
     nav_registration: "Inscripción",
     nav_vendors: "Vendedores",
     nav_history: "Historia",
@@ -729,6 +744,10 @@ const translations = {
     hero_date: "12–13 de septiembre de 2026",
     hero_cta: "Ver horario",
     hero_cta2: "Cómo llegar",
+    hero_cta3: "Inscribir una clase",
+    brand_name: "Feria de Havelock",
+    brand_h1_a: "Feria de",
+    brand_h1_b: "Havelock",
 
     countdown_title: "La feria comienza en",
     countdown_days: "Días",
@@ -961,8 +980,10 @@ const translations = {
     schedule_download_btn: "Descargar el programa completo (PDF)",
 
     // Página de inicio Heritage Noir
-    nav_tickets: "Boletos",
+    nav_tickets: "Inscribirse",
     nav_menu: "Menú",
+    nav_lang_label: "Idioma",
+    skip_to_content: "Ir al contenido",
     hero_eyebrow: "Desde 1871 · Haut-Saint-Laurent, Quebec",
     hero_lede: "Una de las ferias agrícolas más antiguas de Canadá en funcionamiento continuo — una tradición viva en el corazón del Quebec rural.",
     edition_label: "155.ª edición · Desde 1871",
@@ -1065,11 +1086,13 @@ const translations = {
   }
 };
 
-let currentLang = localStorage.getItem("hf-lang") || "en";
+let currentLang = (() => {
+  try { return localStorage.getItem("hf-lang") || "en"; } catch (e) { return "en"; }
+})();
 
 function setLanguage(lang) {
   currentLang = lang;
-  localStorage.setItem("hf-lang", lang);
+  try { localStorage.setItem("hf-lang", lang); } catch (e) {}
   document.documentElement.lang = lang;
 
   document.querySelectorAll("[data-i18n]").forEach(el => {
@@ -1095,7 +1118,9 @@ function setLanguage(lang) {
   });
 
   document.querySelectorAll(".lang-btn").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.lang === lang);
+    const on = btn.dataset.lang === lang;
+    btn.classList.toggle("active", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
   });
 
   if (typeof updateCountdown === "function") updateCountdown();

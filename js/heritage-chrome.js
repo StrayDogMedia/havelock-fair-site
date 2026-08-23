@@ -12,50 +12,67 @@
   var P = inPages ? '' : 'pages/';
   var active = document.body.getAttribute('data-nav') || '';
 
+  /* Seven items, deliberately. Registration is dropped because the gold
+     button next to it goes to the same page, and Sponsors because the
+     footer "Explore" column already links it — nine items forced the bar
+     to collapse at 1200px, which took the language switcher with it.
+     The mobile drawer still carries the full set (see MOBILE_LINKS). */
   var LINKS = [
     { key: 'home',         href: HOME,                    i18n: 'nav_home',         label: 'Home' },
     { key: 'schedule',     href: P + 'schedule.html',     i18n: 'nav_schedule',     label: 'Schedule' },
     { key: 'music',        href: P + 'music.html',        i18n: 'nav_music',        label: 'Music' },
     { key: 'directions',   href: P + 'directions.html',   i18n: 'nav_directions',   label: 'Directions' },
-    { key: 'sponsors',     href: P + 'sponsors.html',     i18n: 'nav_sponsors',     label: 'Sponsors' },
     { key: 'about',        href: P + 'about.html',        i18n: 'nav_about',        label: 'About' },
-    { key: 'contact',      href: P + 'contact.html',      i18n: 'nav_contact',      label: 'Contact' },
-    { key: 'gallery',      href: P + 'gallery.html',      i18n: 'nav_gallery',      label: 'Photos' },
-    { key: 'registration', href: P + 'registration.html', i18n: 'nav_registration', label: 'Registration' }
+    { key: 'gallery',      href: P + 'gallery.html',      i18n: 'nav_photos',       label: 'Photos' },
+    { key: 'contact',      href: P + 'contact.html',      i18n: 'nav_contact',      label: 'Contact' }
   ];
 
-  function navLinks() {
-    return LINKS.map(function (l) {
+  var MOBILE_LINKS = LINKS.slice(0, 5).concat([
+    { key: 'sponsors',     href: P + 'sponsors.html',     i18n: 'nav_sponsors',     label: 'Sponsors' },
+    { key: 'gallery',      href: P + 'gallery.html',      i18n: 'nav_photos',       label: 'Photos' },
+    { key: 'contact',      href: P + 'contact.html',      i18n: 'nav_contact',      label: 'Contact' }
+  ]);
+
+  function navLinks(list) {
+    return (list || LINKS).map(function (l) {
       return '<a href="' + l.href + '"' + (l.key === active ? ' class="active"' : '') +
         ' data-i18n="' + l.i18n + '">' + l.label + '</a>';
     }).join('');
   }
 
-  var langHTML =
-    '<div class="hf-lang">' +
-      '<button class="lang-btn" data-lang="en">EN</button>' +
-      '<button class="lang-btn" data-lang="fr">FR</button>' +
-      '<button class="lang-btn" data-lang="es">ES</button>' +
+  /* NOT inside .hf-nav-side — that is display:none in the collapsed
+     layout, which is how the toggle went missing on every phone. */
+  function langHTML() {
+    return '<div class="hf-lang" role="group" aria-label="Language" data-i18n-label="nav_lang_label">' +
+      '<button class="lang-btn" type="button" data-lang="en" aria-pressed="false" lang="en">EN</button>' +
+      '<button class="lang-btn" type="button" data-lang="fr" aria-pressed="false" lang="fr">FR</button>' +
+      '<button class="lang-btn" type="button" data-lang="es" aria-pressed="false" lang="es">ES</button>' +
     '</div>';
+  }
 
   var ticketsHTML = '<a href="' + P + 'registration.html" class="hf-tickets" data-i18n="nav_tickets">Tickets</a>';
 
+  var skipHTML =
+    '<a class="hf-skip" href="#main" data-i18n="skip_to_content">Skip to content</a>';
+
   var headerHTML =
-    '<header class="hf-header">' +
-      '<a href="' + HOME + '" class="hf-brand">Havelock&nbsp;Fair</a>' +
+    skipHTML +
+    '<header class="hf-header" id="hf-header">' +
+      '<a href="' + HOME + '" class="hf-brand" data-i18n="brand_name">Havelock&nbsp;Fair</a>' +
       '<nav class="hf-nav" aria-label="Main navigation">' + navLinks() + '</nav>' +
-      '<div class="hf-nav-side">' + langHTML + ticketsHTML + '</div>' +
+      langHTML() +
+      '<div class="hf-nav-side">' + ticketsHTML + '</div>' +
       '<button class="hf-menu-btn" id="hf-menu-open" aria-expanded="false" aria-controls="hf-mobile-menu">' +
         '<span aria-hidden="true">&#8801;</span> <span data-i18n="nav_menu">Menu</span>' +
       '</button>' +
     '</header>' +
     '<div class="hf-mobile-menu" id="hf-mobile-menu">' +
       '<div class="hf-mobile-top">' +
-        '<span class="hf-brand">Havelock&nbsp;Fair</span>' +
+        '<span class="hf-brand" data-i18n="brand_name">Havelock&nbsp;Fair</span>' +
         '<button class="hf-mobile-close" id="hf-menu-close" aria-label="Close menu">&times;</button>' +
       '</div>' +
-      '<nav class="hf-mobile-nav" aria-label="Mobile navigation">' + navLinks() + '</nav>' +
-      '<div class="hf-mobile-foot">' + langHTML + ticketsHTML + '</div>' +
+      '<nav class="hf-mobile-nav" aria-label="Mobile navigation">' + navLinks(MOBILE_LINKS) + '</nav>' +
+      '<div class="hf-mobile-foot">' + ticketsHTML + '</div>' +
     '</div>';
 
   var footerHTML =
@@ -92,9 +109,57 @@
   document.body.insertAdjacentHTML('afterbegin', headerHTML);
   document.body.insertAdjacentHTML('beforeend', footerHTML);
 
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Give the skip link a target without editing all seven pages: the page
+     hero carries the <h1>, so that is where "content" starts. */
+  if (!document.getElementById('main')) {
+    var firstSection = document.querySelector('.hf-page-hero, section');
+    if (firstSection) {
+      firstSection.id = 'main';
+      firstSection.setAttribute('tabindex', '-1');
+    }
+  }
 
-  document.addEventListener('DOMContentLoaded', function () {
+  /* Guarded: this sits at module scope, so an environment without
+     matchMedia would throw here and take the nav wiring below down with
+     it. Decoration must never break navigation. */
+  var reduce = false;
+  try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+
+  /* Don't blindly wait on DOMContentLoaded: if this script is ever loaded
+     late (deferred, injected, or fetched async by a test runner) that event
+     has already fired and the nav would silently never wire itself up. */
+  function ready(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+
+  ready(function () {
+
+    /* ---------------- sticky header ----------------
+       The bar is fixed from the start but transparent over the hero art;
+       .is-stuck fades in the opaque background once the hero is behind us,
+       so the menu and the language switcher stay reachable all the way
+       down the page. Runs regardless of prefers-reduced-motion — this is
+       navigation, not decoration. */
+    var header = document.getElementById('hf-header');
+    if (header) {
+      var stuck = false;
+      var syncHeader = function () {
+        var on = window.scrollY > 90;
+        if (on !== stuck) {
+          stuck = on;
+          header.classList.toggle('is-stuck', on);
+        }
+      };
+      var headerTicking = false;
+      window.addEventListener('scroll', function () {
+        if (!headerTicking) {
+          requestAnimationFrame(function () { syncHeader(); headerTicking = false; });
+          headerTicking = true;
+        }
+      }, { passive: true });
+      syncHeader();
+    }
 
     /* ---------------- mobile menu ---------------- */
     var menu = document.getElementById('hf-mobile-menu');
@@ -103,15 +168,20 @@
     function closeMenu() {
       menu.classList.remove('open');
       openBtn.setAttribute('aria-expanded', 'false');
+      openBtn.focus();
     }
     if (menu && openBtn && closeBtn) {
       openBtn.addEventListener('click', function () {
         menu.classList.add('open');
         openBtn.setAttribute('aria-expanded', 'true');
+        closeBtn.focus();
       });
       closeBtn.addEventListener('click', closeMenu);
       menu.querySelectorAll('a').forEach(function (a) {
         a.addEventListener('click', closeMenu);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && menu.classList.contains('open')) closeMenu();
       });
     }
 

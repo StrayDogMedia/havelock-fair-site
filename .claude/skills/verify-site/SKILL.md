@@ -34,7 +34,24 @@ Chrome binary: `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`.
 
 - **Always use an isolated `--user-data-dir`** (scratchpad path). Without it, the command attaches to the user's running Chrome ("Opening in existing browser session") and no screenshot is written.
 - **Chrome often hangs after writing the file.** Never wait on the process: launch backgrounded, poll for the output file, then `pkill -9 -f "<profile-dir-name>"`.
-- **Minimum window width ≈ 500px.** `--window-size=390,...` renders a 500px-wide layout *cropped* to 390 — elements near the right edge vanish from the shot but are fine in reality. Verify narrow layouts by measuring (`getBoundingClientRect` via injected script + `--dump-dom`, read `<title>`), not by eyeballing a "390px" screenshot. Real minimum-width capture: 500.
+- **`--window-size` does NOT set the viewport** (old `--headless`). `--window-size=390,844` renders a
+  wider layout and *crops* it to 390, so the shot shows the Menu button falling off the right edge and
+  the copy running past it — none of which is real. This wasted time on 2026-08-23 before the shot was
+  disbelieved and the layout measured instead.
+  **Use `puppeteer-core` against the installed Chrome and `page.setViewport()`** — real viewports, real
+  media queries, and you can call `setLanguage()`/`setLang()` and scroll before shooting:
+  ```js
+  const puppeteer = require('puppeteer-core');
+  const b = await puppeteer.launch({
+    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    headless: 'new', args: ['--hide-scrollbars'] });
+  const p = await b.newPage();
+  await p.setViewport({ width: 390, height: 844 });
+  await p.goto('http://localhost:8765/index.html', { waitUntil: 'networkidle2' });
+  await p.evaluate(() => setLanguage('es'));
+  await p.screenshot({ path: 'out.png' });
+  ```
+  `npm install puppeteer-core` in the scratchpad; it drives the Chrome already on the Mac, no download.
 - **Full-page shots vs `100vh` sections:** a tall `--window-size` makes `100vh` sections balloon. Inject a pin style into a temp variant: `.hf-hero{height:880px!important;min-height:0!important}.hf-break{height:620px!important}.hf-finale{height:640px!important}`, then shoot at `--window-size=1440,7400`.
 - Use `--virtual-time-budget=4000` (ms) so reveals/scripts settle; `--force-device-scale-factor=1 --hide-scrollbars`.
 
@@ -72,7 +89,10 @@ Cache-bust with a query param; Pages typically serves the new version in ~30–6
 
 ## Repo facts that affect verification
 
-- Heritage system (`css/heritage.css`, `--hf-*`, homepage only) is namespaced apart from the legacy `css/style.css` used by `pages/*` — a homepage change must produce **zero** diff/render change on interior pages.
+- **Outdated advice, corrected 2026-08-23:** heritage is no longer homepage-only. Every page now uses
+  `css/heritage.css` (+ `css/heritage-pages.css` on interiors), and only `pages/registration.html` still
+  also loads the retired `css/style.css`. So a change to `heritage.css` or `heritage-chrome.js` **does**
+  reach the interior pages — that is the point — and must be verified across all of them, not assumed inert.
 - Script order on the homepage matters: `i18n.js` → `countdown.js` → `heritage-home.js` (countdown and the modal read the `translations`/`currentLang` globals).
 - `pages/registration.html` is self-contained (own inline JS/i18n, posts to Google Apps Script) — never assume shared-file changes reach it.
 - Image tooling: no ImageMagick; use `sips` or a scratchpad venv with Pillow (`python3 -m venv "$SP/venv" && "$SP/venv/bin/pip" install Pillow`).
@@ -136,10 +156,50 @@ NODE_PATH=/path/to/node_modules node tools/verify-PAGE.js live.html
 
 `verify-registration.js` (payload byte-compare — run before **every** commit touching
 `pages/registration.html`), `verify-entry-count.js`, `verify-class-divisions.js`,
-`verify-address-fields.js`, `verify-music-page.js`, `verify-music-embed.js`, `verify-results-entry.js`.
+`verify-address-fields.js`, `verify-music-page.js`, `verify-music-embed.js`, `verify-results-entry.js`,
+`verify-chrome.js` (the shared header/nav/language toggle, 285 checks — needs the site served).
+`verify-results-entry.js` needs an `entries.tsv` export in the cwd and errors without one; that is a
+missing fixture, not a regression.
 They need `jsdom`, which is not vendored: `npm install jsdom` somewhere and pass `NODE_PATH`.
 
 **Proper nouns must not "translate".** Band names, act names and song titles are pinned byte-identical
 across `en`/`fr`/`es`. A blanket "every string changed under FR" assertion will fail on them — and on
-`nav_directions`, `nav_contact`, `nav_menu`, which are genuinely the same word in French. Exclude, do not
-"fix".
+`nav_directions`, `nav_contact`, `nav_menu`, `nav_photos`, which are genuinely the same word in French.
+Exclude, do not "fix".
+
+
+## The header trap: clipping off the LEFT edge  (learned 2026-08-23)
+
+`.hf-header` is a flex row: brand, nav, `.hf-lang`, `.hf-nav-side`, Menu button. When the items no longer
+fit, flex does **not** grow the document — it squeezes the brand off the *left* edge. So
+`document.documentElement.scrollWidth > innerWidth` reports a **perfectly clean page** while the wordmark
+is visibly gone. Check **both** edges:
+
+```js
+const b = el.getBoundingClientRect();
+const clipped = b.width > 0 && (b.left < -1 || b.right > innerWidth + 1);
+```
+
+**Spanish is the widest language** — "Feria de Havelock", "DIRECCIONES", "ACERCA DE". Both the phone rules
+and the nav collapse point are sized against ES; sizing to English clipped the brand at 414px and again at
+1024px. Re-measure all three languages across widths after changing any nav item or label.
+
+## Decoration must never break navigation
+
+Two module-scope reads used to be able to kill the whole chrome script before the nav was wired:
+
+- `window.matchMedia('(prefers-reduced-motion: reduce)').matches` — now `try`/`catch`ed in
+  `heritage-chrome.js` and `heritage-home.js`.
+- `localStorage.getItem('hf-lang')` — now guarded in `js/i18n.js` too (it already was in
+  `registration.html`).
+
+Also: the chrome wires itself through a `ready()` helper that checks `document.readyState` rather than
+blindly awaiting `DOMContentLoaded`, which has already fired if the script is loaded late.
+
+## Three copies of the chrome, not one
+
+`js/heritage-chrome.js` covers the seven interior pages. `index.html` and `pages/registration.html` each
+carry their **own inline copy** (registration also has its own `setLang()` and `data-en/-fr/-es`
+attributes instead of `data-i18n`). Any chrome change is **three edits**. `nav_music` once sat in
+`i18n.js` for months rendering nowhere because only one copy was touched. `tools/verify-chrome.js` walks
+all nine pages precisely so a missed copy fails loudly.

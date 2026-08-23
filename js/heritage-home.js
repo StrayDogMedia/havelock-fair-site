@@ -5,7 +5,11 @@
 (function () {
   'use strict';
 
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Guarded: this sits at module scope, so an environment without
+     matchMedia would throw here and take the nav wiring below down with
+     it. Decoration must never break navigation. */
+  var reduce = false;
+  try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
   /* -------- spotlight data: images + i18n key prefixes -------- */
   var SPOT = [
@@ -29,7 +33,33 @@
     return dict[key] || (translations && translations.en && translations.en[key]) || '';
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
+  /* See heritage-chrome.js: don't assume DOMContentLoaded is still pending. */
+  function ready(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+
+  ready(function () {
+
+    /* ---------------- sticky header ----------------
+       The homepage carries its own inline chrome, so it needs its own copy
+       of this — same contract as heritage-chrome.js and registration.html.
+       Without it the nav scrolled away on the homepage and never returned. */
+    var header = document.getElementById('hf-header');
+    if (header) {
+      var stuck = false, headerTicking = false;
+      var syncHeader = function () {
+        var on = window.scrollY > 90;
+        if (on !== stuck) { stuck = on; header.classList.toggle('is-stuck', on); }
+      };
+      window.addEventListener('scroll', function () {
+        if (!headerTicking) {
+          requestAnimationFrame(function () { syncHeader(); headerTicking = false; });
+          headerTicking = true;
+        }
+      }, { passive: true });
+      syncHeader();
+    }
 
     /* ---------------- mobile menu ---------------- */
     var menu = document.getElementById('hf-mobile-menu');
@@ -39,15 +69,20 @@
       openBtn.addEventListener('click', function () {
         menu.classList.add('open');
         openBtn.setAttribute('aria-expanded', 'true');
+        closeBtn.focus();
       });
       closeBtn.addEventListener('click', closeMenu);
       menu.querySelectorAll('a').forEach(function (a) {
         a.addEventListener('click', closeMenu);
       });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && menu.classList.contains('open')) closeMenu();
+      });
     }
     function closeMenu() {
       menu.classList.remove('open');
       openBtn.setAttribute('aria-expanded', 'false');
+      openBtn.focus();
     }
 
     /* ---------------- scroll reveal + parallax ---------------- */

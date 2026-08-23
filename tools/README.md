@@ -63,3 +63,47 @@ two-firsts-in-one-section warning, and the two-column export format.
 **The duplicate-placing warning is the one that matters most.** Two 1st places in
 one section is a real and expensive mistake, and it is invisible on a printed
 sheet until the cheques are wrong.
+
+## verify-chrome.js
+
+Covers the shared chrome — menu prominence, the language toggle, and the
+localized wordmark — across all nine pages and all three languages.
+
+```sh
+cd ~/havelock-fair-site && python3 -m http.server 8765   # in another shell
+NODE_PATH=/path/to/node_modules node tools/verify-chrome.js
+```
+
+⚠️ **Serve the site. Never point this at `file://`.** An opaque origin makes
+`localStorage` throw, the page renders untranslated, and it looks exactly like a
+bug in the code under test.
+
+285 checks. The ones that matter most:
+
+- **`.hf-lang` is a direct child of `<header>`, not a child of `.hf-nav-side`.**
+  This is the bug the whole change exists to fix: `.hf-nav-side` is
+  `display:none` in the collapsed layout, so the language toggle disappeared on
+  every phone and tablet and was only reachable at the bottom of the drawer.
+- **The header goes `.is-stuck` after scrolling.** The bar used to be
+  `position:absolute` and scrolled away permanently — past the hero there was no
+  navigation at all until the footer.
+- **Arriving at `registration.html` with `hf-lang='es'`** lights the ES button
+  and shows `#es-form-notice`. That page has its own inline `setLang()`, which
+  used to ignore `'es'` entirely and silently serve English with the EN button
+  lit.
+
+Two i18n layers exist and must not be crossed: the homepage and the seven
+interior pages use `setLanguage()` from `js/i18n.js`; `pages/registration.html`
+has its own inline `setLang()`. The harness drives whichever one a page ships.
+
+**Scripted checks cannot catch contrast** — see the `.hf-sec` trap noted in the
+project handoff. Screenshot before and after as well.
+
+### Layout measurement
+
+The header must not clip in any language. Spanish is the widest
+("Feria de Havelock", "DIRECCIONES"), and it is what the phone and collapse
+breakpoints are sized against. When changing nav items or labels, re-measure
+across widths in all three languages, and check **both** edges: flex squeezes
+the brand off the *left* without ever growing `scrollWidth`, so a
+document-overflow check alone reports a clean bar that is visibly broken.

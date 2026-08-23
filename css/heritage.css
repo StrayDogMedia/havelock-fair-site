@@ -96,20 +96,61 @@ img { display: block; }
 }
 .hf-btn-gold:hover { background: var(--hf-gold-bright); }
 
+/* Skip link — visually hidden until focused, then it sits above the
+   fixed header so a keyboard user can jump past the nav. */
+.hf-skip {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 60;
+  background: var(--hf-gold);
+  color: var(--hf-espresso);
+  padding: 12px 20px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  transform: translateY(-160%);
+  transition: transform 0.2s ease;
+}
+.hf-skip:focus { transform: translateY(0); }
+[id="main"]:focus { outline: none; }
+
 /* ============================================================
-   HEADER / NAV (transparent over hero; collapses ≤1200px)
+   HEADER / NAV
+   Fixed for the whole scroll, not just the hero. It starts
+   transparent over the hero art, then .is-stuck fades in an
+   opaque bar (toggled from heritage-chrome.js) so the menu,
+   the language switcher and the Register button stay reachable
+   from anywhere on the page.
+   The language switcher is a SIBLING of .hf-nav-side, never a
+   child: .hf-nav-side is hidden in the collapsed layout, and
+   the toggle must survive that.
    ============================================================ */
 .hf-header {
-  position: absolute;
+  position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 20;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 30px clamp(24px, 5vw, 74px);
+  justify-content: flex-end;
+  gap: clamp(14px, 2vw, 24px);
+  padding: 26px clamp(20px, 5vw, 74px);
+  transition: background 0.3s ease, padding 0.3s ease, border-color 0.3s ease;
+  border-bottom: 1px solid transparent;
 }
+.hf-header.is-stuck {
+  background: rgba(27, 22, 17, 0.94);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border-bottom-color: rgba(198, 161, 91, 0.3);
+}
+/* brand pushes everything else to the right, so the bar keeps its
+   shape no matter how many nav items are in it */
 .hf-brand {
+  margin-right: auto;
   font-family: var(--hf-serif);
   font-size: 23px;
   font-weight: 500;
@@ -117,23 +158,25 @@ img { display: block; }
   color: var(--hf-gold-warm);
   white-space: nowrap;
 }
+.hf-header.is-stuck .hf-brand { font-size: 20px; }
 .hf-nav {
   display: flex;
   align-items: center;
   gap: clamp(14px, 1.6vw, 26px);
-  font-size: 11.5px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 500;
-  color: rgba(241, 232, 214, 0.82);
+  color: rgba(241, 232, 214, 0.92);
 }
 .hf-nav a { transition: color 0.2s ease; white-space: nowrap; }
 .hf-nav a:hover, .hf-nav a.active { color: var(--hf-gold-bright); }
 .hf-nav-side { display: flex; align-items: center; gap: 20px; }
 .hf-tickets {
   border: 1px solid var(--hf-gold);
+  background: rgba(198, 161, 91, 0.14);
   color: var(--hf-gold-warm);
-  padding: 9px 22px;
+  padding: 10px 22px;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -144,32 +187,45 @@ img { display: block; }
 .hf-tickets:hover { background: var(--hf-gold); color: var(--hf-espresso); }
 
 /* language switcher (markup shared with i18n.js: .lang-btn.active) */
-.hf-lang { display: flex; gap: 4px; }
+.hf-lang {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(198, 161, 91, 0.42);
+}
 .hf-lang .lang-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 46px;
+  min-height: 44px;
   background: none;
   border: 0;
-  padding: 4px 5px;
+  padding: 0 10px;
   font-family: var(--hf-sans);
-  font-size: 11.5px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   font-weight: 600;
-  color: var(--hf-ivory);
-  opacity: 0.4;
+  color: rgba(241, 232, 214, 0.78);
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease;
 }
-.hf-lang .lang-btn:hover { opacity: 0.8; }
-.hf-lang .lang-btn.active { opacity: 1; color: var(--hf-gold-bright); }
+.hf-lang .lang-btn + .lang-btn { border-left: 1px solid rgba(198, 161, 91, 0.32); }
+.hf-lang .lang-btn:hover { color: var(--hf-ivory-bright); background: rgba(198, 161, 91, 0.14); }
+.hf-lang .lang-btn.active {
+  color: var(--hf-espresso);
+  background: var(--hf-gold);
+}
 
 /* mobile menu */
 .hf-menu-btn {
   display: none;
   align-items: center;
   gap: 9px;
-  background: none;
+  min-height: 44px;
+  background: rgba(198, 161, 91, 0.14);
   border: 1px solid rgba(198, 161, 91, 0.5);
   color: var(--hf-gold-warm);
-  padding: 9px 16px;
+  padding: 0 16px;
   font-family: var(--hf-sans);
   font-size: 11px;
   letter-spacing: 0.16em;
@@ -178,30 +234,36 @@ img { display: block; }
   cursor: pointer;
   white-space: nowrap;
 }
+/* fixed, not absolute: the header is reachable mid-page now, so an
+   absolutely-positioned drawer would open off-screen at document top */
 .hf-mobile-menu {
   display: none;
-  position: absolute;
+  position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 30;
   flex-direction: column;
+  max-height: 100dvh;
+  overflow-y: auto;
   background: var(--hf-footer-black);
   border-bottom: 1px solid rgba(198, 161, 91, 0.3);
-  padding: 26px clamp(24px, 5vw, 74px) 34px;
+  padding: 20px clamp(20px, 5vw, 74px) 30px;
 }
 .hf-mobile-menu.open { display: flex; }
 .hf-mobile-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 .hf-mobile-close {
   background: none;
   border: none;
   color: var(--hf-gold-warm);
-  font-size: 22px;
-  cursor: pointer;
+  font-size: 30px;
   line-height: 1;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
 }
 .hf-mobile-nav {
   display: flex;
@@ -218,13 +280,51 @@ img { display: block; }
 .hf-mobile-foot {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 24px;
+  justify-content: flex-end;
+  margin-top: 22px;
 }
-.hf-mobile-foot .hf-lang .lang-btn { font-size: 13px; }
-@media (max-width: 1200px) {
+.hf-mobile-foot .hf-tickets { padding: 13px 26px; }
+
+/* Tighten the bar before dropping it, so the 7 items survive further down.
+   Spanish is the widest language (DIRECCIONES, ACERCA DE) — measure there. */
+@media (max-width: 1300px) {
+  .hf-nav { font-size: 11px; gap: 13px; letter-spacing: 0.1em; }
+  .hf-brand { font-size: 20px; }
+  .hf-tickets { padding: 10px 15px; letter-spacing: 0.1em; }
+  .hf-lang .lang-btn { min-width: 40px; }
+  .hf-header { gap: 14px; }
+}
+
+/* Collapse point MEASURED against the trimmed bar in all three languages
+   (the brand is what clips first; registration.html is the tightest
+   because it still loads the retired css/style.css), not guessed. Below it
+   the nav and the Register button fold into the drawer, but .hf-lang and
+   the Menu button stay in the bar at EVERY viewport — burying the language
+   toggle in the drawer is the bug this whole change exists to fix. */
+@media (max-width: 1000px) {
   .hf-nav, .hf-nav-side { display: none; }
   .hf-menu-btn { display: flex; }
+  .hf-header { padding-top: 16px; padding-bottom: 16px; }
+  .hf-brand { font-size: 19px; }
+  .hf-lang .lang-btn { min-width: 44px; font-size: 12px; }
+}
+/* Phone sizing is driven by the SPANISH wordmark ("Feria de Havelock"),
+   the longest of the three — sizing to the English one clipped it at 414px.
+   Buttons keep their 44px height; only their width tightens. */
+@media (max-width: 520px) {
+  .hf-header { gap: 10px; padding-left: 16px; padding-right: 16px; }
+  .hf-brand { font-size: 16px; }
+  .hf-lang .lang-btn { min-width: 36px; padding: 0 5px; letter-spacing: 0.04em; font-size: 11px; }
+  .hf-menu-btn { padding: 0 12px; letter-spacing: 0.1em; }
+}
+@media (max-width: 360px) {
+  .hf-brand { font-size: 14px; }
+  .hf-lang .lang-btn { min-width: 32px; padding: 0 3px; }
+}
+/* Only on the very narrowest phones does the word "Menu" go — the icon
+   alone is a worse affordance, so it is a last resort, not the default. */
+@media (max-width: 330px) {
+  .hf-menu-btn span:last-child { display: none; }
 }
 
 /* ============================================================
@@ -311,6 +411,33 @@ img { display: block; }
   color: var(--hf-gold-bright);
   padding-bottom: 2px;
 }
+/* Hero action row — the first screen has to be actionable, not just
+   pretty. Uses the hero_cta / hero_cta2 / hero_cta3 keys. */
+.hf-hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: clamp(24px, 4vh, 38px);
+}
+.hf-hero-cta .hf-btn-gold { padding: 16px 34px; }
+.hf-btn-ghost {
+  display: inline-block;
+  border: 1px solid rgba(198, 161, 91, 0.65);
+  background: rgba(27, 22, 17, 0.35);
+  color: var(--hf-gold-warm);
+  padding: 15px 30px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.hf-btn-ghost:hover {
+  background: var(--hf-gold);
+  border-color: var(--hf-gold);
+  color: var(--hf-espresso);
+}
 .hf-hero-edition {
   position: absolute;
   right: clamp(34px, 5vw, 74px);
@@ -336,9 +463,17 @@ img { display: block; }
   0%, 100% { transform: translate(-50%, 0); opacity: 0.5; }
   50%      { transform: translate(-50%, 9px); opacity: 1; }
 }
+@media (max-width: 900px) {
+  .hf-hero-cue { display: none; }
+}
 @media (max-width: 700px) {
-  .hf-hero { min-height: 640px; }
+  /* svh, not vh: mobile browser chrome otherwise pushes the CTA row
+     below the fold on the very screen it exists to serve */
+  .hf-hero { height: 100svh; min-height: 560px; }
   .hf-hero-edition { display: none; }
+  .hf-hero-copy { padding-bottom: clamp(36px, 6vh, 64px); }
+  .hf-hero-cta { width: 100%; gap: 10px; }
+  .hf-hero-cta > * { flex: 1 1 100%; text-align: center; }
 }
 
 /* ============================================================
