@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Results Entry — Havelock Fair 2026 (internal)</title>
+<!--
+  FAIR-DAY RESULTS ENTRY — internal tool, deliberately not in the site nav.
+
+  Why this exists and why it is built this way:
+   * The fairgrounds have unreliable signal. This page keeps everything in
+     localStorage, so it works with zero bars once loaded and nothing is lost
+     if the tab is closed or the phone dies.
+   * It has NO backend. Claude cannot deploy Apps Script, and more importantly
+     a live write path from a phone in a barn straight into prize money is the
+     wrong design. The output is a paste-block a human checks before it goes
+     anywhere near a cheque.
+   * Judges record ENTRY # and PLACING only. Everything else (class, division,
+     section, prize tier, dollar amount) is looked up from the entry number by
+     HF_JudgingSystem.gs, so a placing cannot attach to the wrong prize.
+
+  FLOW: paste ENTRIES tab -> judge by section -> copy the two-column block
+        -> paste into the RESULTS tab -> HF_calculatePrizes -> HF_verify.
+-->
+<style>
+  :root{
+    --navy:#1a2744; --gold:#C6A15B; --gold-br:#E0BE7A;
+    --ink:#16130E; --cream:#F7F2E7; --ivory:#FBF8F1;
+    --ok:#1f7a3f; --warn:#8a1c1c;
+    --sans:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ivory);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5}
+  header{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;padding:12px 16px;
+         display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  header h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.02em}
+  header .spacer{flex:1}
+  .pill{background:rgba(255,255,255,.14);padding:5px 11px;border-radius:99px;font-size:13px;font-weight:600;white-space:nowrap}
+  .pill.warn{background:var(--warn)}
+  main{max-width:900px;margin:0 auto;padding:16px 16px 120px}
+  .card{background:#fff;border:1px solid #e4ddcc;border-radius:10px;padding:18px;margin-bottom:16px}
+  h2{font-size:15px;text-transform:uppercase;letter-spacing:.13em;color:var(--navy);margin:0 0 12px}
+  p.hint{font-size:14px;opacity:.75;margin:0 0 12px}
+  textarea{width:100%;min-height:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;
+           border:1px solid #cfc6b2;border-radius:6px;padding:10px;background:var(--cream)}
+  button{font-family:var(--sans);font-weight:600;cursor:pointer;border-radius:6px;border:1px solid transparent}
+  .btn{background:var(--navy);color:#fff;padding:11px 20px;font-size:15px}
+  .btn.ghost{background:transparent;color:var(--navy);border-color:var(--navy)}
+  .btn.danger{background:transparent;color:var(--warn);border-color:var(--warn)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  select,input[type=search]{font-family:var(--sans);font-size:15px;padding:10px;border:1px solid #cfc6b2;
+           border-radius:6px;background:#fff;max-width:100%}
+  /* section block */
+  .sec{background:#fff;border:1px solid #e4ddcc;border-left:4px solid var(--gold);border-radius:8px;
+       padding:14px;margin-bottom:14px}
+  .sec.done{border-left-color:var(--ok)}
+  .sec h3{margin:0 0 2px;font-size:16px}
+  .sec .meta{font-size:13px;opacity:.7;margin-bottom:12px}
+  .sec .prizes{font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.65;margin-bottom:10px}
+  .ent{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #f0eade;flex-wrap:wrap}
+  .ent .who{flex:1;min-width:150px}
+  .ent .who b{display:block;font-size:15px}
+  .ent .who span{font-size:13px;opacity:.7}
+  .ent .eid{font-family:ui-monospace,monospace;font-size:12px;background:var(--cream);
+            padding:3px 7px;border-radius:4px;border:1px solid #e4ddcc}
+  .places{display:flex;gap:6px;flex-wrap:wrap}
+  .places button{min-width:46px;min-height:44px;background:#fff;border:1px solid #cfc6b2;color:var(--ink);font-size:15px}
+  .places button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .places button.on.nomoney{background:#6b6255;border-color:#6b6255}
+  .dupe{color:var(--warn);font-size:13px;font-weight:600;margin-top:8px}
+  .noprize{font-size:12px;background:#efe9db;border-radius:4px;padding:2px 8px;letter-spacing:.05em}
+  footer.bar{position:fixed;left:0;right:0;bottom:0;background:var(--navy);color:#fff;padding:11px 16px;
+             display:flex;gap:10px;align-items:center;flex-wrap:wrap;z-index:20}
+  footer.bar .grow{flex:1;font-size:14px}
+  footer.bar button{padding:11px 18px;font-size:15px;background:var(--gold);color:var(--ink);border:none}
+  footer.bar button.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
+  .hide{display:none}
+  @media (max-width:560px){ .ent .who{min-width:100%} }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Havelock Fair 2026 · Results Entry</h1>
+  <span class="spacer"></span>
+  <span class="pill" id="pill-progress">no entries loaded</span>
+  <span class="pill" id="pill-saved">saved</span>
+</header>
+
+<main>
+
+  <!-- STEP 1 — load entries -->
+  <section class="card" id="step-load">
+    <h2>1 · Load the entries</h2>
+    <p class="hint">
+      In the Master Workbook open the <b>ENTRIES</b> tab, select everything
+      (Ctrl/Cmd&nbsp;+&nbsp;A), copy, and paste it below. Do this once, on wi-fi,
+      <b>before</b> you go out to the ring — after that this page works with no signal.
+    </p>
+    <textarea id="paste" placeholder="Paste the ENTRIES tab here (including its header row)…"></textarea>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" id="btn-load">Load entries</button>
+      <span id="load-msg" class="hint" style="margin:0"></span>
+    </div>
+  </section>
+
+  <!-- STEP 2 — judge -->
+  <section class="card hide" id="step-filter">
+    <h2>2 · Record placings</h2>
+    <div class="row">
+      <select id="f-class"></select>
+      <input type="search" id="f-search" placeholder="Find exhibitor, animal or entry #">
+      <label class="row" style="gap:6px;font-size:14px">
+        <input type="checkbox" id="f-todo"> only sections still to judge
+      </label>
+    </div>
+  </section>
+
+  <div id="sections"></div>
+
+</main>
+
+<footer class="bar hide" id="bar">
+  <span class="grow" id="bar-msg"></span>
+  <button class="ghost" id="btn-reset">Start over</button>
+  <button id="btn-export">Finish &amp; copy results</button>
+</footer>
+
+<!-- STEP 3 — export -->
+<section class="card hide" id="step-export" style="max-width:900px;margin:0 auto 140px;">
+  <h2>3 · Paste into the RESULTS tab</h2>
+  <p class="hint">
+    Two columns: <b>ENTRY #</b> and <b>PLACING</b>. In the Master Workbook open
+    <b>RESULTS</b>, click the first empty cell under <b>ENTRY #</b>, and paste.
+    Then run <b>HF_calculatePrizes</b> and <b>HF_verify</b> from the
+    🏆&nbsp;Havelock&nbsp;Fair menu. Nothing is final until <b>HF_verify</b> passes.
+  </p>
+  <textarea id="out" readonly style="min-height:200px"></textarea>
+  <div class="row" style="margin-top:12px">
+    <button class="btn" id="btn-copy">Copy to clipboard</button>
+    <button class="btn ghost" id="btn-csv">Download CSV</button>
+    <button class="btn ghost" id="btn-back">Back to judging</button>
+    <span class="hint" id="copy-msg" style="margin:0"></span>
+  </div>
+</section>
+
+<script>
+(function(){
+  'use strict';
+  var KEY = 'hf-results-2026';
+  var PLACES = ['1','2','3','4','HM','DQ'];      // HM/DQ carry no prize money
+  var NO_MONEY = { HM:1, DQ:1 };
+  var entries = [], placings = {};
+
+  var $ = function(id){ return document.getElementById(id); };
+  // Older webviews and some kiosk browsers lack scrollIntoView options; never
+  // let a scroll convenience break the export flow on fair day.
+  function scrollTo_(el){ try{ el.scrollIntoView({behavior:'smooth'}); }catch(e){ try{ el.scrollIntoView(); }catch(e2){} } }
+
+  /* ---------- persistence ---------- */
+  function save(){
+    try{
+      localStorage.setItem(KEY, JSON.stringify({ entries: entries, placings: placings }));
+      flash('saved');
+    }catch(e){ flash('SAVE FAILED — copy your results now', true); }
+  }
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(!raw) return false;
+      var d = JSON.parse(raw);
+      if(!d.entries || !d.entries.length) return false;
+      entries = d.entries; placings = d.placings || {};
+      return true;
+    }catch(e){ return false; }
+  }
+  var flashT;
+  function flash(msg, bad){
+    var el = $('pill-saved');
+    el.textContent = msg;
+    el.className = 'pill' + (bad ? ' warn' : '');
+    clearTimeout(flashT);
+    if(!bad) flashT = setTimeout(function(){ el.textContent = 'saved'; }, 1200);
+  }
+
+  /* ---------- parsing the ENTRIES paste ---------- */
+  function parse(text){
+    var lines = text.replace(/\r/g,'').split('\n').filter(function(l){ return l.trim() !== ''; });
+    if(lines.length < 2) throw new Error('Nothing to read — paste the ENTRIES tab including its header row.');
+    var delim = lines[0].indexOf('\t') !== -1 ? '\t' : ',';
+    var hdr = lines[0].split(delim).map(function(h){ return h.trim().toUpperCase(); });
+    function col(name){ return hdr.indexOf(name); }
+    var iId = col('ENTRY #');
+    if(iId === -1) throw new Error('No "ENTRY #" column found. Make sure the header row is included.');
+    var idx = {
+      id:iId, ex:col('EXHIBITOR #'), name:col('EXHIBITOR NAME'),
+      cls:col('CLASS #'), clsName:col('CLASS NAME'), div:col('DIVISION'),
+      code:col('SECTION CODE'), desc:col('SECTION DESCRIPTION'), tier:col('PRIZE TIER'),
+      p1:col('1ST ($)'), p2:col('2ND ($)'), p3:col('3RD ($)'), p4:col('4TH ($)'),
+      animal:col('ANIMAL NAME'), tag:col('REG # / ATQ #')
+    };
+    var out = [];
+    for(var i=1;i<lines.length;i++){
+      var c = lines[i].split(delim);
+      var id = (c[idx.id]||'').trim();
+      if(!/^E\d+/.test(id)) continue;                 // skips the ⚠ NEEDS ATTENTION block
+      function g(k){ return idx[k] > -1 ? (c[idx[k]]||'').trim() : ''; }
+      out.push({
+        id:id, ex:g('ex'), name:g('name'),
+        cls:g('cls'), clsName:g('clsName'), div:g('div'),
+        code:g('code'), desc:g('desc'), tier:g('tier'),
+        p1:g('p1'), p2:g('p2'), p3:g('p3'), p4:g('p4'),
+        animal:g('animal'), tag:g('tag')
+      });
+    }
+    if(!out.length) throw new Error('Found the header but no entry rows. Did HF_buildEntries run?');
+    return out;
+  }
+
+  /* ---------- grouping ---------- */
+  function groupKey(e){ return [e.cls, e.div, e.code].join('||'); }
+  function groups(){
+    var m = {}, order = [];
+    entries.forEach(function(e){
+      var k = groupKey(e);
+      if(!m[k]){ m[k] = []; order.push(k); }
+      m[k].push(e);
+    });
+    order.sort(function(a,b){
+      var A=a.split('||'), B=b.split('||');
+      return (parseInt(A[0]||0,10)-parseInt(B[0]||0,10)) ||
+             String(A[1]).localeCompare(String(B[1])) ||
+             (parseInt(A[2]||0,10)-parseInt(B[2]||0,10));
+    });
+    return { map:m, order:order };
+  }
+  function judged(list){ return list.some(function(e){ return placings[e.id]; }); }
+
+  /* ---------- render ---------- */
+  function render(){
+    var g = groups(), host = $('sections');
+    var fCls = $('f-class').value, q = $('f-search').value.trim().toLowerCase(), todo = $('f-todo').checked;
+    host.innerHTML = '';
+    var shown = 0;
+
+    g.order.forEach(function(k){
+      var list = g.map[k], h = list[0];
+      if(fCls && String(h.cls) !== fCls) return;
+      if(todo && judged(list)) return;
+      if(q){
+        var hit = list.some(function(e){
+          return (e.name+' '+e.animal+' '+e.id+' '+e.tag).toLowerCase().indexOf(q) !== -1;
+        }) || (h.desc||'').toLowerCase().indexOf(q) !== -1;
+        if(!hit) return;
+      }
+      shown++;
+
+      var noPrize = /NO PRIZE/i.test(h.tier || '');
+      var sec = document.createElement('div');
+      sec.className = 'sec' + (judged(list) ? ' done' : '');
+
+      var head = '<h3>' + esc(h.clsName || ('Class ' + h.cls)) + '</h3>' +
+        '<div class="meta">' + (h.div ? esc(h.div) + ' &middot; ' : '') +
+        'Section ' + esc(h.code) + ' — ' + esc(h.desc) + '</div>';
+      head += noPrize
+        ? '<div class="prizes"><span class="noprize">Position only — no prize money</span></div>'
+        : '<div class="prizes">1st ' + money(h.p1) + ' &middot; 2nd ' + money(h.p2) +
+          ' &middot; 3rd ' + money(h.p3) + (money(h.p4) !== '—' ? ' &middot; 4th ' + money(h.p4) : '') + '</div>';
+      sec.innerHTML = head;
+
+      list.forEach(function(e){
+        var row = document.createElement('div');
+        row.className = 'ent';
+        var sub = [e.animal, e.tag].filter(Boolean).join(' · ');
+        row.innerHTML = '<span class="eid">' + esc(e.id) + '</span>' +
+          '<span class="who"><b>' + esc(e.name || '(no name)') + '</b>' +
+          (sub ? '<span>' + esc(sub) + '</span>' : '') + '</span>';
+        var box = document.createElement('span');
+        box.className = 'places';
+        PLACES.forEach(function(p){
+          var b = document.createElement('button');
+          b.textContent = p === '1' ? '1st' : p === '2' ? '2nd' : p === '3' ? '3rd' : p === '4' ? '4th' : p;
+          b.className = (placings[e.id] === p ? 'on' : '') + (NO_MONEY[p] ? ' nomoney' : '');
+          b.setAttribute('aria-pressed', placings[e.id] === p ? 'true' : 'false');
+          b.onclick = function(){
+            if(placings[e.id] === p) delete placings[e.id]; else placings[e.id] = p;
+            save(); render();
+          };
+          box.appendChild(b);
+        });
+        row.appendChild(box);
+        sec.appendChild(row);
+      });
+
+      // two 1st places in one section is a real, expensive mistake — say so loudly
+      var seen = {}, dupes = [];
+      list.forEach(function(e){
+        var p = placings[e.id];
+        if(!p || NO_MONEY[p]) return;
+        if(seen[p]) dupes.push(p); else seen[p] = 1;
+      });
+      if(dupes.length){
+        var w = document.createElement('div');
+        w.className = 'dupe';
+        w.textContent = '⚠ ' + dupes.map(ord).join(' and ') + ' given more than once in this section — check before finishing.';
+        sec.appendChild(w);
+      }
+      host.appendChild(sec);
+    });
+
+    if(!shown){
+      host.innerHTML = '<div class="card"><p class="hint" style="margin:0">' +
+        (todo ? 'Every section matching this filter has been judged.' : 'Nothing matches that filter.') + '</p></div>';
+    }
+    updateProgress();
+  }
+  function ord(p){ return p==='1'?'1st':p==='2'?'2nd':p==='3'?'3rd':'4th'; }
+  function money(v){ var n = parseFloat(String(v).replace(/[^0-9.]/g,'')); return (!n || isNaN(n)) ? '—' : '$' + n; }
+  function esc(s){ return String(s===undefined||s===null?'':s).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function updateProgress(){
+    var g = groups();
+    var total = g.order.length;
+    var done = g.order.filter(function(k){ return judged(g.map[k]); }).length;
+    var n = Object.keys(placings).length;
+    $('pill-progress').textContent = done + '/' + total + ' sections · ' + n + ' placings';
+    $('bar-msg').textContent = n
+      ? n + ' placing' + (n>1?'s':'') + ' recorded across ' + done + ' section' + (done>1?'s':'') + '.'
+      : 'Tap a placing next to an exhibitor. Everything saves on this device as you go.';
+  }
+
+  function buildClassFilter(){
+    var seen = {}, opts = ['<option value="">All classes</option>'];
+    entries.forEach(function(e){
+      if(seen[e.cls]) return; seen[e.cls] = 1;
+      opts.push('<option value="' + esc(e.cls) + '">' + esc(e.clsName || ('Class ' + e.cls)) + '</option>');
+    });
+    $('f-class').innerHTML = opts.join('');
+  }
+
+  function showJudging(){
+    $('step-load').classList.add('hide');
+    $('step-filter').classList.remove('hide');
+    $('bar').classList.remove('hide');
+    $('step-export').classList.add('hide');
+    buildClassFilter();
+    render();
+  }
+
+  /* ---------- export ---------- */
+  function exportRows(){
+    var g = groups(), rows = [];
+    g.order.forEach(function(k){
+      g.map[k].forEach(function(e){
+        if(placings[e.id]) rows.push([e.id, placings[e.id]]);
+      });
+    });
+    return rows;
+  }
+
+  /* ---------- wiring ---------- */
+  $('btn-load').onclick = function(){
+    try{
+      entries = parse($('paste').value);
+      placings = placings || {};
+      save();
+      $('load-msg').textContent = entries.length + ' entries loaded.';
+      showJudging();
+    }catch(err){
+      $('load-msg').textContent = '⚠ ' + err.message;
+    }
+  };
+  $('f-class').onchange = render;
+  $('f-todo').onchange = render;
+  $('f-search').oninput = render;
+
+  $('btn-export').onclick = function(){
+    var rows = exportRows();
+    if(!rows.length){ alert('No placings recorded yet.'); return; }
+    $('out').value = 'ENTRY #\tPLACING\n' + rows.map(function(r){ return r[0] + '\t' + r[1]; }).join('\n');
+    $('step-export').classList.remove('hide');
+    scrollTo_($('step-export'));
+  };
+  $('btn-back').onclick = function(){
+    $('step-export').classList.add('hide');
+    try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
+  };
+  $('btn-copy').onclick = function(){
+    var t = $('out');
+    t.select(); t.setSelectionRange(0, 999999);
+    var ok = false;
+    try{ ok = document.execCommand('copy'); }catch(e){}
+    if(navigator.clipboard && !ok){ navigator.clipboard.writeText(t.value).then(function(){ $('copy-msg').textContent='Copied.'; }); }
+    else $('copy-msg').textContent = ok ? 'Copied.' : 'Select the text above and copy manually.';
+  };
+  $('btn-csv').onclick = function(){
+    var rows = exportRows();
+    var csv = 'ENTRY #,PLACING\n' + rows.map(function(r){ return r[0] + ',' + r[1]; }).join('\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+    a.download = 'havelock-results-' + new Date().toISOString().slice(0,10) + '.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+  $('btn-reset').onclick = function(){
+    if(!confirm('This clears every placing recorded on this device. Copy your results first if you have not.\n\nStart over?')) return;
+    localStorage.removeItem(KEY); entries = []; placings = {};
+    $('paste').value = ''; $('load-msg').textContent = '';
+    $('step-load').classList.remove('hide'); $('step-filter').classList.add('hide');
+    $('bar').classList.add('hide'); $('step-export').classList.add('hide');
+    $('sections').innerHTML = ''; $('pill-progress').textContent = 'no entries loaded';
+  };
+
+  // warn before leaving with unexported work
+  window.addEventListener('beforeunload', function(ev){
+    if(Object.keys(placings).length && $('step-export').classList.contains('hide')){
+      ev.preventDefault(); ev.returnValue = '';
+    }
+  });
+
+  if(load()) showJudging();
+})();
+</script>
+</body>
+</html>

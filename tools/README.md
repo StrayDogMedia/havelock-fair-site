@@ -45,3 +45,21 @@ badge and the per-card note must show the product, never the number of cards.
 The counter previously counted entry *cards*, so a card with three sections
 ticked displayed "1 entry". Cases covered: no-breed class, breed cross-product,
 singular wording, and a class picked with no sections yet (contributes 0).
+
+## verify-results-entry.js
+
+Covers `pages/results-entry.html`, the fair-day tool directors use to record
+placings. Needs `entries.tsv` in the working directory (an ENTRIES-tab export).
+
+```sh
+NODE_PATH=/path/to/node_modules node tools/verify-results-entry.js
+```
+
+19 checks: parsing an ENTRIES paste, section grouping, recording and clearing a
+placing, localStorage persistence across a reload, the "still to judge" filter,
+position-only (4-H / Equestrian) badging, HM/DQ carrying no money, the
+two-firsts-in-one-section warning, and the two-column export format.
+
+**The duplicate-placing warning is the one that matters most.** Two 1st places in
+one section is a real and expensive mistake, and it is invisible on a printed
+sheet until the cheques are wrong.
