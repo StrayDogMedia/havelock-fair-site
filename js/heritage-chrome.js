@@ -15,6 +15,7 @@
   var LINKS = [
     { key: 'home',         href: HOME,                    i18n: 'nav_home',         label: 'Home' },
     { key: 'schedule',     href: P + 'schedule.html',     i18n: 'nav_schedule',     label: 'Schedule' },
+    { key: 'music',        href: P + 'music.html',        i18n: 'nav_music',        label: 'Music' },
     { key: 'directions',   href: P + 'directions.html',   i18n: 'nav_directions',   label: 'Directions' },
     { key: 'sponsors',     href: P + 'sponsors.html',     i18n: 'nav_sponsors',     label: 'Sponsors' },
     { key: 'about',        href: P + 'about.html',        i18n: 'nav_about',        label: 'About' },

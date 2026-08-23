@@ -751,3 +751,81 @@
   .sponsor-grid.featured, .sponsor-grid.gold, .sponsor-grid.silver,
   .sponsor-grid.bronze, .sponsor-grid.community { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   MUSIC PAGE — lineup sets
+   .set-photo is commented out in the markup until band photos
+   arrive, so the row must read correctly with OR without it:
+   the photo is a fixed-width flex item that simply isn't there
+   yet, and nothing below depends on its height.
+   ============================================================ */
+.day-heading {
+  font-family: var(--hf-serif, 'Newsreader', serif);
+  font-size: clamp(26px, 3.4vw, 34px);
+  font-weight: 400;
+  color: var(--hf-ivory-bright);
+  margin: 0 0 22px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hf-rule-ivory);
+}
+.hf-sec--ivory .day-heading { color: var(--hf-charcoal); border-bottom-color: var(--hf-rule); }
+.day-heading + .set-list { margin-bottom: 54px; }
+.set-list { list-style: none; margin: 0 0 40px; padding: 0; }
+.set {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--hf-rule-ivory);
+}
+.hf-sec--ivory .set { border-bottom-color: var(--hf-rule); }
+.set:last-child { border-bottom: 0; }
+.set-time {
+  flex: 0 0 132px;
+  font-family: var(--hf-sans, 'Manrope', sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--hf-gold, #C6A15B);
+}
+.set-info { flex: 1 1 auto; min-width: 0; }
+.set-act {
+  font-family: var(--hf-serif, 'Newsreader', serif);
+  font-size: clamp(19px, 2.2vw, 23px);
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 0 0 4px;
+  color: var(--hf-ivory-bright);
+}
+.hf-sec--ivory .set-act { color: var(--hf-charcoal); }
+.set-stage {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--hf-body-on-dark);
+}
+.hf-sec--ivory .set-stage { color: var(--hf-body-on-ivory); }
+/* Only occupies space once a real photo is uncommented. */
+.set-photo {
+  flex: 0 0 108px;
+  width: 108px;
+  height: 108px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--hf-rule-ivory);
+}
+.note {
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 10px;
+  max-width: 62ch;
+  color: var(--hf-body-on-dark);
+}
+.hf-sec--ivory .note { color: var(--hf-body-on-ivory); }
+.note-muted { opacity: 0.7; font-size: 14px; }
+@media (max-width: 620px) {
+  .set { flex-wrap: wrap; gap: 6px 18px; padding: 16px 0; }
+  .set-time { flex: 0 0 100%; order: -1; margin-bottom: 2px; }
+  .set-photo { flex-basis: 76px; width: 76px; height: 76px; }
+}

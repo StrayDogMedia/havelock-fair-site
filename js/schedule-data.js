@@ -6,7 +6,10 @@ const scheduleData = {
     events: [
       { time: "6:00", cat: "general", en: "Gates open for exhibitors only", fr: "Ouverture des portes pour les exposants", es: "Puertas abiertas solo para expositores" },
       { time: "8:00", cat: "general", en: "Gates open to the public", fr: "Ouverture des portes au public", es: "Puertas abiertas al público" },
-      { time: "9:00", cat: "music", en: "All day country music & Winslow Dancers (Line dancing)", fr: "Musique country en direct toute la journée & Winslow Dancers (Danse en ligne)", es: "Música country todo el día y Winslow Dancers (Baile en línea)" },
+      { time: "9:00", cat: "music", en: "Winslow Dancers (Line dancing)", fr: "Winslow Dancers (Danse en ligne)", es: "Winslow Dancers (Baile en línea)" },
+      { time: "10:00", cat: "music", en: "The Pine County Ramblers — 10:00 to 11:00, Outdoor Stage", fr: "The Pine County Ramblers — 10 h à 11 h, scène extérieure", es: "The Pine County Ramblers — 10:00 a 11:00, escenario al aire libre" },
+      { time: "12:30", cat: "music", en: "The Pine County Ramblers — 12:30 to 1:30, Outdoor Stage", fr: "The Pine County Ramblers — 12 h 30 à 13 h 30, scène extérieure", es: "The Pine County Ramblers — 12:30 a 13:30, escenario al aire libre" },
+      { time: "15:00", cat: "music", en: "The Pine County Ramblers — 3:00 to 4:00, Outdoor Stage", fr: "The Pine County Ramblers — 15 h à 16 h, scène extérieure", es: "The Pine County Ramblers — 15:00 a 16:00, escenario al aire libre" },
       { time: "9:00", cat: "antique", en: "Antique cars & machinery all day — Chateauguay Valley Garden Tractor Club", fr: "Exposition de voitures et machines anciennes — Chateauguay Valley Garden Tractor Club toute la journée", es: "Autos y maquinaria antigua todo el día — Chateauguay Valley Garden Tractor Club" },
       { time: "9:00", cat: "food", en: "Sugar shanty opens", fr: "Cabane à sucre ouverte", es: "Cabaña de azúcar abierta" },
       { time: "9:00", cat: "kids", en: "Children's activities: école au champs, games, story time, face painting, petting zoo", fr: "Activités pour enfants : école au champs, jeux, histoires, peintures de visages, petit zoo", es: "Actividades para niños: escuela en el campo, juegos, cuentos, pintura de caras, zoológico" },
@@ -29,7 +32,10 @@ const scheduleData = {
     events: [
       { time: "7:00", cat: "general", en: "Gates open for exhibitors", fr: "Ouverture des portes pour les exposants", es: "Puertas abiertas para expositores" },
       { time: "8:00", cat: "general", en: "Gates open to the public", fr: "Ouverture des portes au public", es: "Puertas abiertas al público" },
-      { time: "9:00", cat: "music", en: "All day live music — local artists", fr: "Musique en direct toute la journée — artistes locaux", es: "Música en vivo todo el día — artistas locales" },
+      { time: "11:00", cat: "music", en: "BB King with Funky Freddy — 11:00 to 12:00, Outdoor Stage", fr: "BB King with Funky Freddy — 11 h à 12 h, scène extérieure", es: "BB King with Funky Freddy — 11:00 a 12:00, escenario al aire libre" },
+      { time: "12:00", cat: "music", en: "Stew &amp; Alice — 12:00 to 1:30, Outdoor Stage", fr: "Stew &amp; Alice — 12 h à 13 h 30, scène extérieure", es: "Stew &amp; Alice — 12:00 a 13:30, escenario al aire libre" },
+      { time: "13:30", cat: "music", en: "Durham County Poets — 1:30 to 3:00, Outdoor Stage", fr: "Durham County Poets — 13 h 30 à 15 h, scène extérieure", es: "Durham County Poets — 13:30 a 15:00, escenario al aire libre" },
+      { time: "15:00", cat: "music", en: "Pierre Lachance &amp; Guy David — 3:00 to 4:00, Outdoor Stage", fr: "Pierre Lachance &amp; Guy David — 15 h à 16 h, scène extérieure", es: "Pierre Lachance &amp; Guy David — 15:00 a 16:00, escenario al aire libre" },
       { time: "9:00", cat: "antique", en: "Antique cars & machinery all day — Chateauguay Valley Garden Tractor Club", fr: "Exposition de voitures et machines anciennes — Chateauguay Valley Garden Tractor Club toute la journée", es: "Autos y maquinaria antigua todo el día — Chateauguay Valley Garden Tractor Club" },
       { time: "9:00", cat: "food", en: "Sugar shanty opens", fr: "Cabane à sucre ouverte", es: "Cabaña de azúcar abierta" },
       { time: "9:00", cat: "kids", en: "Children's activities continue", fr: "Poursuite des activités pour enfants", es: "Continúan las actividades para niños" },
