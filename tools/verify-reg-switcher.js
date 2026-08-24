@@ -263,7 +263,19 @@ async function fillFirst(page, container) {
       return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
     const ratio = (a, b) => { const x = lum(a), y = lum(b); return +(((Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05)).toFixed(2)); };
     const cs = el => getComputedStyle(el);
-    const page = px(cs(document.querySelector('.reg-section')).backgroundColor).slice(0, 3);
+    /* Resolve the REAL backdrop by walking up to the first painted ancestor.
+       .reg-section is transparent, so reading it directly yields rgba(0,0,0,0)
+       and every ratio gets measured against phantom black — which reported the
+       card lifting 1.49 off a ground it never touches. The true ground is the
+       body's espresso. */
+    const groundOf = el => {
+      for (let n = el; n && n !== document.documentElement; n = n.parentElement) {
+        const c = px(cs(n).backgroundColor);
+        if (c[3] > 0.99) return c.slice(0, 3);
+      }
+      return px(cs(document.body).backgroundColor).slice(0, 3);
+    };
+    const page = groundOf(document.querySelector('.cat-chooser'));
     const off = document.getElementById('tab-homegarden');
     const on = document.getElementById('tab-livestock');
     const offBg = flat(px(cs(off).backgroundColor), page);
@@ -277,6 +289,7 @@ async function fillFirst(page, container) {
     const chip = document.getElementById('chip-homegarden');
     const barBg = flat(px(cs(document.getElementById('reg-context')).backgroundColor), page);
     return {
+      surface: ratio(offBg, page),
       edge: ratio(offEdge, offBg),
       selection: ratio(onBg, offBg),
       onTitle: ratio(onTitle, onBg), onSub: ratio(onSub, onBg), onMeta: ratio(onMeta, onBg),
@@ -288,6 +301,9 @@ async function fillFirst(page, container) {
     ? ok(label, `${got}:1  (needs ${min})`)
     : bad(label, `${got}:1`, `>= ${min}:1`);
   need('unselected card EDGE clears WCAG 1.4.11 non-text', cr.edge, 3.0);
+  cr.surface >= 1.2
+    ? ok('card surface lifts off the page', `${cr.surface}:1  (was 1.06, flat)`)
+    : bad('card vs page >= 1.20', cr.surface);
   need('bar chip edge clears it too', cr.chipEdge, 3.0);
   cr.selection >= 4.5
     ? ok('selected vs unselected card is unmistakable', `${cr.selection}:1  (was 1.18)`)

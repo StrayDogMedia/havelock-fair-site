@@ -70,15 +70,23 @@
     .cat-grid { display:grid; gap:12px; }
     .cat-grid--2 { grid-template-columns:1fr 1fr; }
     .cat-grid--3 { grid-template-columns:repeat(3,1fr); }
-    /* ---- Option B, "gold selection" (Jesse, 2026-08-23) -----------------
-       Unselected cards stay quiet; the SELECTED one is a solid gold fill.
-       Measured against the old treatment:
-         selected vs unselected   1.18 -> 6.80   (was effectively invisible)
-         edge vs card             1.33 -> 3.21   (was a WCAG 1.4.11 failure)
-       --cat-edge is gold at 58%: the smallest step that clears the 3:1
-       non-text-contrast rule. Gold at 45% looked right but measured 2.46. */
-    .cat-card { --cat-edge:#826A3E; --cat-on-ink:#1B1611; --cat-on-ink-soft:rgba(27,22,17,.82);
-      position:relative; display:block; text-align:left; padding:17px 19px 16px; background:#241E16; border:1px solid var(--cat-edge); border-radius:0; color:var(--hf-ivory); font:inherit; cursor:pointer; transition:border-color .3s ease, background .3s ease, color .3s ease; }
+    /* ---- Option B + A's surface lift (Jesse, 2026-08-23) ----------------
+       Unselected cards sit ON the page with a real edge; the SELECTED one is
+       a solid gold fill. Measured against the old treatment:
+         card vs page             1.06 -> 1.27   (cards were flat on the ground)
+         edge vs card             1.33 -> 3.33   (was a WCAG 1.4.11 failure)
+         selected vs unselected   1.18 -> 5.82   (was effectively invisible)
+
+       These three trade against each other and #322A1E is the balance point,
+       not a guess: lifting the card surface narrows the gap to the gold
+       selected card, so the pop Jesse chose B for gets quieter the lighter
+       the card goes. #383021 lifts more (1.38) but drops selection to 5.36;
+       #241E16 keeps 6.80 but leaves the card flat at 1.09.
+
+       --cat-edge is gold at 65%. Gold at 45% is what the option was drawn
+       with and it looked right, but it measured 2.46 and still failed 3:1. */
+    .cat-card { --cat-edge:#927746; --cat-on-ink:#1B1611; --cat-on-ink-soft:rgba(27,22,17,.82);
+      position:relative; display:block; text-align:left; padding:17px 19px 16px; background:#322A1E; border:1px solid var(--cat-edge); border-radius:0; color:var(--hf-ivory); font:inherit; cursor:pointer; transition:border-color .3s ease, background .3s ease, color .3s ease; }
     .cat-card:hover { border-color:var(--hf-gold); background:rgba(198,161,91,.08); }
     .cat-card-title { display:block; font-family:var(--hf-serif); font-weight:500; font-size:1.16rem; line-height:1.25; color:var(--hf-ivory-bright); }
     .cat-card-rule { display:block; width:30px; height:1px; background:var(--hf-bronze); margin:9px 0 10px; transition:width .3s ease, background .3s ease; }
