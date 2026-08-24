@@ -70,17 +70,31 @@
     .cat-grid { display:grid; gap:12px; }
     .cat-grid--2 { grid-template-columns:1fr 1fr; }
     .cat-grid--3 { grid-template-columns:repeat(3,1fr); }
-    .cat-card { position:relative; display:block; text-align:left; padding:17px 19px 16px; background:var(--hf-charcoal); border:1px solid var(--hf-rule); border-radius:0; color:var(--hf-ivory); font:inherit; cursor:pointer; transition:border-color .3s ease, background .3s ease; }
-    .cat-card:hover { border-color:var(--hf-gold); background:rgba(198,161,91,.06); }
+    /* ---- Option B, "gold selection" (Jesse, 2026-08-23) -----------------
+       Unselected cards stay quiet; the SELECTED one is a solid gold fill.
+       Measured against the old treatment:
+         selected vs unselected   1.18 -> 6.80   (was effectively invisible)
+         edge vs card             1.33 -> 3.21   (was a WCAG 1.4.11 failure)
+       --cat-edge is gold at 58%: the smallest step that clears the 3:1
+       non-text-contrast rule. Gold at 45% looked right but measured 2.46. */
+    .cat-card { --cat-edge:#826A3E; --cat-on-ink:#1B1611; --cat-on-ink-soft:rgba(27,22,17,.82);
+      position:relative; display:block; text-align:left; padding:17px 19px 16px; background:#241E16; border:1px solid var(--cat-edge); border-radius:0; color:var(--hf-ivory); font:inherit; cursor:pointer; transition:border-color .3s ease, background .3s ease, color .3s ease; }
+    .cat-card:hover { border-color:var(--hf-gold); background:rgba(198,161,91,.08); }
     .cat-card-title { display:block; font-family:var(--hf-serif); font-weight:500; font-size:1.16rem; line-height:1.25; color:var(--hf-ivory-bright); }
     .cat-card-rule { display:block; width:30px; height:1px; background:var(--hf-bronze); margin:9px 0 10px; transition:width .3s ease, background .3s ease; }
     .cat-card-sub { display:block; font-family:var(--font-body); font-weight:300; font-size:.83rem; line-height:1.5; color:rgba(241,232,214,.72); }
     .cat-card-meta { display:block; font-family:var(--font-body); font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:rgba(232,211,160,.6); margin-top:11px; }
-    .cat-card.is-active { border-color:var(--hf-gold); background:rgba(198,161,91,.10); }
-    .cat-card.is-active .cat-card-title { color:var(--hf-gold-bright); }
-    .cat-card.is-active .cat-card-rule { width:52px; background:var(--hf-gold); }
-    .cat-card.is-active .cat-card-meta { color:var(--hf-gold); }
+    .cat-card.is-active { border-color:var(--hf-gold); background:var(--hf-gold); }
+    .cat-card.is-active:hover { background:var(--hf-gold-bright); border-color:var(--hf-gold-bright); }
+    .cat-card.is-active .cat-card-title { color:var(--cat-on-ink); }
+    .cat-card.is-active .cat-card-rule { width:52px; background:var(--cat-on-ink); }
+    .cat-card.is-active .cat-card-sub { color:var(--cat-on-ink-soft); }
+    .cat-card.is-active .cat-card-meta { color:var(--cat-on-ink-soft); }
+    /* the global focus ring is gold — invisible on a gold card */
+    .cat-card.is-active:focus-visible { outline-color:var(--cat-on-ink); }
     .cat-card-count { position:absolute; top:14px; right:16px; display:none; font-family:var(--font-body); font-size:10px; font-weight:700; letter-spacing:.08em; padding:3px 9px; background:var(--hf-gold); color:var(--hf-espresso); }
+    /* a gold badge on a gold card is a 1.00 ratio — flip it */
+    .cat-card.is-active .cat-card-count { background:var(--cat-on-ink); color:var(--hf-gold-warm); }
     .cat-card-count.on { display:inline-block; }
 
     @media(max-width:900px){ .cat-card-sub { font-size:.8rem; } }
@@ -116,7 +130,7 @@
     .reg-context-inner { display:flex; align-items:center; gap:12px; flex-wrap:nowrap; padding:8px 14px; min-height:38px; }
     .reg-context-label { font-family:var(--font-body); font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:rgba(241,232,214,.55); }
     .reg-context-switch { display:flex; align-items:center; gap:8px; flex-wrap:nowrap; min-width:0; }
-    .reg-chip { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-width:0; min-height:38px; padding:0 14px; white-space:nowrap; background:none; border:1px solid rgba(198,161,91,.4); color:rgba(241,232,214,.8); font-family:var(--font-body); font-size:12.5px; font-weight:600; letter-spacing:.04em; cursor:pointer; transition:background .2s ease, color .2s ease, border-color .2s ease; }
+    .reg-chip { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-width:0; min-height:38px; padding:0 14px; white-space:nowrap; background:none; border:1px solid #826A3E; color:rgba(241,232,214,.86); font-family:var(--font-body); font-size:12.5px; font-weight:600; letter-spacing:.04em; cursor:pointer; transition:background .2s ease, color .2s ease, border-color .2s ease; }
     .reg-chip:hover { border-color:var(--hf-gold); color:var(--hf-ivory-bright); }
     .reg-chip[aria-pressed="true"] { background:var(--hf-gold); border-color:var(--hf-gold); color:var(--hf-espresso); }
     .reg-chip-n { font-size:11px; font-weight:700; opacity:.85; }

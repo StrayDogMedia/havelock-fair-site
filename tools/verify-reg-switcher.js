@@ -246,6 +246,59 @@ async function fillFirst(page, container) {
   mob.right <= mob.vw + 1 ? ok('bar does not overflow the viewport') : bad('bar within viewport', mob);
   await mp.close();
 
+  /* ---------------- contrast, measured from what the browser RENDERS ----
+     Not from the stylesheet source: these are alpha-composited colours, and
+     the whole point of the palette change was that the source values looked
+     fine while the composited result failed. */
+  console.log('\n=== contrast (option B, measured on rendered pixels) ===');
+  const cp = await browser.newPage();
+  await cp.setViewport({ width: 1440, height: 900 });
+  await cp.goto(URL, { waitUntil: 'networkidle2' });
+  await new Promise(r => setTimeout(r, 700));
+  const cr = await cp.evaluate(() => {
+    const px = c => { const m = c.match(/[\d.]+/g).map(Number); return m.length > 3 ? m : [...m, 1]; };
+    const flat = (fg, bg) => { const [r, g, b, a] = fg; const [R, G, B] = bg;
+      return [r * a + R * (1 - a), g * a + G * (1 - a), b * a + B * (1 - a)]; };
+    const lum = ([r, g, b]) => { const f = v => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
+    const ratio = (a, b) => { const x = lum(a), y = lum(b); return +(((Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05)).toFixed(2)); };
+    const cs = el => getComputedStyle(el);
+    const page = px(cs(document.querySelector('.reg-section')).backgroundColor).slice(0, 3);
+    const off = document.getElementById('tab-homegarden');
+    const on = document.getElementById('tab-livestock');
+    const offBg = flat(px(cs(off).backgroundColor), page);
+    const onBg = flat(px(cs(on).backgroundColor), page);
+    const offEdge = flat(px(cs(off).borderTopColor), offBg);
+    const onTitle = flat(px(cs(on.querySelector('.cat-card-title')).color), onBg);
+    const onSub = flat(px(cs(on.querySelector('.cat-card-sub')).color), onBg);
+    const onMeta = flat(px(cs(on.querySelector('.cat-card-meta')).color), onBg);
+    const offTitle = flat(px(cs(off.querySelector('.cat-card-title')).color), offBg);
+    const offSub = flat(px(cs(off.querySelector('.cat-card-sub')).color), offBg);
+    const chip = document.getElementById('chip-homegarden');
+    const barBg = flat(px(cs(document.getElementById('reg-context')).backgroundColor), page);
+    return {
+      edge: ratio(offEdge, offBg),
+      selection: ratio(onBg, offBg),
+      onTitle: ratio(onTitle, onBg), onSub: ratio(onSub, onBg), onMeta: ratio(onMeta, onBg),
+      offTitle: ratio(offTitle, offBg), offSub: ratio(offSub, offBg),
+      chipEdge: ratio(flat(px(cs(chip).borderTopColor), barBg), barBg)
+    };
+  });
+  const need = (label, got, min) => got >= min
+    ? ok(label, `${got}:1  (needs ${min})`)
+    : bad(label, `${got}:1`, `>= ${min}:1`);
+  need('unselected card EDGE clears WCAG 1.4.11 non-text', cr.edge, 3.0);
+  need('bar chip edge clears it too', cr.chipEdge, 3.0);
+  cr.selection >= 4.5
+    ? ok('selected vs unselected card is unmistakable', `${cr.selection}:1  (was 1.18)`)
+    : bad('selection separation >= 4.5', cr.selection);
+  need('title on the GOLD selected card', cr.onTitle, 4.5);
+  need('blurb on the gold selected card', cr.onSub, 4.5);
+  need('class range on the gold selected card', cr.onMeta, 4.5);
+  need('title on an unselected card', cr.offTitle, 4.5);
+  need('blurb on an unselected card', cr.offSub, 4.5);
+  await cp.close();
+
   await browser.close();
   console.log('\n' + (fail === 0 ? `✅ all switcher checks passed (${pass})` : `❌ ${fail} failed, ${pass} passed`));
   process.exit(fail ? 1 : 0);
