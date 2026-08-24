@@ -107,3 +107,53 @@ breakpoints are sized against. When changing nav items or labels, re-measure
 across widths in all three languages, and check **both** edges: flex squeezes
 the brand off the *left* without ever growing `scrollWidth`, so a
 document-overflow check alone reports a clean bar that is visibly broken.
+
+## verify-reg-switcher.js
+
+Covers the registration page's category switching: the sticky context bar, the
+cross-category add buttons, and the two-tier card chooser. Drives real Chrome
+(not jsdom) because every assertion here is positional.
+
+```sh
+cd ~/havelock-fair-site && python3 -m http.server 8765   # in another shell
+NODE_PATH=/path/to/node_modules node tools/verify-reg-switcher.js
+```
+
+42 checks. Why it exists: **Livestock and Home & Garden are two views of ONE
+submission** (`#form-general`, one exhibitor number, one Submit), while **Youth,
+4-H and Equestrian are each a SEPARATE form with its own Submit**. Before this
+change a visitor could fill the General form, click Youth, submit Youth, and
+their General entries were silently never sent — `#entries-summary`, the only
+warning, lives *inside* the General panel and is hidden exactly when it matters.
+The context bar carries that warning across panels; these tests pin it down.
+
+### Two traps this harness now guards, both found by screenshot, not assertion
+
+**1. `hidden` is only a UA-stylesheet `display:none`.** Any author `display`
+rule beats it. `.reg-context-switch { display:flex }` kept the Livestock /
+Home & Garden chips on screen next to "Youth — a separate registration", while
+the test asserted `el.hidden` — which was `true` the whole time. **Assert
+`getComputedStyle(el).display`, not `el.hidden`.** The page now carries
+`.reg-context [hidden] { display:none !important }`.
+
+**2. Source order beats intent.** Twice, overrides were written *above* the base
+rule they meant to override and silently lost:
+- the phone `@media` block sat above `.cat-card-sub { display:block }`, so the
+  blurbs never hid and the chooser measured 981px instead of ~490px;
+- `.add-entry-row .add-entry-btn { flex:… }` sat above
+  `.add-entry-btn { width:100% }`, so the two add buttons stacked full-width.
+
+Every media query and override in that page's `<style>` now lives **after** the
+base rules, with a comment saying why.
+
+### Measure both edges, in all three languages
+
+The header and this bar can be squeezed off the **left** without ever growing
+`scrollWidth`, so a document-overflow check reports a clean page that is visibly
+broken. Spanish is the widest language. Baselines to beat, measured:
+
+| | before | after |
+|---|---|---|
+| chooser, 1440px | 299px | 393px (buys the two-tier explanation) |
+| chooser, 390px | **772px** | **490px** |
+| context bar | — | 56px desktop / 54px phone |

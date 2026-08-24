@@ -203,3 +203,39 @@ carry their **own inline copy** (registration also has its own `setLang()` and `
 attributes instead of `data-i18n`). Any chrome change is **three edits**. `nav_music` once sat in
 `i18n.js` for months rendering nowhere because only one copy was touched. `tools/verify-chrome.js` walks
 all nine pages precisely so a missed copy fails loudly.
+
+
+## `hidden` is not reliably hidden  (learned 2026-08-23)
+
+The `hidden` attribute is only `display:none` from the UA stylesheet, so **any**
+author `display` rule beats it silently. `.reg-context-switch { display:flex }`
+kept a control on screen while `el.hidden` was `true`, and the test asserting
+`el.hidden` passed. Only the screenshot caught it.
+
+- In tests, assert **`getComputedStyle(el).display === 'none'`**, never `el.hidden`.
+- In CSS, if you toggle the attribute on something with a `display` rule, pair it:
+  `.thing [hidden] { display: none !important; }`
+
+## Put overrides AFTER the rules they override
+
+Hit twice in one session in `pages/registration.html`'s inline `<style>`:
+a phone `@media` block written above `.cat-card-sub { display:block }` (blurbs
+never hid, chooser measured 981px instead of ~490px), and
+`.add-entry-row .add-entry-btn { flex: … }` written above
+`.add-entry-btn { width:100% }` (buttons stacked instead of sharing a row).
+Both looked correct in the source and both lost on cascade order. Media queries
+and overrides now live at the **bottom** of that block.
+
+Neither failed a DOM assertion. Both were obvious in a screenshot — the same
+lesson as the invisible dark-on-dark heading: **take the shot.**
+
+## Registration page: two kinds of category
+
+Not cosmetic, it changes what a control is allowed to do. `Livestock` and
+`Home & Garden` are two views of **one** submission (`#form-general`, one
+exhibitor number, one Submit — `switchTab` only toggles which `.entries-group`
+shows, and the hidden group still submits). `Youth`, `4-H` and `Equestrian` are
+each a **separate** form with its own Submit. Any navigation that lets someone
+hop between them must not imply the entries merge — they do not, and
+`#entries-summary` (the old warning) is inside the General panel, invisible
+exactly when someone is about to lose entries.

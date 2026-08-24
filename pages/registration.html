@@ -51,27 +51,101 @@
     .reg-intro .reg-intro-open { display:inline-block; font-family:var(--font-body); font-size:14px; font-weight:600; letter-spacing:.02em; color:var(--gold, #C6A15B); border:1px solid rgba(198,161,91,.35); border-radius:4px; padding:9px 16px; margin:0 0 18px; }
     .reg-intro .reg-intro-fine { font-family:var(--font-body); font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:rgba(241,232,214,.5); margin:0; }
     /* ---- category cards (replace the old .form-tabs strip) ---- */
-    .cat-chooser { margin-bottom:44px; }
+    /* ---- category chooser: typographic, no icons -----------------------
+       The cards used to lead with colour emoji, which render differently on
+       every OS and fought the Newsreader/gold treatment used everywhere else.
+       Title -> hairline rule -> description -> class range, all type.
+       NOTE ON ORDER: every media query lives at the BOTTOM of this block.
+       They were first written above the base .cat-card rules and silently
+       lost on source order — .cat-card-sub stayed visible on phones and the
+       chooser measured 981px when it should have been ~400px. */
+    .cat-chooser { margin-bottom:40px; }
+    .cat-tier + .cat-tier { margin-top:22px; padding-top:18px; border-top:1px solid var(--hf-rule); }
+    /* heading and its note share one baseline row — stacked they cost ~90px
+       per tier, which made the chooser TALLER than the emoji version it
+       replaced (measured: 299 -> 505 desktop before this was tightened) */
+    .cat-tier-head { display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 12px; margin:0 0 10px; }
+    .cat-tier-h { font-family:var(--hf-serif); font-weight:500; font-size:1.08rem; color:var(--hf-gold-bright); margin:0; white-space:nowrap; }
+    .cat-tier-note { font-family:var(--font-body); font-weight:300; font-size:.8rem; line-height:1.45; color:rgba(241,232,214,.58); margin:0; flex:1 1 16ch; }
     .cat-grid { display:grid; gap:12px; }
-    .cat-grid--2 { grid-template-columns:1fr 1fr; margin-bottom:12px; }
+    .cat-grid--2 { grid-template-columns:1fr 1fr; }
     .cat-grid--3 { grid-template-columns:repeat(3,1fr); }
-    @media(max-width:760px){ .cat-grid--3 { grid-template-columns:1fr; } }
-    @media(max-width:560px){ .cat-grid--2 { grid-template-columns:1fr; } }
-    .cat-card { position:relative; display:grid; grid-template-columns:auto 1fr; grid-template-areas:"icon title" "icon sub" "icon meta"; column-gap:14px; row-gap:4px; align-content:start; text-align:left; padding:20px 22px; background:var(--hf-charcoal); border:1px solid var(--hf-rule); border-radius:0; color:var(--hf-ivory); font:inherit; cursor:pointer; transition:border-color .3s ease, background .3s ease; }
+    .cat-card { position:relative; display:block; text-align:left; padding:17px 19px 16px; background:var(--hf-charcoal); border:1px solid var(--hf-rule); border-radius:0; color:var(--hf-ivory); font:inherit; cursor:pointer; transition:border-color .3s ease, background .3s ease; }
     .cat-card:hover { border-color:var(--hf-gold); background:rgba(198,161,91,.06); }
-    .cat-card-icon { grid-area:icon; font-size:1.7rem; line-height:1.1; }
-    .cat-card-title { grid-area:title; font-family:var(--hf-serif); font-weight:500; font-size:1.2rem; color:var(--hf-ivory-bright); }
-    .cat-card-sub { grid-area:sub; font-family:var(--font-body); font-weight:300; font-size:.84rem; line-height:1.5; color:rgba(241,232,214,.72); }
-    .cat-card-meta { grid-area:meta; font-family:var(--font-body); font-size:10px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(232,211,160,.62); margin-top:4px; }
-    .cat-card.is-active { border-color:var(--hf-gold); background:rgba(198,161,91,.10); box-shadow:inset 0 -3px 0 var(--hf-gold); }
+    .cat-card-title { display:block; font-family:var(--hf-serif); font-weight:500; font-size:1.16rem; line-height:1.25; color:var(--hf-ivory-bright); }
+    .cat-card-rule { display:block; width:30px; height:1px; background:var(--hf-bronze); margin:9px 0 10px; transition:width .3s ease, background .3s ease; }
+    .cat-card-sub { display:block; font-family:var(--font-body); font-weight:300; font-size:.83rem; line-height:1.5; color:rgba(241,232,214,.72); }
+    .cat-card-meta { display:block; font-family:var(--font-body); font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:rgba(232,211,160,.6); margin-top:11px; }
+    .cat-card.is-active { border-color:var(--hf-gold); background:rgba(198,161,91,.10); }
     .cat-card.is-active .cat-card-title { color:var(--hf-gold-bright); }
+    .cat-card.is-active .cat-card-rule { width:52px; background:var(--hf-gold); }
     .cat-card.is-active .cat-card-meta { color:var(--hf-gold); }
-    .cat-grid--3 .cat-card { padding:16px 18px; }
-    .cat-grid--3 .cat-card-icon { font-size:1.35rem; }
-    .cat-grid--3 .cat-card-title { font-size:1.05rem; }
-    .cat-grid--3 .cat-card-sub { font-size:.8rem; }
-    .cat-card-count { position:absolute; top:10px; right:10px; display:none; font-family:var(--font-body); font-size:10px; font-weight:700; letter-spacing:.08em; padding:3px 9px; background:var(--hf-gold); color:var(--hf-espresso); }
+    .cat-card-count { position:absolute; top:14px; right:16px; display:none; font-family:var(--font-body); font-size:10px; font-weight:700; letter-spacing:.08em; padding:3px 9px; background:var(--hf-gold); color:var(--hf-espresso); }
     .cat-card-count.on { display:inline-block; }
+
+    @media(max-width:900px){ .cat-card-sub { font-size:.8rem; } }
+    @media(max-width:760px){ .cat-grid--3 { grid-template-columns:1fr 1fr; } }
+    /* Phones: two columns gave 133px of card, which wrapped "Equestrian &
+       Gymkhana" onto three lines. One compact ROW per category instead —
+       title left, class range right, blurb dropped (the tier note above
+       already says what the group is). Chooser: 772px -> ~400px. */
+    @media(max-width:560px){
+      .cat-grid { gap:7px; }
+      .cat-grid--2, .cat-grid--3 { grid-template-columns:1fr; }
+      .cat-card { display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding:14px 15px; }
+      .cat-card-rule, .cat-card-sub { display:none; }
+      .cat-card-title { font-size:1.02rem; }
+      .cat-card-meta { margin-top:0; font-size:9.5px; letter-spacing:.12em; white-space:nowrap; }
+      .cat-card-count { position:static; margin-left:6px; padding:2px 7px; }
+      .cat-tier-h { white-space:normal; }
+    }
+
+    /* ---- sticky context bar --------------------------------------------
+       --hf-header-stuck must match the .is-stuck height of .hf-header in
+       css/heritage.css. Measured at 75px, identical at every width; keep the
+       two in step or this bar will tuck under the site header. */
+    :root { --hf-header-stuck:75px; }
+    .reg-context { position:sticky; top:var(--hf-header-stuck); z-index:15; margin:0 0 26px; background:rgba(27,22,17,.96); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border:1px solid rgba(198,161,91,.3); border-left:0; border-right:0; }
+    /* The `hidden` ATTRIBUTE is only display:none via the UA stylesheet, so
+       any author `display` rule silently beats it — .reg-context-switch stayed
+       on screen next to "Youth — a separate registration". Only the screenshot
+       caught it; the test had asserted el.hidden, which was true all along. */
+    .reg-context [hidden], .reg-context[hidden] { display:none !important; }
+    /* One row. It sits under a 75px site header, and wrapping turned it into a
+       three-deck 145px block that ate the form. */
+    .reg-context-inner { display:flex; align-items:center; gap:12px; flex-wrap:nowrap; padding:8px 14px; min-height:38px; }
+    .reg-context-label { font-family:var(--font-body); font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:rgba(241,232,214,.55); }
+    .reg-context-switch { display:flex; align-items:center; gap:8px; flex-wrap:nowrap; min-width:0; }
+    .reg-chip { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-width:0; min-height:38px; padding:0 14px; white-space:nowrap; background:none; border:1px solid rgba(198,161,91,.4); color:rgba(241,232,214,.8); font-family:var(--font-body); font-size:12.5px; font-weight:600; letter-spacing:.04em; cursor:pointer; transition:background .2s ease, color .2s ease, border-color .2s ease; }
+    .reg-chip:hover { border-color:var(--hf-gold); color:var(--hf-ivory-bright); }
+    .reg-chip[aria-pressed="true"] { background:var(--hf-gold); border-color:var(--hf-gold); color:var(--hf-espresso); }
+    .reg-chip-n { font-size:11px; font-weight:700; opacity:.85; }
+    .reg-chip-n:empty { display:none; }
+    .reg-context-sep { display:flex; align-items:center; gap:12px; flex-wrap:nowrap; min-width:0; }
+    .reg-context-where { font-family:var(--hf-serif); font-size:1rem; color:var(--hf-gold-bright); white-space:nowrap; }
+    /* shrinks and ellipsises rather than wrapping the bar onto a second line */
+    .reg-context-warn { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:var(--font-body); font-size:12px; color:var(--hf-espresso); background:var(--hf-gold); padding:5px 11px; }
+    .reg-context-warn[hidden] { display:none; }
+    .reg-context-up { margin-left:auto; flex:0 0 auto; display:inline-flex; align-items:center; gap:6px; min-height:38px; padding:0 12px; background:none; border:1px solid transparent; color:rgba(232,211,160,.8); font-family:var(--font-body); font-size:11px; font-weight:600; letter-spacing:.13em; text-transform:uppercase; cursor:pointer; transition:color .2s ease, border-color .2s ease; }
+    .reg-context-up:hover { color:var(--hf-gold-bright); border-color:rgba(198,161,91,.4); }
+    @media(max-width:560px){
+      .reg-context-inner { gap:8px; padding:7px 12px; }
+      .reg-context-label { display:none; }
+      .reg-context-where { font-size:.9rem; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+      .reg-context-warn { font-size:11px; padding:4px 8px; flex:1 1 auto; }
+      /* On a phone there is only room for one of them, and the warning is the
+         one that stops entries being lost — the "separate registration" label
+         is orientation, the warning is money. Drop the label, keep the warning. */
+      .reg-context-sep.has-warn .reg-context-where { display:none; }
+      /* the two chips must stay on ONE line here — the bar sits under a 75px
+         header and a wrapped second row pushed it to ~110px */
+      .reg-chip { min-height:36px; padding:0 9px; font-size:11.5px; overflow:hidden; text-overflow:ellipsis; display:block; line-height:36px; }
+      .reg-chip-n { display:none; }
+      .reg-context-switch { gap:6px; flex:1 1 auto; }
+      .reg-context-up { padding:0 8px; letter-spacing:.08em; }
+      .reg-context-up span:first-child { display:none; }
+    }
+
     /* ---- entry groups inside the shared general panel ---- */
     .entries-group { display:none; }
     .entries-group.active { display:block; }
@@ -126,6 +200,17 @@
     .livestock-fields h5 { font-size:.85rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--text-light); margin:0 0 14px; }
     .add-entry-btn { display:inline-flex; align-items:center; gap:8px; padding:14px 28px; background:transparent; border:2px dashed var(--navy); border-radius:var(--radius); color:var(--navy); font-family:var(--font-heading); font-size:1rem; font-weight:600; cursor:pointer; transition:all .2s; width:100%; justify-content:center; margin-bottom:32px; }
     .add-entry-btn:hover { background:var(--cream); }
+    /* ---- add-entry row: choose the category AT the moment of adding -------
+       Placed AFTER .add-entry-btn deliberately: that rule sets width:100% and
+       margin-bottom:32px, so an override written above it silently loses and
+       the two buttons stack full-width instead of sharing the row. */
+    .add-entry-row { display:flex; flex-wrap:wrap; gap:10px; align-items:stretch; margin-bottom:32px; }
+    .add-entry-row .add-entry-btn { width:auto; flex:1 1 240px; margin-bottom:0; }
+    /* secondary: this is the escape hatch to the other category, not the
+       main action, so it reads quieter than "Add Another <this> Class" */
+    .add-entry-row .add-entry-cross { flex:0 1 auto; border-style:solid; border-width:1px; opacity:.75; font-size:.92rem; padding:14px 20px; }
+    .add-entry-row .add-entry-cross:hover { opacity:1; }
+    @media(max-width:620px){ .add-entry-row .add-entry-btn { flex:1 1 100%; } }
     .submit-section { text-align:center; padding-top:16px; }
     .submit-btn { display:inline-flex; align-items:center; gap:10px; padding:18px 48px; background:var(--navy); color:var(--white); border:none; border-radius:50px; font-family:var(--font-heading); font-size:1.1rem; font-weight:700; cursor:pointer; transition:all var(--transition); }
     .submit-btn:hover { background:var(--navy-light); transform:translateY(-2px); box-shadow:var(--shadow-lg); }
@@ -276,41 +361,82 @@
       <p class="reg-intro-fine" data-en="Judging begins at 11 a.m. · Exhibitors 13 and over take out a $15 membership, deducted from any prize winnings." data-fr="Le jugement débute à 11 h · Les exposants de 13 ans et plus doivent adhérer (15 $), montant déduit des gains.">Judging begins at 11 a.m. · Exhibitors 13 and over take out a $15 membership, deducted from any prize winnings.</p>
     </div>
 
+    <!-- The five categories are TWO different things and the cards now say so.
+         Livestock + Home & Garden are two views of ONE submission (one form,
+         one exhibitor number, one Submit — switchTab only toggles which
+         .entries-group is visible, the hidden one still submits). Youth, 4-H
+         and Equestrian are each a SEPARATE form with its own Submit. Showing
+         all five as equals implied you could mix them in one registration. -->
     <div class="cat-chooser">
-      <div class="cat-grid cat-grid--2">
-        <button type="button" class="cat-card is-active" id="tab-livestock" aria-pressed="true" aria-controls="panel-general" onclick="switchTab('livestock')">
-          <span class="cat-card-icon" aria-hidden="true">🐄</span>
-          <span class="cat-card-title" data-en="Livestock" data-fr="Bétail">Livestock</span>
-          <span class="cat-card-sub" data-en="Cattle, horses, sheep, goats, swine, rabbits and poultry — shown in the ring and the barns." data-fr="Bovins, chevaux, moutons, chèvres, porcs, lapins et volaille — présentés au manège et aux étables.">Cattle, horses, sheep, goats, swine, rabbits and poultry — shown in the ring and the barns.</span>
-          <span class="cat-card-meta" data-en="Classes 1–10" data-fr="Classes 1 à 10">Classes 1–10</span>
-          <span class="cat-card-count" id="count-livestock"></span>
-        </button>
-        <button type="button" class="cat-card" id="tab-homegarden" aria-pressed="false" aria-controls="panel-general" onclick="switchTab('homegarden')">
-          <span class="cat-card-icon" aria-hidden="true">🧺</span>
-          <span class="cat-card-title" data-en="Home &amp; Garden" data-fr="Maison et jardin">Home &amp; Garden</span>
-          <span class="cat-card-sub" data-en="Baking, preserves, vegetables, fruit, flowers, quilting, knitting and art." data-fr="Pâtisserie, conserves, légumes, fruits, fleurs, courtepointe, tricot et arts.">Baking, preserves, vegetables, fruit, flowers, quilting, knitting and art.</span>
-          <span class="cat-card-meta" data-en="Classes 11–25" data-fr="Classes 11 à 25">Classes 11–25</span>
-          <span class="cat-card-count" id="count-homegarden"></span>
-        </button>
+
+      <div class="cat-tier">
+        <div class="cat-tier-head"><h3 class="cat-tier-h" data-en="Enter the fair" data-fr="Participer &agrave; la foire">Enter the fair</h3><p class="cat-tier-note" data-en="One registration &mdash; enter classes in both, submitted together under one exhibitor number." data-fr="Une seule inscription &mdash; les classes des deux cat&eacute;gories sont soumises ensemble sous un seul num&eacute;ro.">One registration &mdash; enter classes in both, submitted together under one exhibitor number.</p></div>
+        <div class="cat-grid cat-grid--2">
+          <button type="button" class="cat-card is-active" id="tab-livestock" aria-pressed="true" aria-controls="panel-general" onclick="switchTab('livestock')">
+            <span class="cat-card-title" data-en="Livestock" data-fr="B&eacute;tail">Livestock</span>
+            <span class="cat-card-rule" aria-hidden="true"></span>
+            <span class="cat-card-sub" data-en="Cattle, horses, sheep, goats, swine, rabbits and poultry &mdash; shown in the ring and the barns." data-fr="Bovins, chevaux, moutons, ch&egrave;vres, porcs, lapins et volaille &mdash; pr&eacute;sent&eacute;s au man&egrave;ge et aux &eacute;tables.">Cattle, horses, sheep, goats, swine, rabbits and poultry &mdash; shown in the ring and the barns.</span>
+            <span class="cat-card-meta" data-en="Classes 1&ndash;10" data-fr="Classes 1 &agrave; 10">Classes 1&ndash;10</span>
+            <span class="cat-card-count" id="count-livestock"></span>
+          </button>
+          <button type="button" class="cat-card" id="tab-homegarden" aria-pressed="false" aria-controls="panel-general" onclick="switchTab('homegarden')">
+            <span class="cat-card-title" data-en="Home &amp; Garden" data-fr="Maison et jardin">Home &amp; Garden</span>
+            <span class="cat-card-rule" aria-hidden="true"></span>
+            <span class="cat-card-sub" data-en="Baking, preserves, vegetables, fruit, flowers, quilting, knitting and art." data-fr="P&acirc;tisserie, conserves, l&eacute;gumes, fruits, fleurs, courtepointe, tricot et arts.">Baking, preserves, vegetables, fruit, flowers, quilting, knitting and art.</span>
+            <span class="cat-card-meta" data-en="Classes 11&ndash;25" data-fr="Classes 11 &agrave; 25">Classes 11&ndash;25</span>
+            <span class="cat-card-count" id="count-homegarden"></span>
+          </button>
+        </div>
       </div>
-      <div class="cat-grid cat-grid--3">
-        <button type="button" class="cat-card" id="tab-youth" aria-pressed="false" aria-controls="panel-youth" onclick="switchTab('youth')">
-          <span class="cat-card-icon" aria-hidden="true">🌟</span>
-          <span class="cat-card-title" data-en="Youth" data-fr="Jeunes">Youth</span>
-          <span class="cat-card-sub" data-en="For exhibitors 17 and under — crafts, baking, plants and art." data-fr="Pour les exposants de 17 ans et moins — artisanat, pâtisserie, plantes et arts.">For exhibitors 17 and under — crafts, baking, plants and art.</span>
-          <span class="cat-card-meta" data-en="Classes 26–27" data-fr="Classes 26 et 27">Classes 26–27</span>
-        </button>
-        <button type="button" class="cat-card" id="tab-fourh" aria-pressed="false" aria-controls="panel-fourh" onclick="switchTab('fourh')">
-          <span class="cat-card-icon" aria-hidden="true">🍀</span>
-          <span class="cat-card-title">4-H</span>
-          <span class="cat-card-sub" data-en="Heifer classes and showmanship for 4-H members aged 6 to 21." data-fr="Génisses et présentation pour les membres 4-H de 6 à 21 ans.">Heifer classes and showmanship for 4-H members aged 6 to 21.</span>
-          <span class="cat-card-meta" data-en="ATQ required" data-fr="ATQ requis">ATQ required</span>
-        </button>
-        <button type="button" class="cat-card" id="tab-equestrian" aria-pressed="false" aria-controls="panel-equestrian" onclick="switchTab('equestrian')">
-          <span class="cat-card-icon" aria-hidden="true">🐴</span>
-          <span class="cat-card-title" data-en="Equestrian &amp; Gymkhana" data-fr="Équestre et gymkhana">Equestrian &amp; Gymkhana</span>
-          <span class="cat-card-sub" data-en="Horse show and gymkhana, English or Western, all ages." data-fr="Concours hippique et gymkhana, style anglais ou western, tous les âges.">Horse show and gymkhana, English or Western, all ages.</span>
-          <span class="cat-card-meta" data-en="Sections 1–13" data-fr="Sections 1 à 13">Sections 1–13</span>
+
+      <div class="cat-tier cat-tier--separate">
+        <div class="cat-tier-head"><h3 class="cat-tier-h" data-en="Separate programmes" data-fr="Programmes distincts">Separate programmes</h3><p class="cat-tier-note" data-en="Each has its own form and its own submit button." data-fr="Chacun a son propre formulaire et son propre bouton d&rsquo;envoi.">Each has its own form and its own submit button.</p></div>
+        <div class="cat-grid cat-grid--3">
+          <button type="button" class="cat-card" id="tab-youth" aria-pressed="false" aria-controls="panel-youth" onclick="switchTab('youth')">
+            <span class="cat-card-title" data-en="Youth" data-fr="Jeunes">Youth</span>
+            <span class="cat-card-rule" aria-hidden="true"></span>
+            <span class="cat-card-sub" data-en="For exhibitors 17 and under &mdash; crafts, baking, plants and art." data-fr="Pour les exposants de 17 ans et moins &mdash; artisanat, p&acirc;tisserie, plantes et arts.">For exhibitors 17 and under &mdash; crafts, baking, plants and art.</span>
+            <span class="cat-card-meta" data-en="Classes 26&ndash;27" data-fr="Classes 26 et 27">Classes 26&ndash;27</span>
+          </button>
+          <button type="button" class="cat-card" id="tab-fourh" aria-pressed="false" aria-controls="panel-fourh" onclick="switchTab('fourh')">
+            <span class="cat-card-title">4-H</span>
+            <span class="cat-card-rule" aria-hidden="true"></span>
+            <span class="cat-card-sub" data-en="Heifer classes and showmanship for 4-H members aged 6 to 21." data-fr="G&eacute;nisses et pr&eacute;sentation pour les membres 4-H de 6 &agrave; 21 ans.">Heifer classes and showmanship for 4-H members aged 6 to 21.</span>
+            <span class="cat-card-meta" data-en="ATQ required" data-fr="ATQ requis">ATQ required</span>
+          </button>
+          <button type="button" class="cat-card" id="tab-equestrian" aria-pressed="false" aria-controls="panel-equestrian" onclick="switchTab('equestrian')">
+            <span class="cat-card-title" data-en="Equestrian &amp; Gymkhana" data-fr="&Eacute;questre et gymkhana">Equestrian &amp; Gymkhana</span>
+            <span class="cat-card-rule" aria-hidden="true"></span>
+            <span class="cat-card-sub" data-en="Horse show and gymkhana, English or Western, all ages." data-fr="Concours hippique et gymkhana, style anglais ou western, tous les &acirc;ges.">Horse show and gymkhana, English or Western, all ages.</span>
+            <span class="cat-card-meta" data-en="Sections 1&ndash;13" data-fr="Sections 1 &agrave; 13">Sections 1&ndash;13</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky context bar. Sits directly under the site header and stays with
+         you down the whole form, so switching category no longer means scrolling
+         ~1,200px (desktop) / ~2,000px (mobile) back to the cards. It also carries
+         the warning that used to be impossible to see: #entries-summary lives
+         INSIDE the General panel, so a pending General entry was invisible the
+         moment you looked at Youth / 4-H / Equestrian. -->
+    <div class="reg-context" id="reg-context" hidden>
+      <div class="reg-context-inner">
+        <div class="reg-context-switch" id="reg-context-switch">
+          <span class="reg-context-label" data-en="Entering" data-fr="Vous inscrivez">Entering</span>
+          <button type="button" class="reg-chip" id="chip-livestock" onclick="switchTab('livestock')" aria-pressed="true">
+            <span data-en="Livestock" data-fr="B&eacute;tail">Livestock</span><span class="reg-chip-n" id="chip-n-livestock"></span>
+          </button>
+          <button type="button" class="reg-chip" id="chip-homegarden" onclick="switchTab('homegarden')" aria-pressed="false">
+            <span data-en="Home &amp; Garden" data-fr="Maison et jardin">Home &amp; Garden</span><span class="reg-chip-n" id="chip-n-homegarden"></span>
+          </button>
+        </div>
+        <div class="reg-context-sep" id="reg-context-sep" hidden>
+          <span class="reg-context-where" id="reg-context-where"></span>
+          <span class="reg-context-warn" id="reg-context-warn" role="status" hidden></span>
+        </div>
+        <button type="button" class="reg-context-up" onclick="scrollToChooser()">
+          <span data-en="All categories" data-fr="Toutes les cat&eacute;gories">All categories</span> <span aria-hidden="true">&uarr;</span>
         </button>
       </div>
     </div>
@@ -355,14 +481,20 @@
           <div class="form-card-header"><h3 data-en="Your Entries" data-fr="Vos inscriptions">Your Entries</h3></div>
           <div class="form-card-body">
             <div class="entries-group active" id="group-livestock">
-              <div class="reg-info-box"><strong data-en="How to enter:" data-fr="Comment s'inscrire :">How to enter:</strong><span data-en=' Choose a class, tick the sections you want (and breed, if the class has them), then use "Add Another Class" for each additional animal. Animal details appear automatically. Entering baking, produce or crafts too? Switch to Home &amp; Garden above — your details carry over and everything is submitted together.' data-fr=" Choisissez une classe, cochez les sections souhaitées (et la race, s'il y a lieu), puis utilisez « Ajouter une autre classe » pour chaque animal supplémentaire. Les champs sur l'animal apparaissent automatiquement. Vous présentez aussi de la pâtisserie, des récoltes ou de l'artisanat ? Passez à Maison et jardin ci-dessus — vos coordonnées sont conservées et tout est soumis ensemble."> Choose a class, tick the sections you want (and breed, if the class has them), then use "Add Another Class" for each additional animal. Animal details appear automatically. Entering baking, produce or crafts too? Switch to Home &amp; Garden above — your details carry over and everything is submitted together.</span></div>
+              <div class="reg-info-box"><strong data-en="How to enter:" data-fr="Comment s'inscrire :">How to enter:</strong><span data-en=' Choose a class, tick the sections you want (and breed, if the class has them), then use "Add Another Class" for each additional animal. Animal details appear automatically. Entering baking, produce or crafts too? Use the "Add a Home &amp; Garden Class" button below — your details carry over and everything is submitted together.' data-fr=" Choisissez une classe, cochez les sections souhaitées (et la race, s'il y a lieu), puis utilisez « Ajouter une autre classe » pour chaque animal supplémentaire. Les champs sur l'animal apparaissent automatiquement. Vous présentez aussi de la pâtisserie, des récoltes ou de l'artisanat ? Utilisez le bouton « Ajouter une classe Maison et jardin » ci-dessous — vos coordonnées sont conservées et tout est soumis ensemble."> Choose a class, tick the sections you want (and breed, if the class has them), then use "Add Another Class" for each additional animal. Animal details appear automatically. Entering baking, produce or crafts too? Use the "Add a Home &amp; Garden Class" button below — your details carry over and everything is submitted together.</span></div>
               <div class="entries-container" id="entries-livestock"></div>
-              <button type="button" class="add-entry-btn" onclick="addEntry('livestock')"><span>＋</span><span data-en="Add Another Class" data-fr="Ajouter une autre classe">Add Another Class</span></button>
+              <div class="add-entry-row">
+                <button type="button" class="add-entry-btn" onclick="addEntry('livestock')"><span>＋</span><span data-en="Add Another Livestock Class" data-fr="Ajouter une autre classe de bétail">Add Another Livestock Class</span></button>
+                <button type="button" class="add-entry-btn add-entry-cross" onclick="addEntryIn('homegarden')"><span>＋</span><span data-en="Add a Home &amp; Garden Class" data-fr="Ajouter une classe Maison et jardin">Add a Home &amp; Garden Class</span></button>
+              </div>
             </div>
             <div class="entries-group" id="group-homegarden">
-              <div class="reg-info-box"><strong data-en="How to enter:" data-fr="Comment s'inscrire :">How to enter:</strong><span data-en=' Choose a class, tick every section you want to enter, then use "Add Another Class" to enter more classes. There is no limit on how many sections you enter. Showing an animal too? Switch to Livestock above — your details carry over and everything is submitted together.' data-fr=" Choisissez une classe, cochez toutes les sections souhaitées, puis utilisez « Ajouter une autre classe » pour en ajouter d'autres. Il n'y a pas de limite au nombre de sections. Vous présentez aussi un animal ? Passez à Bétail ci-dessus — vos coordonnées sont conservées et tout est soumis ensemble."> Choose a class, tick every section you want to enter, then use "Add Another Class" to enter more classes. There is no limit on how many sections you enter. Showing an animal too? Switch to Livestock above — your details carry over and everything is submitted together.</span></div>
+              <div class="reg-info-box"><strong data-en="How to enter:" data-fr="Comment s'inscrire :">How to enter:</strong><span data-en=' Choose a class, tick every section you want to enter, then use "Add Another Class" to enter more classes. There is no limit on how many sections you enter. Showing an animal too? Use the "Add a Livestock Class" button below — your details carry over and everything is submitted together.' data-fr=" Choisissez une classe, cochez toutes les sections souhaitées, puis utilisez « Ajouter une autre classe » pour en ajouter d'autres. Il n'y a pas de limite au nombre de sections. Vous présentez aussi un animal ? Utilisez le bouton « Ajouter une classe de bétail » ci-dessous — vos coordonnées sont conservées et tout est soumis ensemble."> Choose a class, tick every section you want to enter, then use "Add Another Class" to enter more classes. There is no limit on how many sections you enter. Showing an animal too? Use the "Add a Livestock Class" button below — your details carry over and everything is submitted together.</span></div>
               <div class="entries-container" id="entries-homegarden"></div>
-              <button type="button" class="add-entry-btn" onclick="addEntry('homegarden')"><span>＋</span><span data-en="Add Another Class" data-fr="Ajouter une autre classe">Add Another Class</span></button>
+              <div class="add-entry-row">
+                <button type="button" class="add-entry-btn" onclick="addEntry('homegarden')"><span>＋</span><span data-en="Add Another Home &amp; Garden Class" data-fr="Ajouter une autre classe Maison et jardin">Add Another Home &amp; Garden Class</span></button>
+                <button type="button" class="add-entry-btn add-entry-cross" onclick="addEntryIn('livestock')"><span>＋</span><span data-en="Add a Livestock Class" data-fr="Ajouter une classe de bétail">Add a Livestock Class</span></button>
+              </div>
             </div>
           </div>
         </div>
@@ -728,7 +860,86 @@ function switchTab(id) {
     Object.values(GENERAL_CATS).forEach(conf => document.getElementById(conf.group).classList.remove('active'));
     document.getElementById(GENERAL_CATS[id].group).classList.add('active');
   }
+  currentTab = id;
   updateCatCounts();
+}
+
+/* Which card is selected. The sticky bar has to know, because what it shows
+   depends on WHICH KIND of category you are in: Livestock/Home & Garden are
+   two views of one submission, so the bar is a switcher; Youth/4-H/Equestrian
+   are separate forms with their own Submit, so the bar orients instead. */
+let currentTab = 'livestock';
+
+const SEPARATE_LABELS = {
+  youth:      ['Youth', 'Jeunes'],
+  fourh:      ['4-H', '4-H'],
+  equestrian: ['Equestrian & Gymkhana', 'Équestre et gymkhana']
+};
+
+/* Add a class in the OTHER general category without scrolling back to the
+   cards — this is the whole point: the switch lives at the moment of need.
+   Reuses switchTab + addEntry rather than forking either. */
+function addEntryIn(cat) {
+  if (!GENERAL_CATS[cat]) return;
+  switchTab(cat);
+  addEntry(cat);
+  const container = document.getElementById(GENERAL_CATS[cat].container);
+  const last = container && container.lastElementChild;
+  if (last && last.scrollIntoView) {
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    last.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+  }
+}
+
+function scrollToChooser() {
+  const el = document.querySelector('.cat-chooser');
+  if (!el) return;
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+}
+
+/* Paint the sticky bar. Takes the counts updateCatCounts() has already
+   computed — it does not recount anything. */
+function paintContext(liv, hg) {
+  const bar = document.getElementById('reg-context');
+  if (!bar) return;
+  const isGeneral = !!GENERAL_CATS[currentTab];
+  const sw = document.getElementById('reg-context-switch');
+  const sep = document.getElementById('reg-context-sep');
+  if (sw) sw.hidden = !isGeneral;
+  if (sep) sep.hidden = isGeneral;
+
+  if (isGeneral) {
+    [['livestock', liv], ['homegarden', hg]].forEach(([cat, n]) => {
+      const chip = document.getElementById('chip-' + cat);
+      const num = document.getElementById('chip-n-' + cat);
+      if (chip) chip.setAttribute('aria-pressed', cat === currentTab ? 'true' : 'false');
+      if (num) num.textContent = n ? '· ' + n : '';
+    });
+  } else {
+    const where = document.getElementById('reg-context-where');
+    const warn = document.getElementById('reg-context-warn');
+    const lbl = SEPARATE_LABELS[currentTab];
+    if (where && lbl) where.textContent = L(lbl[0] + ' — a separate registration', lbl[1] + ' — inscription distincte');
+    /* The warning that was previously impossible to see: #entries-summary
+       lives inside the General panel, so pending General entries were hidden
+       the moment you opened a separate programme — and submitting THAT form
+       sends nothing from the General one. */
+    const pending = liv + hg;
+    if (sep) sep.classList.toggle('has-warn', pending > 0);
+    if (warn) {
+      warn.hidden = pending === 0;
+      if (pending) {
+        const full = L(
+          `${pending} ${pending > 1 ? 'entries' : 'entry'} in Livestock / Home & Garden have not been submitted — that registration has its own submit button.`,
+          `${pending} inscription${pending > 1 ? 's' : ''} en Bétail / Maison et jardin non soumise${pending > 1 ? 's' : ''} — cette inscription a son propre bouton d'envoi.`);
+        warn.textContent = L(
+          `⚠ ${pending} ${pending > 1 ? 'entries' : 'entry'} not submitted yet`,
+          `⚠ ${pending} inscription${pending > 1 ? 's' : ''} non soumise${pending > 1 ? 's' : ''}`);
+        warn.title = full; // the full sentence for hover and assistive tech
+      }
+    }
+  }
 }
 
 // Count badges on the two general cards + the recap line above Submit, so
@@ -777,6 +988,8 @@ function updateCatCounts() {
       badge.classList.toggle('on', n > 0);
     }
   }
+  paintContext(liv, hg);
+
   const sum = document.getElementById('entries-summary');
   if (sum) {
     if (liv && hg) {
@@ -1149,7 +1362,36 @@ document.addEventListener('DOMContentLoaded', () => {
   addFHEntry();
   buildYouthSections();
   buildEquestrianSections();
+  initContextBar();
 });
+
+/* Reveal the sticky bar only once the chooser has scrolled ABOVE you, so the
+   two are never on screen together saying the same thing.
+   Deliberately NOT IntersectionObserver: isIntersecting is false both above
+   and below the target, so the bar also appeared on first paint — before the
+   reader had even reached the cards. Compare the chooser's bottom edge to the
+   header instead; that knows which side you are on. */
+function initContextBar() {
+  const bar = document.getElementById('reg-context');
+  const chooser = document.querySelector('.cat-chooser');
+  if (!bar || !chooser) return;
+  updateCatCounts(); // paint it before it is ever shown
+
+  const headerH = () => {
+    const v = getComputedStyle(document.documentElement).getPropertyValue('--hf-header-stuck');
+    return parseInt(v, 10) || 75;
+  };
+  let shown = null, ticking = false;
+  const sync = () => {
+    const past = chooser.getBoundingClientRect().bottom <= headerH() + 8;
+    if (past !== shown) { shown = past; bar.hidden = !past; }
+  };
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(() => { sync(); ticking = false; }); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', sync, { passive: true });
+  sync();
+}
 </script>
 </body>
 </html>
