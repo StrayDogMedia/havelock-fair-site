@@ -157,3 +157,54 @@ broken. Spanish is the widest language. Baselines to beat, measured:
 | chooser, 1440px | 299px | 393px (buys the two-tier explanation) |
 | chooser, 390px | **772px** | **490px** |
 | context bar | — | 56px desktop / 54px phone |
+
+## verify-schedule.js
+
+Covers `pages/schedule.html`: chronological order, the all-day band, the
+"Don't miss" strip, category colour, and the live on-now view. Drives real
+Chrome — order, layout and colour are all positional or computed.
+
+```sh
+cd ~/havelock-fair-site && python3 -m http.server 8765   # in another shell
+NODE_PATH=/path/to/node_modules node tools/verify-schedule.js
+```
+
+51 checks. **The first one is why this file exists.** `buildTimeline()` grouped
+events into a plain object keyed by `"9:00"`-style strings. Those aren't
+array-index-like, so the keys kept **insertion order** and the timeline rendered
+in whatever order `schedule-data.js` happened to list — Saturday ran
+`12:30 → 3:00 PM → 11:00 AM`, Sunday jumped `3:00 PM → 9:00 AM`. Live, on both
+days, for months, because nothing ever asserted the order. The check reads each
+`.time-group`'s `data-time`, converts to minutes, and asserts the sequence never
+steps backwards, on both days in all three languages.
+
+Also asserted:
+
+- **Nothing vanishes** when all-day events are split out of the timeline —
+  rendered card count still equals `scheduleData`, band + slots account for all.
+- **Every highlight photo loads and matches its event.** The first pass put an
+  exhibit-hall photo of preserve jars on "Children's races" and cattle on the
+  "Heavy Horse Show", picked from filenames without opening them. Check the
+  picture, not the name.
+- **BB King stays out of the strip** — the billing is still unconfirmed.
+- **The live view**, driven by `?now=2026-09-12T13:20`. Without that override the
+  feature would be unverifiable until the fair itself; keep it.
+- **Category colour measured on rendered pixels**, resolving the real backdrop by
+  walking up to the first painted ancestor.
+
+### Category colour: hue alone was not enough
+
+Kids / Livestock / Food are three earth tones and sit ~13° apart in hue — they
+cannot be separated by hue inside a warm palette. They are a deliberate
+**light / mid / dark ladder** instead, which is also what survives a
+colour-vision difference or a greyscale print. Every pair in the set is
+separable by hue ≥ 25° **or** lightness ≥ 1.6×, and every colour clears 4.5:1 on
+the espresso ground. Colour is never the only signal — each row also carries its
+category as `.sr-only` text. Re-measure if you retint.
+
+| | before | after |
+|---|---|---|
+| Saturday chronological | ❌ | ✅ |
+| Sunday chronological | ❌ | ✅ |
+| timeline block, Saturday desktop | ~1,850px of slots | 866px of slots + strip + band |
+| page height, Saturday desktop | 3,579px | 3,047px |

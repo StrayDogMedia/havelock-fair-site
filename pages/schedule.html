@@ -72,48 +72,179 @@
     let activeDay = "saturday";
     let activeCat = "all";
 
+    /* Minutes since midnight. The whole chronology bug came from comparing
+       "9:00"-style STRINGS (or rather, not comparing them at all — object keys
+       that aren't array-index-like keep insertion order, so the timeline
+       rendered in whatever order schedule-data.js happened to list). */
+    const mins = t => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+
+    /* 24-hour everywhere except English. Spanish used to fall through to the
+       English branch and get "3:00 PM". */
+    function fmtTime(t, lang) {
+      if (lang !== "en") return lang === "fr" ? t.replace(":", " h ").replace(/ $/, "") : t;
+      const [h, m] = t.split(":").map(Number);
+      const h12 = h % 12 === 0 ? 12 : h % 12;
+      return `${h12}:${String(m).padStart(2, "0")} ${h >= 12 ? "PM" : "AM"}`;
+    }
+
+    /* ?now=2026-09-12T13:00 drives the on-now view. Without it this feature
+       would be unverifiable until the fair itself. */
+    function nowOverride() {
+      const q = new URLSearchParams(location.search).get("now");
+      if (!q) return null;
+      const d = new Date(q);
+      return isNaN(d) ? null : d;
+    }
+    function currentTime() { return nowOverride() || new Date(); }
+
+    /* Minutes-since-midnight of "now" IF now falls on the day being shown,
+       otherwise null. Uses the day's own iso, not countdown.js's FAIR_START —
+       this page doesn't load that file. */
+    function nowMinutesFor(dayKey) {
+      const day = scheduleData[dayKey];
+      if (!day || !day.iso) return null;
+      const n = currentTime();
+      const local = `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`;
+      if (local !== day.iso) return null;
+      return n.getHours() * 60 + n.getMinutes();
+    }
+
+    function esc(str) {
+      return String(str).replace(/[<>]/g, c => (c === "<" ? "&lt;" : "&gt;"));
+    }
+
+    function catColor(cat) {
+      return (categoryInfo[cat] && categoryInfo[cat].color) || "var(--hf-gold)";
+    }
+    function catLabel(cat, lang) {
+      const c = categoryInfo[cat];
+      return c ? (c[lang] || c.en) : cat;
+    }
+
+    /* One event row. The category is a COLOUR RULE plus visually-hidden text —
+       the old design printed "GENERAL" above every single row, which cost a
+       line each and said little. Colour is never the only signal. */
+    function eventRow(ev, lang) {
+      const title = ev[lang] || ev.en;
+      const venue = ev[`venue_${lang}`] || ev.venue_en || "";
+      const bits = [];
+      if (ev.until) bits.push(`<span class="ev-until">${T("sched_until", lang)} ${esc(fmtTime(ev.until, lang))}</span>`);
+      if (venue) bits.push(`<span class="ev-venue">${esc(venue)}</span>`);
+      return `
+        <div class="event-card" data-cat="${ev.cat}" style="--ev-color:${catColor(ev.cat)}">
+          <span class="ev-rule" aria-hidden="true"></span>
+          <div class="ev-body">
+            <div class="event-title">${title}</div>
+            ${bits.length ? `<div class="ev-meta">${bits.join('<span class="ev-dot" aria-hidden="true">&middot;</span>')}</div>` : ""}
+          </div>
+          <span class="sr-only">${esc(catLabel(ev.cat, lang))}</span>
+        </div>`;
+    }
+
+    /* Small i18n helper for the handful of strings this page adds. Uses the
+       shared dictionary when the key exists so nothing is hardcoded twice. */
+    function T(key, lang) {
+      const t = (typeof translations !== "undefined" && translations[lang]) || {};
+      return t[key] || SCHED_STRINGS[key][lang] || SCHED_STRINGS[key].en;
+    }
+    const SCHED_STRINGS = {
+      sched_allday:   { en: "All day", fr: "Toute la journée", es: "Todo el día" },
+      sched_until:    { en: "until",   fr: "jusqu'à",          es: "hasta" },
+      sched_dontmiss: { en: "Don't miss", fr: "À ne pas manquer", es: "No te lo pierdas" },
+      sched_onnow:    { en: "On now",  fr: "En cours",         es: "Ahora" },
+      sched_next:     { en: "Up next", fr: "À suivre",         es: "A continuación" },
+      sched_done:     { en: "Finished", fr: "Terminé",         es: "Terminado" }
+    };
+
     function buildTimeline(dayKey) {
       const day = scheduleData[dayKey];
       const lang = currentLang || "en";
       const timeline = document.getElementById(`timeline-${dayKey}`);
       timeline.innerHTML = "";
 
-      const grouped = {};
-      day.events.forEach(ev => {
-        if (!grouped[ev.time]) grouped[ev.time] = [];
-        grouped[ev.time].push(ev);
-      });
+      const timed = day.events.filter(e => !e.allDay);
+      const allDay = day.events.filter(e => e.allDay);
 
-      Object.entries(grouped).forEach(([time, events]) => {
+      /* ---- highlights strip ---- */
+      const highlights = day.events.filter(e => e.highlight).sort((a, b) => mins(a.time) - mins(b.time));
+      if (highlights.length) {
+        const strip = document.createElement("div");
+        strip.className = "sched-highlights";
+        strip.innerHTML = `
+          <div class="sched-band-label">${T("sched_dontmiss", lang)}</div>
+          <div class="sched-highlight-grid">
+            ${highlights.map(h => `
+              <a class="sched-highlight" href="#" data-jump="${h.time}" style="--ev-color:${catColor(h.cat)}">
+                ${h.art ? `<img src="../images/${h.art}" alt="" loading="lazy" decoding="async">` : ""}
+                <span class="sh-time">${esc(fmtTime(h.time, lang))}</span>
+                <span class="sh-title">${h[`short_${lang}`] || h.short_en || h[lang] || h.en}</span>
+              </a>`).join("")}
+          </div>`;
+        timeline.appendChild(strip);
+      }
+
+      /* ---- all-day band ---- */
+      if (allDay.length) {
+        const band = document.createElement("div");
+        band.className = "sched-allday";
+        band.innerHTML = `
+          <div class="sched-band-label">${T("sched_allday", lang)}</div>
+          <div class="sched-allday-list">
+            ${allDay.map(e => eventRow(e, lang)).join("")}
+          </div>`;
+        timeline.appendChild(band);
+      }
+
+      /* ---- the timeline itself, SORTED ---- */
+      const grouped = new Map();
+      timed.forEach(ev => {
+        if (!grouped.has(ev.time)) grouped.set(ev.time, []);
+        grouped.get(ev.time).push(ev);
+      });
+      const order = [...grouped.keys()].sort((a, b) => mins(a) - mins(b));
+
+      const nowMin = nowMinutesFor(dayKey);
+      const upcoming = nowMin === null ? null : order.find(t => mins(t) > nowMin);
+
+      order.forEach(time => {
         const group = document.createElement("div");
         group.className = "time-group";
         group.dataset.time = time;
 
-        const h = parseInt(time.split(":")[0]);
-        const ampm = h >= 12 ? "PM" : "AM";
-        const h12 = h > 12 ? h - 12 : h;
-        const timeStr = lang === "fr" ? `${time.replace(":", "h")}` : `${h12}:${time.split(":")[1]} ${ampm}`;
+        if (nowMin !== null) {
+          const startM = mins(time);
+          const nextIdx = order.indexOf(time) + 1;
+          const endM = nextIdx < order.length ? mins(order[nextIdx]) : 24 * 60;
+          if (nowMin >= startM && nowMin < endM) group.classList.add("is-now");
+          else if (nowMin >= endM) group.classList.add("is-done");
+          if (time === upcoming) group.classList.add("is-next");
+        }
+
+        const flag = group.classList.contains("is-now") ? T("sched_onnow", lang)
+                   : group.classList.contains("is-next") ? T("sched_next", lang) : "";
 
         group.innerHTML = `
           <div class="time-header">
             <div class="time-dot"></div>
-            <div class="time-label">${timeStr}</div>
+            <div class="time-label">${esc(fmtTime(time, lang))}</div>
+            ${flag ? `<div class="time-flag">${flag}</div>` : ""}
           </div>
-        `;
-
-        events.forEach(ev => {
-          const card = document.createElement("div");
-          card.className = "event-card";
-          card.dataset.cat = ev.cat;
-          const catLabel = categoryInfo[ev.cat] ? categoryInfo[ev.cat][lang] || categoryInfo[ev.cat].en : ev.cat;
-          card.innerHTML = `
-            <div class="event-cat-badge">${catLabel}</div>
-            <div class="event-title">${ev[lang] || ev.en}</div>
-          `;
-          group.appendChild(card);
-        });
-
+          <div class="time-events">
+            ${grouped.get(time).map(ev => eventRow(ev, lang)).join("")}
+          </div>`;
         timeline.appendChild(group);
+      });
+
+      timeline.querySelectorAll("[data-jump]").forEach(a => {
+        a.addEventListener("click", e => {
+          e.preventDefault();
+          const target = timeline.querySelector(`.time-group[data-time="${a.dataset.jump}"]`);
+          if (!target) return;
+          const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+          target.classList.add("flash");
+          setTimeout(() => target.classList.remove("flash"), 1400);
+        });
       });
 
       filterEvents();
@@ -127,6 +258,14 @@
         const visible = group.querySelectorAll(".event-card:not(.hidden)");
         group.classList.toggle("hidden", visible.length === 0);
       });
+      /* the all-day band and the highlights strip hide when they empty out too,
+         so a filtered view never shows a stranded heading */
+      document.querySelectorAll(".day-content.active .sched-allday").forEach(band => {
+        band.classList.toggle("hidden", band.querySelectorAll(".event-card:not(.hidden)").length === 0);
+      });
+      document.querySelectorAll(".day-content.active .sched-highlights").forEach(strip => {
+        strip.classList.toggle("hidden", activeCat !== "all");
+      });
     }
 
     function buildFilters() {
@@ -137,10 +276,17 @@
         const btn = document.createElement("button");
         btn.className = `cat-btn${key === activeCat ? " active" : ""}`;
         btn.dataset.cat = key;
-        btn.textContent = info[lang] || info.en;
+        btn.setAttribute("aria-pressed", key === activeCat ? "true" : "false");
+        if (key !== "all") btn.style.setProperty("--ev-color", catColor(key));
+        btn.innerHTML = key === "all" ? "" : '<span class="cat-swatch" aria-hidden="true"></span>';
+        btn.append(info[lang] || info.en);
         btn.addEventListener("click", () => {
           activeCat = key;
-          document.querySelectorAll(".cat-btn").forEach(b => b.classList.toggle("active", b.dataset.cat === key));
+          document.querySelectorAll(".cat-btn").forEach(b => {
+            const on = b.dataset.cat === key;
+            b.classList.toggle("active", on);
+            b.setAttribute("aria-pressed", on ? "true" : "false");
+          });
           filterEvents();
         });
         container.appendChild(btn);
@@ -155,7 +301,11 @@
 
     function switchDay(day) {
       activeDay = day;
-      document.querySelectorAll(".day-tab").forEach(t => t.classList.toggle("active", t.dataset.day === day));
+      document.querySelectorAll(".day-tab").forEach(t => {
+        const on = t.dataset.day === day;
+        t.classList.toggle("active", on);
+        t.setAttribute("aria-pressed", on ? "true" : "false");
+      });
       document.querySelectorAll(".day-content").forEach(c => c.classList.toggle("active", c.id === `day-${day}`));
       buildTimeline(day);
     }
@@ -174,7 +324,14 @@
 
     buildFilters();
     updateDayTabs();
-    buildTimeline("saturday");
+    /* open on the day that is actually happening, if one is */
+    if (nowMinutesFor("sunday") !== null) activeDay = "sunday";
+    switchDay(activeDay);
+
+    /* keep "on now" honest without hammering the CPU */
+    setInterval(() => {
+      if (nowMinutesFor(activeDay) !== null) buildTimeline(activeDay);
+    }, 60000);
   </script>
 </body>
 </html>
