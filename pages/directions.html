@@ -47,8 +47,130 @@
         <h2 class="hf-sec-h2" data-i18n="dir_grounds_title">Fairgrounds Map</h2>
         <p class="hf-sec-lede" data-i18n="dir_grounds_subtitle">Find your way around the Havelock Fairgrounds</p>
       </div>
-      <div class="hf-frame-img" data-reveal>
-        <img src="../images/map.png" alt="Havelock Fairgrounds site map">
+      <!-- ============================================================
+           FAIRGROUNDS PLAN — hand-authored SVG, not an image.
+           Geometry lives here; NAMES live in js/map-data.js and the schedule
+           references the same pin numbers, so the two can never disagree.
+           Inline rather than <img src="*.svg"> because the groups have to be
+           styleable and focusable. Deliberately schematic, and deliberately
+           carries no logo and no founding year — the draft this replaces had
+           "EST. 1846" baked into the artwork while the site says 1871 in 60
+           places, which is exactly the failure a picture makes invisible.
+           Only NUMBERS on the plan; names are in the legend and panel, which
+           keeps it readable at 390px and avoids label collisions entirely.
+           ============================================================ -->
+      <div class="hf-plan" data-reveal>
+        <div class="hf-plan-stage">
+          <svg class="hf-plan-svg" viewBox="0 0 1200 820" role="group"
+               aria-labelledby="plan-title" preserveAspectRatio="xMidYMid meet">
+            <title id="plan-title" data-i18n="map_svg_title">Plan of the Havelock Fairgrounds</title>
+
+            <rect class="pl-field" x="0" y="0" width="1200" height="820"/>
+
+            <!-- Route 202 runs south-west to north-east across the grounds -->
+            <polygon class="pl-road" points="0,450 1200,696 1200,748 0,502"/>
+            <polyline class="pl-road-line" points="0,476 1200,722"/>
+            <text class="pl-road-label" x="120" y="470" transform="rotate(11.6 120 470)">ROUTE 202</text>
+
+            <!-- tree line, decorative -->
+            <g class="pl-trees" aria-hidden="true">
+              <circle cx="60" cy="60" r="26"/><circle cx="118" cy="102" r="20"/>
+              <circle cx="40" cy="150" r="22"/><circle cx="1150" cy="70" r="24"/>
+              <circle cx="1100" cy="130" r="18"/><circle cx="1160" cy="300" r="26"/>
+              <circle cx="1150" cy="420" r="20"/><circle cx="60" cy="300" r="24"/>
+              <circle cx="120" cy="380" r="18"/><circle cx="40" cy="620" r="26"/>
+              <circle cx="150" cy="690" r="22"/><circle cx="400" cy="760" r="24"/>
+              <circle cx="700" cy="790" r="20"/><circle cx="980" cy="790" r="26"/>
+              <circle cx="1140" cy="700" r="22"/><circle cx="520" cy="120" r="22"/>
+              <circle cx="330" cy="60" r="18"/><circle cx="900" cy="40" r="20"/>
+            </g>
+
+            <!-- market tents + garden plots: real features, no pin of their own -->
+            <g class="pl-detail" aria-hidden="true">
+              <polygon points="560,250 590,206 620,250"/>
+              <polygon points="612,258 642,214 672,258"/>
+              <polygon points="664,246 694,202 724,246"/>
+              <rect x="756" y="150" width="120" height="12" rx="2"/>
+              <rect x="756" y="170" width="120" height="12" rx="2"/>
+              <rect x="756" y="190" width="120" height="12" rx="2"/>
+            </g>
+
+            <!-- ---------------- locations ---------------- -->
+            <g id="loc-17" class="loc" data-loc="17" tabindex="0" role="button">
+              <title>17</title>
+              <rect class="pl-bldg" x="665" y="43" width="230" height="46" rx="2"/>
+              <g class="pl-pin" transform="translate(780,66)"><circle r="19"/><text y="7">17</text></g>
+            </g>
+            <g id="loc-12" class="loc" data-loc="12" tabindex="0" role="button">
+              <title>12</title>
+              <rect class="pl-bldg" x="903" y="99" width="90" height="48" rx="2"/>
+              <g class="pl-pin" transform="translate(948,123)"><circle r="19"/><text y="7">12</text></g>
+            </g>
+            <g id="loc-15" class="loc" data-loc="15" tabindex="0" role="button">
+              <title>15</title>
+              <rect class="pl-bldg" x="988" y="149" width="160" height="46" rx="2"/>
+              <g class="pl-pin" transform="translate(1068,172)"><circle r="19"/><text y="7">15</text></g>
+            </g>
+            <g id="loc-16" class="loc is-unnamed" data-loc="16" tabindex="0" role="button">
+              <title>16</title>
+              <rect class="pl-bldg" x="185" y="103" width="110" height="56" rx="2"/>
+              <g class="pl-pin" transform="translate(240,131)"><circle r="19"/><text y="7">16</text></g>
+            </g>
+            <g id="loc-10" class="loc" data-loc="10" tabindex="0" role="button">
+              <title>10</title>
+              <ellipse class="pl-ring" cx="940" cy="318" rx="150" ry="100"/>
+              <g class="pl-pin" transform="translate(940,318)"><circle r="19"/><text y="7">10</text></g>
+            </g>
+            <g id="loc-8" class="loc" data-loc="8" tabindex="0" role="button">
+              <title>8</title>
+              <rect class="pl-bldg" x="599" y="363" width="170" height="62" rx="2"/>
+              <g class="pl-pin" transform="translate(684,394)"><circle r="19"/><text y="7">8</text></g>
+            </g>
+            <g id="loc-4" class="loc" data-loc="4" tabindex="0" role="button">
+              <title>4</title>
+              <rect class="pl-bldg" x="405" y="417" width="150" height="52" rx="2"/>
+              <g class="pl-pin" transform="translate(480,443)"><circle r="19"/><text y="7">4</text></g>
+            </g>
+            <g id="loc-5" class="loc" data-loc="5" tabindex="0" role="button">
+              <title>5</title>
+              <rect class="pl-bldg" x="561" y="450" width="150" height="52" rx="2"/>
+              <g class="pl-pin" transform="translate(636,476)"><circle r="19"/><text y="7">5</text></g>
+            </g>
+            <g id="loc-6" class="loc" data-loc="6" tabindex="0" role="button">
+              <title>6</title>
+              <rect class="pl-bldg" x="355" y="478" width="130" height="46" rx="2"/>
+              <g class="pl-pin" transform="translate(420,501)"><circle r="19"/><text y="7">6</text></g>
+            </g>
+            <g id="loc-3" class="loc" data-loc="3" tabindex="0" role="button">
+              <title>3</title>
+              <rect class="pl-bldg" x="611" y="538" width="74" height="40" rx="2"/>
+              <g class="pl-pin" transform="translate(648,558)"><circle r="19"/><text y="7">3</text></g>
+            </g>
+            <g id="loc-7" class="loc" data-loc="7" tabindex="0" role="button">
+              <title>7</title>
+              <rect class="pl-bldg" x="963" y="518" width="66" height="46" rx="2"/>
+              <g class="pl-pin" transform="translate(996,541)"><circle r="19"/><text y="7">7</text></g>
+            </g>
+            <g id="loc-1" class="loc" data-loc="1" tabindex="0" role="button">
+              <title>1</title>
+              <rect class="pl-gate" x="240" y="497" width="48" height="14" rx="2"
+                    transform="rotate(11.6 264 504)"/>
+              <g class="pl-pin" transform="translate(264,459)"><circle r="19"/><text y="7">1</text></g>
+            </g>
+            <g id="loc-2" class="loc" data-loc="2" tabindex="0" role="button">
+              <title>2</title>
+              <rect class="pl-gate" x="624" y="602" width="48" height="14" rx="2"
+                    transform="rotate(11.6 648 609)"/>
+              <g class="pl-pin" transform="translate(648,655)"><circle r="19"/><text y="7">2</text></g>
+            </g>
+          </svg>
+        </div>
+
+        <div class="hf-plan-side">
+          <p class="hf-plan-hint" data-i18n="map_hint">Select a location for details and what is on there today.</p>
+          <div class="hf-plan-panel" id="plan-panel" role="region" aria-live="polite" tabindex="-1"></div>
+          <div class="hf-plan-legend" id="plan-legend"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -162,5 +284,188 @@
   <!-- Scripts (order matters: chrome → i18n) -->
   <script src="../js/heritage-chrome.js"></script>
   <script src="../js/i18n.js"></script>
+  <script src="../js/map-data.js"></script>
+  <script src="../js/schedule-data.js"></script>
+  <script>
+  /* Fairgrounds plan. Names come from mapLocations, "what's on here" comes
+     from scheduleData by matching `venue` — neither is duplicated here. */
+  (function () {
+    'use strict';
+    var svg = document.querySelector('.hf-plan-svg');
+    if (!svg) return;
+    var panel = document.getElementById('plan-panel');
+    var legend = document.getElementById('plan-legend');
+    var selected = null;
+
+    var STR = {
+      today:    { en: "Here today",  fr: "Ici aujourd'hui", es: "Aquí hoy" },
+      nothing:  { en: "Nothing scheduled here.", fr: "Rien de prévu ici.", es: "Nada programado aquí." },
+      unnamed:  { en: "Not yet named", fr: "Pas encore nommé", es: "Aún sin nombre" },
+      pick:     { en: "Select a location", fr: "Choisissez un lieu", es: "Elija un lugar" },
+      allday:   { en: "All day", fr: "Toute la journée", es: "Todo el día" }
+    };
+    /* i18n.js declares `let currentLang` at the top level of a classic script.
+       That creates a GLOBAL LEXICAL binding, not a property on the window
+       object — so reading it off `window` returns undefined and the whole map
+       silently fell back to English while the rest of the page translated.
+       Read it by bare name, guarded in case i18n.js failed to load. */
+    function lang() {
+      try { return currentLang || 'en'; } catch (e) { return 'en'; }
+    }
+    var L = function (k) { var l = lang(); return STR[k][l] || STR[k].en; };
+    var name = function (id) {
+      var loc = mapLocations[id];
+      if (!loc) return null;
+      return loc[lang()] || loc.en;
+    };
+    var catOf = function (id) {
+      var loc = mapLocations[id];
+      return loc ? mapCategories[loc.cat] : null;
+    };
+
+    /* the ?now= override the schedule already uses, so this is testable */
+    function currentDate() {
+      var q = new URLSearchParams(location.search).get('now');
+      if (q) { var d = new Date(q); if (!isNaN(d)) return d; }
+      return new Date();
+    }
+    /* which fair day, if any, is today */
+    function activeDayKey() {
+      var n = currentDate();
+      var iso = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0');
+      for (var k in scheduleData) if (scheduleData[k].iso === iso) return k;
+      return null;
+    }
+    /* Before the fair there is no "today", so show Saturday — an empty panel
+       would read as "nothing happens here", which is not what it means. */
+    function dayForPanel() { return activeDayKey() || 'saturday'; }
+
+    function fmt(t) {
+      var l = lang();
+      if (l !== 'en') return l === 'fr' ? t.replace(':', ' h ') : t;
+      var p = t.split(':'), h = +p[0], h12 = h % 12 === 0 ? 12 : h % 12;
+      return h12 + ':' + p[1] + ' ' + (h >= 12 ? 'PM' : 'AM');
+    }
+
+    function eventsAt(id) {
+      var day = scheduleData[dayForPanel()];
+      if (!day) return [];
+      var l = lang();
+      return day.events
+        .filter(function (e) { return e.venue === id; })
+        .sort(function (a, b) {
+          var m = function (t) { var p = t.split(':'); return +p[0] * 60 + +p[1]; };
+          return m(a.time) - m(b.time);
+        })
+        .map(function (e) { return { time: e.allDay ? L('allday') : fmt(e.time), title: e[l] || e.en }; });
+    }
+
+    function render(id) {
+      var loc = mapLocations[id];
+      var cat = catOf(id);
+      if (!loc) {
+        panel.innerHTML = '<div class="pp-num">' + id + '</div>' +
+          '<div class="pp-name pp-unnamed">' + L('unnamed') + '</div>';
+        return;
+      }
+      var evs = eventsAt(id);
+      var l = lang();
+      panel.innerHTML =
+        '<div class="pp-head" style="--pl-color:' + cat.color + ';--pl-ink:' + cat.ink + '">' +
+          '<span class="pp-num">' + id + '</span>' +
+          '<span class="pp-cat">' + (cat[l] || cat.en) + '</span>' +
+        '</div>' +
+        '<div class="pp-name">' + (loc[l] || loc.en) + '</div>' +
+        '<div class="pp-today">' + L('today') + '</div>' +
+        (evs.length
+          ? '<ul class="pp-events">' + evs.map(function (e) {
+              return '<li><span class="pp-t">' + e.time + '</span><span>' + e.title + '</span></li>';
+            }).join('') + '</ul>'
+          : '<p class="pp-empty">' + L('nothing') + '</p>');
+    }
+
+    function select(id, focusPanel) {
+      selected = id;
+      svg.querySelectorAll('.loc').forEach(function (g) {
+        g.classList.toggle('is-on', g.dataset.loc === String(id));
+      });
+      legend.querySelectorAll('.pl-legend-item').forEach(function (b) {
+        var on = b.dataset.loc === String(id);
+        b.classList.toggle('is-on', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      render(id);
+      if (focusPanel) panel.focus({ preventScroll: true });
+      if (history.replaceState) history.replaceState(null, '', '#loc-' + id);
+    }
+
+    function clear() {
+      selected = null;
+      svg.querySelectorAll('.loc').forEach(function (g) { g.classList.remove('is-on'); });
+      legend.querySelectorAll('.pl-legend-item').forEach(function (b) {
+        b.classList.remove('is-on'); b.setAttribute('aria-pressed', 'false');
+      });
+      panel.innerHTML = '<p class="pp-empty">' + L('pick') + '</p>';
+    }
+
+    function buildLegend() {
+      var l = lang();
+      var html = '';
+      mapLegendOrder.forEach(function (catKey) {
+        var ids = Object.keys(mapLocations).filter(function (id) { return mapLocations[id].cat === catKey; });
+        if (!ids.length) return;
+        var cat = mapCategories[catKey];
+        html += '<div class="pl-legend-group" style="--pl-color:' + cat.color + ';--pl-ink:' + cat.ink + '">' +
+          '<div class="pl-legend-h"><span class="pl-legend-dot" aria-hidden="true"></span>' + (cat[l] || cat.en) + '</div>';
+        ids.sort(function (a, b) { return +a - +b; }).forEach(function (id) {
+          html += '<button type="button" class="pl-legend-item" data-loc="' + id + '" aria-pressed="false">' +
+            '<span class="pl-legend-n">' + id + '</span>' +
+            '<span class="pl-legend-name">' + (mapLocations[id][l] || mapLocations[id].en) + '</span>' +
+          '</button>';
+        });
+        html += '</div>';
+      });
+      legend.innerHTML = html;
+      legend.querySelectorAll('.pl-legend-item').forEach(function (b) {
+        b.addEventListener('click', function () { select(+b.dataset.loc, false); });
+      });
+    }
+
+    /* accessible names on the SVG groups, refreshed with the language */
+    function labelGroups() {
+      svg.querySelectorAll('.loc').forEach(function (g) {
+        var id = +g.dataset.loc;
+        var n = name(id);
+        g.setAttribute('aria-label', n ? id + ' — ' + n : id + ' — ' + L('unnamed'));
+      });
+    }
+
+    svg.querySelectorAll('.loc').forEach(function (g) {
+      g.addEventListener('click', function () { select(+g.dataset.loc, false); });
+      g.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(+g.dataset.loc, true); }
+      });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && selected !== null) {
+        var g = svg.querySelector('.loc[data-loc="' + selected + '"]');
+        clear();
+        if (g) g.focus();
+      }
+    });
+
+    function refresh() { buildLegend(); labelGroups(); if (selected !== null) render(selected); else clear(); }
+
+    if (typeof setLanguage === 'function') {
+      var orig = setLanguage;
+      window.setLanguage = function (lang) { orig(lang); refresh(); };
+    }
+
+    refresh();
+    /* deep link from the schedule: directions.html#loc-10 */
+    var m = (location.hash || '').match(/^#loc-(\d+)$/);
+    if (m && mapLocations[m[1]]) select(+m[1], false);
+  })();
+  </script>
 </body>
 </html>

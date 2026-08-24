@@ -88,7 +88,10 @@ function boot(rel){
   sw.setLanguage('fr');
   await new Promise(r=>setTimeout(r,200));
   ck('FR schedule keeps band names intact', sd.body.textContent.includes('Durham County Poets'));
-  ck('FR schedule translates around them', /sc.ne ext.rieure/.test(sd.body.textContent));
+  /* Venue names now live in js/map-data.js and the schedule renders them by
+     pin number, so the old 'scène extérieure' string is gone. Same intent:
+     French must translate around the band names. */
+  ck('FR schedule translates around them', /B.timent de musique/.test(sd.body.textContent));
   s.window.close();
 
   console.log(fails?`\n❌ ${fails} check(s) FAILED`:'\n✅ ALL CHECKS PASSED');

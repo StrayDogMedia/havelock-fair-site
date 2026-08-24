@@ -208,3 +208,53 @@ category as `.sr-only` text. Re-measure if you retint.
 | Sunday chronological | ❌ | ✅ |
 | timeline block, Saturday desktop | ~1,850px of slots | 866px of slots + strip + band |
 | page height, Saturday desktop | 3,579px | 3,047px |
+
+## verify-map.js
+
+Covers the fairgrounds plan on `pages/directions.html` — the inline SVG, its
+hotspots, the legend, the detail panel, and the link back from the schedule.
+
+```sh
+cd ~/havelock-fair-site && python3 -m http.server 8765   # in another shell
+NODE_PATH=/path/to/node_modules node tools/verify-map.js
+```
+
+51 checks. **The point of the file is check 1: every location resolves both
+ways.** Place names live once, in `js/map-data.js`; the schedule references pin
+numbers (`venue: 10`) instead of repeating a name. That only stays true if
+something asserts it — otherwise a renamed building or a deleted pin drifts
+silently and the schedule sends someone to a barn that isn't there.
+
+Also asserted: keyboard (Enter selects, Escape clears and returns focus — the
+draft's tap affordance is mouse-only), the deep link `directions.html#loc-10`,
+"here today" matching `scheduleData` under the `?now=` override, and that pin
+**16 is the only unnamed location** and announces itself as unnamed rather than
+rendering blank.
+
+### Two grounds, two measured colour sets
+
+The plan is dark; the panel and legend beside it are on `.hf-sec--ivory`. The
+espresso category colours measure **1.34–2.65:1 on ivory** — unreadable — and
+the first build shipped exactly that: every location name cream on cream, while
+**all 43 assertions passed**, because assertions check text and not colour. Only
+the screenshot caught it. `js/map-data.js` now carries `color` (espresso) and
+`ink` (ivory) per category, same hue families, and the harness measures the
+rendered pixels on the real backdrop.
+
+`--hf-bronze` is also only 4.06:1 on ivory — fine as a rule, not as small
+uppercase text. `--hf-bronze-ink` (#705732, 5.57:1) is the ivory-safe variant.
+
+### Pin numerals have to be readable, not just present
+
+At 390px the plan first rendered 304px wide, which put the pin numbers at about
+**4px tall**. Every DOM check passed. The stage now scrolls horizontally below
+760px with a `min-width`, and the harness measures the *rendered* height of a
+pin numeral rather than the authored `font-size`, which the viewBox rescales.
+
+### Why SVG and not the aerial render
+
+Hotspots on a raster are pinned to pixel positions, and a regenerated image
+moves the buildings — every pin would need re-measuring after every art
+revision. In SVG the pins **are** the map. It also carries no logo and no
+founding year: the draft had "EST. 1846" baked in while the site says 1871 in
+60 places, which is the failure mode a picture makes invisible.

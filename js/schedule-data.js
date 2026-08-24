@@ -23,10 +23,14 @@
  *             opened and matched to its event.
  *   cat       key into categoryInfo below.
  *   en/fr/es  the title. NO times and NO venues in here — both are fields now.
- *   venue_*   optional. ⚠️ NEVER GUESS ONE. Only music and the children's
- *             races had a location stated in their own copy; everything else
- *             is deliberately blank until Rommy or Nadeana confirms it from
- *             the fair book. A wrong venue sends someone to the wrong barn.
+ *   venue     optional PIN NUMBER into mapLocations (js/map-data.js), not a
+ *             name. The map owns every place name in all three languages, so
+ *             the schedule and the plan can never drift apart and renaming a
+ *             building is one edit there.
+ *             ⚠️ NEVER GUESS ONE. Only music and the children's races had a
+ *             location stated in their own copy; everything else is
+ *             deliberately absent until Rommy or Nadeana confirms which pin.
+ *             A wrong venue sends someone to the wrong barn.
  *
  * ⚠️ Band, act and show names are byte-identical across en/fr/es on purpose
  * and are asserted in tools/verify-music-page.js. Do not "translate" them.
@@ -41,12 +45,9 @@ const scheduleData = {
       { time: "6:00", cat: "general", en: "Gates open for exhibitors only", fr: "Ouverture des portes pour les exposants", es: "Puertas abiertas solo para expositores" },
       { time: "8:00", cat: "general", en: "Gates open to the public", fr: "Ouverture des portes au public", es: "Puertas abiertas al público" },
       { time: "9:00", cat: "music", en: "Winslow Dancers (Line dancing)", fr: "Winslow Dancers (Danse en ligne)", es: "Winslow Dancers (Baile en línea)" },
-      { time: "10:00", until: "11:00", cat: "music", en: "The Pine County Ramblers", fr: "The Pine County Ramblers", es: "The Pine County Ramblers",
-        venue_en: "Outdoor Stage", venue_fr: "scène extérieure", venue_es: "escenario al aire libre" },
-      { time: "12:30", until: "13:30", cat: "music", en: "The Pine County Ramblers", fr: "The Pine County Ramblers", es: "The Pine County Ramblers",
-        venue_en: "Outdoor Stage", venue_fr: "scène extérieure", venue_es: "escenario al aire libre" },
-      { time: "15:00", until: "16:00", cat: "music", en: "The Pine County Ramblers", fr: "The Pine County Ramblers", es: "The Pine County Ramblers",
-        venue_en: "Outdoor Stage", venue_fr: "scène extérieure", venue_es: "escenario al aire libre" },
+      { time: "10:00", until: "11:00", cat: "music", en: "The Pine County Ramblers", fr: "The Pine County Ramblers", es: "The Pine County Ramblers", venue: 8 },
+      { time: "12:30", until: "13:30", cat: "music", en: "The Pine County Ramblers", fr: "The Pine County Ramblers", es: "The Pine County Ramblers", venue: 8 },
+      { time: "15:00", until: "16:00", cat: "music", en: "The Pine County Ramblers", fr: "The Pine County Ramblers", es: "The Pine County Ramblers", venue: 8 },
       { time: "9:00", allDay: true, cat: "antique", en: "Antique cars & machinery — Chateauguay Valley Garden Tractor Club", fr: "Voitures et machines anciennes — Chateauguay Valley Garden Tractor Club", es: "Autos y maquinaria antigua — Chateauguay Valley Garden Tractor Club" },
       { time: "9:00", allDay: true, cat: "food", en: "Sugar shanty open", fr: "Cabane à sucre ouverte", es: "Cabaña de azúcar abierta" },
       { time: "9:00", allDay: true, cat: "kids", en: "Children's activities: école au champs, games, story time, face painting, petting zoo", fr: "Activités pour enfants : école au champs, jeux, histoires, peintures de visages, petit zoo", es: "Actividades para niños: escuela en el campo, juegos, cuentos, pintura de caras, zoológico" },
@@ -57,8 +58,7 @@ const scheduleData = {
         en: "Opening ceremony by the President; judging starts for indoor exhibitions", fr: "Cérémonie d'ouverture par le président; début du jugement des expositions intérieures", es: "Ceremonia de apertura por el Presidente; comienza el juicio de exposiciones interiores" },
       { time: "11:00", cat: "animals", en: "4-H showmanship exhibitions", fr: "Suite des expositions 4-H", es: "Exhibiciones de presentación 4-H" },
       { time: "13:00", highlight: true, art: "gallery/percheron-pair.jpg", cat: "animals", en: "Heavy Horse Show", fr: "Exposition de chevaux lourds", es: "Exhibición de caballos pesados" },
-      { time: "13:00", highlight: true, art: "gallery/wheelbarrow-race.jpg", cat: "kids", en: "Children's races", fr: "Courses d'enfants", es: "Carreras de niños",
-        venue_en: "Horse Ring", venue_fr: "carrière des chevaux", venue_es: "ring de caballos" },
+      { time: "13:00", highlight: true, art: "gallery/wheelbarrow-race.jpg", cat: "kids", en: "Children's races", fr: "Courses d'enfants", es: "Carreras de niños", venue: 10 },
       { time: "13:00", cat: "animals", en: "Heritage Cattle Show", fr: "Exposition de bétail du patrimoine", es: "Exhibición de ganado patrimonial" },
       { time: "13:00", cat: "animals", en: "Beef, sheep, goats, and pig show", fr: "Exposition de bœufs, moutons, chèvres et porcs", es: "Exhibición de ganado vacuno, ovejas, cabras y cerdos" },
       { time: "13:00", cat: "animals", en: "Miniature Horse and Pony Show", fr: "Exposition de miniatures et de poneys", es: "Exhibición de caballos miniatura y ponis" },
@@ -75,14 +75,10 @@ const scheduleData = {
       { time: "8:00", cat: "general", en: "Gates open to the public", fr: "Ouverture des portes au public", es: "Puertas abiertas al público" },
       /* ⚠️ "BB King with Funky Freddy" is an UNCONFIRMED billing (B.B. King
          died in 2015) and is deliberately NOT flagged as a highlight. */
-      { time: "11:00", until: "12:00", cat: "music", en: "BB King with Funky Freddy", fr: "BB King with Funky Freddy", es: "BB King with Funky Freddy",
-        venue_en: "Outdoor Stage", venue_fr: "scène extérieure", venue_es: "escenario al aire libre" },
-      { time: "12:00", until: "13:30", cat: "music", en: "Stew &amp; Alice", fr: "Stew &amp; Alice", es: "Stew &amp; Alice",
-        venue_en: "Outdoor Stage", venue_fr: "scène extérieure", venue_es: "escenario al aire libre" },
-      { time: "13:30", until: "15:00", highlight: true, art: "home/spotlight/mu-1.jpg", cat: "music", en: "Durham County Poets", fr: "Durham County Poets", es: "Durham County Poets",
-        venue_en: "Outdoor Stage", venue_fr: "scène extérieure", venue_es: "escenario al aire libre" },
-      { time: "15:00", until: "16:00", cat: "music", en: "Pierre Lachance &amp; Guy David", fr: "Pierre Lachance &amp; Guy David", es: "Pierre Lachance &amp; Guy David",
-        venue_en: "Outdoor Stage", venue_fr: "scène extérieure", venue_es: "escenario al aire libre" },
+      { time: "11:00", until: "12:00", cat: "music", en: "BB King with Funky Freddy", fr: "BB King with Funky Freddy", es: "BB King with Funky Freddy", venue: 8 },
+      { time: "12:00", until: "13:30", cat: "music", en: "Stew &amp; Alice", fr: "Stew &amp; Alice", es: "Stew &amp; Alice", venue: 8 },
+      { time: "13:30", until: "15:00", highlight: true, art: "home/spotlight/mu-1.jpg", cat: "music", en: "Durham County Poets", fr: "Durham County Poets", es: "Durham County Poets", venue: 8 },
+      { time: "15:00", until: "16:00", cat: "music", en: "Pierre Lachance &amp; Guy David", fr: "Pierre Lachance &amp; Guy David", es: "Pierre Lachance &amp; Guy David", venue: 8 },
       { time: "9:00", allDay: true, cat: "antique", en: "Antique cars & machinery — Chateauguay Valley Garden Tractor Club", fr: "Voitures et machines anciennes — Chateauguay Valley Garden Tractor Club", es: "Autos y maquinaria antigua — Chateauguay Valley Garden Tractor Club" },
       { time: "9:00", allDay: true, cat: "food", en: "Sugar shanty open", fr: "Cabane à sucre ouverte", es: "Cabaña de azúcar abierta" },
       { time: "9:00", allDay: true, cat: "kids", en: "Children's activities continue", fr: "Poursuite des activités pour enfants", es: "Continúan las actividades para niños" },
@@ -91,8 +87,7 @@ const scheduleData = {
         short_en: "Miniature Horses & Ponies", short_fr: "Miniatures et poneys", short_es: "Caballos miniatura y ponis",
         en: "Miniature Horse and Pony Show", fr: "Exposition de miniatures et de poneys", es: "Exhibición de caballos miniatura y ponis" },
       { time: "11:00", highlight: true, art: "gallery/fair-2025-01.jpg", cat: "animals", en: "Heavy Horse Show", fr: "Exposition de chevaux lourds", es: "Exhibición de caballos pesados" },
-      { time: "13:00", cat: "kids", en: "Children's races", fr: "Courses d'enfants", es: "Carreras de niños",
-        venue_en: "Horse Ring", venue_fr: "carrière des chevaux", venue_es: "ring de caballos" },
+      { time: "13:00", cat: "kids", en: "Children's races", fr: "Courses d'enfants", es: "Carreras de niños", venue: 10 },
       { time: "13:00", cat: "animals", en: "Heritage Cattle Show", fr: "Exposition de bétail du patrimoine", es: "Exhibición de ganado patrimonial" },
       { time: "13:00", cat: "animals", en: "Open Dairy Class", fr: "Classe ouverte des vaches laitières", es: "Clase abierta de vacas lecheras" },
       { time: "14:00", cat: "kids", en: "Pat's Pet Show", fr: "Pat's Pet Show", es: "Pat's Pet Show" },

@@ -364,6 +364,197 @@
   padding: clamp(10px, 1.6vw, 18px);
 }
 .hf-frame-img img { width: 100%; height: auto; }
+
+/* ============================================================
+   FAIRGROUNDS PLAN — inline SVG, not an image.
+   Every colour here is a token or comes from js/map-data.js, so
+   retinting the plan is one edit and never a re-export.
+   ============================================================ */
+.hf-plan {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(280px, 1fr);
+  gap: clamp(16px, 2.4vw, 30px);
+  align-items: start;
+}
+.hf-plan-stage {
+  border: 1px solid var(--hf-frame);
+  background: var(--hf-espresso);
+  padding: clamp(8px, 1.2vw, 14px);
+  /* scrolls rather than shrinking: at 390px the plan rendered 304px wide and
+     the pin numbers came out about 4px tall — present, but unreadable */
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.hf-plan-svg { display: block; width: 100%; height: auto; }
+@media (max-width: 760px) {
+  .hf-plan-svg { min-width: 640px; }
+}
+
+/* --- the plan itself --- */
+.pl-field { fill: #22251C; }               /* a green-shifted espresso: grass, not a lawn */
+.pl-road { fill: #2E2A22; }
+.pl-road-line { fill: none; stroke: rgba(232,211,160,0.34); stroke-width: 2; stroke-dasharray: 16 14; }
+.pl-road-label {
+  fill: rgba(232, 211, 160, 0.58);
+  font-family: var(--hf-sans); font-size: 15px; font-weight: 700; letter-spacing: 0.22em;
+}
+.pl-trees circle { fill: rgba(121, 168, 126, 0.16); }
+.pl-detail { fill: rgba(198, 161, 91, 0.20); }
+.pl-bldg, .pl-gate {
+  fill: rgba(198, 161, 91, 0.13);
+  stroke: var(--hf-bronze);
+  stroke-width: 1.5;
+  transition: fill 0.25s ease, stroke 0.25s ease;
+}
+.pl-gate { fill: rgba(143, 166, 184, 0.4); stroke: #8FA6B8; }
+.pl-ring {
+  fill: rgba(198, 161, 91, 0.07);
+  stroke: var(--hf-bronze);
+  stroke-width: 2;
+  transition: fill 0.25s ease, stroke 0.25s ease;
+}
+.pl-pin circle {
+  fill: var(--hf-espresso);
+  stroke: var(--hf-gold);
+  stroke-width: 1.75;
+  transition: fill 0.25s ease, stroke 0.25s ease;
+}
+.pl-pin text {
+  fill: var(--hf-gold-warm);
+  font-family: var(--hf-sans); font-size: 17px; font-weight: 700;
+  text-anchor: middle;
+  transition: fill 0.25s ease;
+}
+
+/* --- location states --- */
+.loc { cursor: pointer; outline: none; }
+.loc:hover .pl-bldg, .loc:hover .pl-ring { fill: rgba(198, 161, 91, 0.24); stroke: var(--hf-gold); }
+.loc:hover .pl-pin circle { stroke: var(--hf-gold-bright); }
+.loc.is-on .pl-bldg, .loc.is-on .pl-ring { fill: rgba(198, 161, 91, 0.30); stroke: var(--hf-gold-bright); }
+.loc.is-on .pl-pin circle { fill: var(--hf-gold); stroke: var(--hf-gold-bright); }
+.loc.is-on .pl-pin text { fill: var(--hf-espresso); }
+/* focus has to be visible on a dark plan and must not rely on the gold fill */
+.loc:focus-visible .pl-pin circle { stroke: var(--hf-ivory-bright); stroke-width: 3.5; }
+.loc:focus-visible .pl-bldg, .loc:focus-visible .pl-ring { stroke: var(--hf-ivory-bright); }
+/* 16 is on the plan but has no name yet — say so rather than pretend */
+.loc.is-unnamed .pl-bldg { stroke-dasharray: 5 4; }
+
+/* --- side column --- */
+.hf-plan-hint {
+  font-family: var(--hf-sans); font-size: 12.5px; line-height: 1.5;
+  color: rgba(241, 232, 214, 0.6); margin: 0 0 14px;
+}
+.hf-plan-panel {
+  border: 1px solid var(--hf-rule);
+  background: rgba(198, 161, 91, 0.05);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  min-height: 128px;
+  outline: none;
+}
+.hf-plan-panel:focus-visible { border-color: var(--hf-gold-bright); }
+.pp-head { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+.pp-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 26px; height: 26px; padding: 0 6px;
+  background: var(--pl-color, var(--hf-gold)); color: var(--hf-espresso);
+  font-family: var(--hf-sans); font-size: 13px; font-weight: 700;
+}
+.pp-cat {
+  font-family: var(--hf-sans); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--pl-color, var(--hf-gold));
+}
+.pp-name {
+  font-family: var(--hf-serif); font-size: 22px; font-weight: 500; line-height: 1.2;
+  color: var(--hf-ivory-bright); margin-bottom: 14px; text-wrap: balance;
+}
+.pp-unnamed { color: rgba(241, 232, 214, 0.55); font-style: italic; }
+.pp-today {
+  font-family: var(--hf-sans); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--hf-gold); margin-bottom: 8px;
+}
+.pp-events { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.pp-events li { display: grid; grid-template-columns: 74px 1fr; gap: 10px; align-items: baseline; }
+.pp-t {
+  font-family: var(--hf-sans); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--hf-gold-warm);
+  font-variant-numeric: tabular-nums;
+}
+.pp-events li span:last-child { font-size: 14px; line-height: 1.45; color: rgba(241, 232, 214, 0.88); }
+.pp-empty { font-size: 14px; color: rgba(241, 232, 214, 0.55); margin: 0; }
+
+/* --- legend --- */
+.hf-plan-legend { display: grid; gap: 16px; }
+.pl-legend-h {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--hf-sans); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--pl-color, var(--hf-gold)); margin-bottom: 6px;
+}
+.pl-legend-dot { width: 8px; height: 8px; background: var(--pl-color, var(--hf-gold)); }
+.pl-legend-item {
+  display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: baseline;
+  width: 100%; min-height: 34px; padding: 5px 6px;
+  background: none; border: 1px solid transparent; text-align: left; cursor: pointer;
+  font: inherit; color: rgba(241, 232, 214, 0.86);
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.pl-legend-item:hover { background: rgba(198, 161, 91, 0.09); color: var(--hf-ivory-bright); }
+.pl-legend-item.is-on { border-color: var(--pl-color, var(--hf-gold)); background: rgba(198, 161, 91, 0.13); }
+.pl-legend-n {
+  font-family: var(--hf-sans); font-size: 11px; font-weight: 700;
+  color: var(--pl-color, var(--hf-gold)); font-variant-numeric: tabular-nums;
+}
+.pl-legend-name { font-size: 14px; line-height: 1.35; }
+
+/* ------------------------------------------------------------
+   THE PLAN SITS IN AN .hf-sec--ivory SECTION.
+   The SVG stage stays dark on purpose — a framed plan on cream — but
+   everything beside it is on IVORY and needs ivory ink. The first build
+   styled this column for a dark ground and shipped cream-on-cream: every
+   location name was invisible while all 43 DOM assertions passed, because
+   assertions check text, not colour. Only the screenshot caught it.
+   --pl-ink is the ivory-measured category colour from js/map-data.js;
+   --pl-color is the espresso one and must NOT be used over here.
+   ------------------------------------------------------------ */
+.hf-sec--ivory .hf-plan-hint { color: var(--hf-body-on-ivory); }
+.hf-sec--ivory .hf-plan-panel {
+  background: rgba(34, 28, 21, 0.04);
+  border-color: var(--hf-rule-ivory);
+}
+.hf-sec--ivory .hf-plan-panel:focus-visible { border-color: var(--hf-bronze); }
+.hf-sec--ivory .pp-num { background: var(--pl-ink, var(--hf-bronze-ink)); color: var(--hf-ivory-bright); }
+.hf-sec--ivory .pp-cat { color: var(--pl-ink, var(--hf-bronze-ink)); }
+.hf-sec--ivory .pp-name { color: var(--hf-charcoal); }
+.hf-sec--ivory .pp-unnamed { color: var(--hf-body-on-ivory); }
+/* --hf-bronze is 4.06:1 on ivory — fine as a rule, NOT as small uppercase
+   text. Same hue, dropped from 54% to 44% value: 5.57:1. Measured, not eyed. */
+.hf-plan { --hf-bronze-ink: #705732; }
+.hf-sec--ivory .pp-today { color: var(--hf-bronze-ink); }
+.hf-sec--ivory .pp-t { color: var(--hf-bronze-ink); }
+.hf-sec--ivory .pp-events li span:last-child { color: var(--hf-body-on-ivory); }
+.hf-sec--ivory .pp-empty { color: var(--hf-body-on-ivory); }
+.hf-sec--ivory .pl-legend-h { color: var(--pl-ink, var(--hf-bronze-ink)); }
+.hf-sec--ivory .pl-legend-dot { background: var(--pl-ink, var(--hf-bronze)); }
+.hf-sec--ivory .pl-legend-item { color: var(--hf-charcoal); }
+.hf-sec--ivory .pl-legend-item:hover { background: rgba(34, 28, 21, 0.06); color: var(--hf-charcoal); }
+.hf-sec--ivory .pl-legend-item.is-on {
+  border-color: var(--pl-ink, var(--hf-bronze));
+  background: rgba(34, 28, 21, 0.06);
+}
+.hf-sec--ivory .pl-legend-n { color: var(--pl-ink, var(--hf-bronze-ink)); }
+
+@media (max-width: 900px) {
+  .hf-plan { grid-template-columns: 1fr; }
+  .hf-plan-side { display: grid; gap: 18px; }
+  .hf-plan-panel { margin-bottom: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pl-bldg, .pl-ring, .pl-pin circle, .pl-pin text, .pl-legend-item { transition: none; }
+}
 .hf-map {
   height: clamp(320px, 48vh, 460px);
   border: 1px solid var(--hf-frame);
@@ -640,6 +831,9 @@
   color: var(--ev-color, var(--hf-bronze));
 }
 .ev-dot { margin: 0 7px; opacity: 0.55; }
+/* the venue is a link to its pin on the fairgrounds plan */
+a.ev-venue { color: inherit; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+a.ev-venue:hover { color: var(--hf-gold-bright); }
 
 /* ---- on now / up next ---- */
 .time-group.is-now {

@@ -67,6 +67,7 @@
   <!-- Scripts (order matters: chrome → i18n → data → page) -->
   <script src="../js/heritage-chrome.js"></script>
   <script src="../js/i18n.js"></script>
+  <script src="../js/map-data.js"></script>
   <script src="../js/schedule-data.js"></script>
   <script>
     let activeDay = "saturday";
@@ -124,12 +125,23 @@
     /* One event row. The category is a COLOUR RULE plus visually-hidden text —
        the old design printed "GENERAL" above every single row, which cost a
        line each and said little. Colour is never the only signal. */
+    /* The venue is a PIN NUMBER into mapLocations (js/map-data.js), which owns
+       every place name in all three languages. The schedule never stores a
+       name, so it cannot drift from the fairgrounds plan, and the row links
+       straight to that pin on the map. */
+    function venueOf(ev, lang) {
+      if (!ev.venue || typeof mapLocations === "undefined") return null;
+      const loc = mapLocations[ev.venue];
+      if (!loc) return null;
+      return { id: ev.venue, name: loc[lang] || loc.en };
+    }
+
     function eventRow(ev, lang) {
       const title = ev[lang] || ev.en;
-      const venue = ev[`venue_${lang}`] || ev.venue_en || "";
+      const venue = venueOf(ev, lang);
       const bits = [];
       if (ev.until) bits.push(`<span class="ev-until">${T("sched_until", lang)} ${esc(fmtTime(ev.until, lang))}</span>`);
-      if (venue) bits.push(`<span class="ev-venue">${esc(venue)}</span>`);
+      if (venue) bits.push(`<a class="ev-venue" href="directions.html#loc-${venue.id}">${esc(venue.name)}</a>`);
       return `
         <div class="event-card" data-cat="${ev.cat}" style="--ev-color:${catColor(ev.cat)}">
           <span class="ev-rule" aria-hidden="true"></span>
