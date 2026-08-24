@@ -377,8 +377,8 @@
   align-items: start;
 }
 .hf-plan-stage {
-  border: 1px solid var(--hf-frame);
-  background: var(--hf-espresso);
+  border: 1px solid var(--hf-rule-ivory);
+  background: #EAE0C8;
   padding: clamp(8px, 1.2vw, 14px);
   /* scrolls rather than shrinking: at 390px the plan rendered 304px wide and
      the pin numbers came out about 4px tall — present, but unreadable */
@@ -391,54 +391,89 @@
   .hf-plan-svg { min-width: 640px; }
 }
 
-/* --- the plan itself --- */
-.pl-field { fill: #22251C; }               /* a green-shifted espresso: grass, not a lawn */
-.pl-road { fill: #2E2A22; }
-.pl-road-line { fill: none; stroke: rgba(232,211,160,0.34); stroke-width: 2; stroke-dasharray: 16 14; }
+/* --- the plan itself ---------------------------------------------------
+   Drawn on parchment, not on the dark ground: the section around it is
+   .hf-sec--ivory, and a printed-paper map is both prettier and truer to a
+   155-year-old agricultural fair than a wireframe on black.
+   The illustration fills (grass, roofs, sand) are LOW contrast on purpose —
+   they are surfaces, not information. Everything that carries meaning is the
+   numbered pin, in ink, measured. --------------------------------------- */
+.pl-paper { fill: #EAE0C8; }
+.pl-grass rect { fill: #CBD3A8; }
+.pl-grass .pl-mow { fill: #C3CC9E; }
+.pl-grain { fill: #6B5433; pointer-events: none; }
+.pl-drive { fill: none; stroke: #C6B996; stroke-width: 26; stroke-linecap: round; stroke-linejoin: round; }
+.pl-track path { fill: none; stroke: #B3A484; stroke-width: 3; stroke-linecap: round; opacity: 0.7; }
+
+/* buildings: a cast shadow, a wall, a pitched roof and a little detail —
+   enough for each one to sit on the field instead of floating on it */
+.pl-b .sh { fill: rgba(74, 62, 40, 0.16); }
+.pl-b .wall { fill: #E6DCC6; stroke: #6B5940; stroke-width: 1.2; }
+.pl-b .roof { fill: #99A3A8; stroke: #4E4536; stroke-width: 1.2; stroke-linejoin: round; }
+.pl-b .roof.tin { fill: #A8B0B2; }
+.pl-b .roof.slate { fill: #7F8A93; }
+.pl-b .wall.barn { fill: #B45744; }
+.pl-b .roof.barn-r { fill: #6E4136; }
+.pl-b .wall.booth { fill: #EFE6D2; }
+.pl-b .roof.booth-r { fill: #C08A54; }
+.pl-b .wall.sugar { fill: #C9A06A; }
+.pl-b .roof.sugar-r { fill: #7B5533; }
+.pl-b .det { stroke: rgba(78, 69, 54, 0.42); stroke-width: 1; fill: none; }
+.pl-b .vane { stroke: #4E4536; stroke-width: 1.6; fill: none; stroke-linecap: round; }
+.pl-b .gatepost { stroke: #6B5940; stroke-width: 5; stroke-linecap: round; fill: none; }
+.pl-b .gatearch { stroke: #8A6B3E; stroke-width: 4; fill: none; stroke-linecap: round; }
+.pl-b .bunting { fill: none; stroke: #8A6B3E; stroke-width: 1.4; }
+.pl-b .flags polygon { fill: #B45744; }
+.pl-b .pl-note { fill: #4E4536; stroke: #4E4536; stroke-width: 1.6; }
+.pl-b .steam { fill: none; stroke: rgba(78, 69, 54, 0.45); stroke-width: 2; stroke-linecap: round; }
+
+/* the ring: sand hatch, double rail, and something happening inside it */
+.ring-sand { fill: url(#ringSand); }
+.ring-rail { fill: none; stroke: #6B5940; stroke-width: 3; }
+.ring-rail-inner { fill: none; stroke: rgba(107, 89, 64, 0.45); stroke-width: 1.4; }
+.pl-horse .body { fill: #4E4536; }
+.pl-horse .leg { stroke: #4E4536; stroke-width: 4; stroke-linecap: round; fill: none; }
+.pl-horse .tail, .pl-horse .mane { stroke: #4E4536; stroke-width: 3; stroke-linecap: round; fill: none; }
+
+.pl-trees { pointer-events: none; }
+
+.pl-road rect { fill: #B9AC90; }
+.pl-road line { stroke: #EAE0C8; stroke-width: 2; stroke-dasharray: 14 12; }
 .pl-road-label {
-  fill: rgba(232, 211, 160, 0.58);
-  font-family: var(--hf-sans); font-size: 15px; font-weight: 700; letter-spacing: 0.22em;
+  fill: #5A4C34; font-family: var(--hf-sans); font-size: 11px;
+  font-weight: 700; letter-spacing: 0.3em; text-anchor: middle;
 }
-.pl-trees circle { fill: rgba(121, 168, 126, 0.16); }
-.pl-detail { fill: rgba(198, 161, 91, 0.20); }
-.pl-bldg, .pl-gate {
-  fill: rgba(198, 161, 91, 0.13);
-  stroke: var(--hf-bronze);
-  stroke-width: 1.5;
-  transition: fill 0.25s ease, stroke 0.25s ease;
+.pl-compass circle { fill: rgba(234, 224, 200, 0.85); stroke: #8A6B3E; stroke-width: 1.2; }
+.pl-compass .n { fill: #B45744; }
+.pl-compass .s { fill: #6B5940; }
+.pl-compass text {
+  fill: #5A4C34; font-family: var(--hf-sans); font-size: 10px;
+  font-weight: 700; text-anchor: middle;
 }
-.pl-gate { fill: rgba(143, 166, 184, 0.4); stroke: #8FA6B8; }
-.pl-ring {
-  fill: rgba(198, 161, 91, 0.07);
-  stroke: var(--hf-bronze);
+
+/* the pins carry all the meaning, so they carry all the contrast */
+.pl-pin circle {
+  fill: #3A2E1E;
+  stroke: #EAE0C8;
   stroke-width: 2;
   transition: fill 0.25s ease, stroke 0.25s ease;
 }
-.pl-pin circle {
-  fill: var(--hf-espresso);
-  stroke: var(--hf-gold);
-  stroke-width: 1.75;
-  transition: fill 0.25s ease, stroke 0.25s ease;
-}
 .pl-pin text {
-  fill: var(--hf-gold-warm);
-  font-family: var(--hf-sans); font-size: 17px; font-weight: 700;
+  fill: #F3EBD8;
+  font-family: var(--hf-sans); font-size: 15px; font-weight: 700;
   text-anchor: middle;
   transition: fill 0.25s ease;
 }
 
 /* --- location states --- */
 .loc { cursor: pointer; outline: none; }
-.loc:hover .pl-bldg, .loc:hover .pl-ring { fill: rgba(198, 161, 91, 0.24); stroke: var(--hf-gold); }
-.loc:hover .pl-pin circle { stroke: var(--hf-gold-bright); }
-.loc.is-on .pl-bldg, .loc.is-on .pl-ring { fill: rgba(198, 161, 91, 0.30); stroke: var(--hf-gold-bright); }
-.loc.is-on .pl-pin circle { fill: var(--hf-gold); stroke: var(--hf-gold-bright); }
-.loc.is-on .pl-pin text { fill: var(--hf-espresso); }
-/* focus has to be visible on a dark plan and must not rely on the gold fill */
-.loc:focus-visible .pl-pin circle { stroke: var(--hf-ivory-bright); stroke-width: 3.5; }
-.loc:focus-visible .pl-bldg, .loc:focus-visible .pl-ring { stroke: var(--hf-ivory-bright); }
-/* 16 is on the plan but has no name yet — say so rather than pretend */
-.loc.is-unnamed .pl-bldg { stroke-dasharray: 5 4; }
+.loc:hover .wall, .loc:hover .ring-sand { filter: brightness(1.07); }
+.loc:hover .pl-pin circle { fill: #8A6B3E; }
+.loc.is-on .pl-pin circle { fill: #B45744; stroke: #F3EBD8; stroke-width: 2.5; }
+.loc.is-on .ring-rail, .loc.is-on .wall, .loc.is-on .roof { stroke: #B45744; stroke-width: 2.4; }
+.loc.is-on .gatepost, .loc.is-on .gatearch { stroke: #B45744; }
+/* focus must be visible on parchment and must not read as selection */
+.loc:focus-visible .pl-pin circle { stroke: #3A2E1E; stroke-width: 4; }
 
 /* --- side column --- */
 .hf-plan-hint {

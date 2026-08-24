@@ -88,10 +88,12 @@ function boot(rel){
   sw.setLanguage('fr');
   await new Promise(r=>setTimeout(r,200));
   ck('FR schedule keeps band names intact', sd.body.textContent.includes('Durham County Poets'));
-  /* Venue names now live in js/map-data.js and the schedule renders them by
-     pin number, so the old 'scène extérieure' string is gone. Same intent:
-     French must translate around the band names. */
-  ck('FR schedule translates around them', /B.timent de musique/.test(sd.body.textContent));
+  /* Same intent throughout: French must translate AROUND the band names.
+     The string this watches has had to move twice — 'scène extérieure' lived
+     in schedule-data.js, then venue names moved to js/map-data.js, and the
+     fair's own plan calls pin 8 simply 'Musique'. Anchored on the schedule's
+     own French chrome instead, which no venue rename can take away. */
+  ck('FR schedule translates around them', /jusqu'à/.test(sd.body.textContent));
   s.window.close();
 
   console.log(fails?`\n❌ ${fails} check(s) FAILED`:'\n✅ ALL CHECKS PASSED');

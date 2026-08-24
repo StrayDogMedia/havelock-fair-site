@@ -63,17 +63,16 @@ const open = async (b, q = '', w = 1440) => {
     is('every event venue points at a location that exists', r.venuesWithNoLocation, []);
     is('every location has a valid category', r.badCats, []);
     is('every location is named in all three languages', r.missingLang, []);
-    /* 16 is drawn but deliberately unnamed — it must be the ONLY one, and it
-       must announce itself as unnamed rather than render blank. */
-    is('the only unnamed pin on the plan is 16', r.planNotNamed, [16]);
-    const un = await p.evaluate(() => {
-      const g = document.querySelector('.loc[data-loc="16"]');
-      g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return { cls: g.classList.contains('is-unnamed'), panel: document.getElementById('plan-panel').textContent };
-    });
-    is('  and it is marked as unnamed', un.cls, true);
-    /not yet named/i.test(un.panel) ? ok('  and says so when selected', JSON.stringify(un.panel.trim()))
-                                    : bad('unnamed pin explains itself', un.panel);
+    /* The fair's own bilingual plan named all 17, including 16 (Barn) and the
+       four the first draft omitted — 9, 11, 13, 14. Nothing may be unnamed. */
+    is('no pin on the plan is unnamed', r.planNotNamed, []);
+    is('all seventeen locations are present', r.named.length, 17);
+    /* Pin 1 is "Gate #2" and pin 2 is "Gate #1" on the fair's own plan. It
+       looks like a transposition and it is not — it matches their signage. */
+    const gates = await p.evaluate(() => ({ one: mapLocations[1].en, two: mapLocations[2].en }));
+    /#2/.test(gates.one) && /#1/.test(gates.two)
+      ? ok('the inverted gate numbering is preserved, as the fair has it', `1 = ${gates.one}, 2 = ${gates.two}`)
+      : bad('gate numbering matches the fair plan', gates, '1 = Gate #2, 2 = Gate #1');
     ok('locations on the plan', r.onPlan.join(', '));
     await p.close();
   }

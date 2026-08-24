@@ -251,6 +251,32 @@ At 390px the plan first rendered 304px wide, which put the pin numbers at about
 760px with a `min-width`, and the harness measures the *rendered* height of a
 pin numeral rather than the authored `font-size`, which the viewBox rescales.
 
+### The map is drawn on parchment, and that was the right call
+
+The section it lives in is `.hf-sec--ivory`. The first version was a dark
+wireframe fighting that ground — grey blobs and circles for trees. It is now a
+printed-paper plan: mown grass bands, pitched roofs with gable ends and a cast
+shadow, barn red on the barn, a sand-hatched ring with a horse in it, tree
+lines, a compass rose.
+
+The illustration fills are deliberately LOW contrast (grass 1.19:1, roofs
+1.96–2.75:1). They are surfaces, not information. Everything that carries
+meaning is the numbered pin, at 10:1 ink on parchment, and the harness measures
+those. Do not "fix" the grass contrast.
+
+### Names come from the fair's own plan
+
+All 17 locations, EN and FR, are transcribed from the bilingual site plan the
+fair supplied. Two things in it look like mistakes and are not:
+
+- **Pin 1 is "Gate #2 (pedestrian)" and pin 2 is "Gate #1 (vehicles)."** Pin
+  number and gate name are inverted. That is what their signage says. The
+  harness asserts the inversion is preserved so nobody helpfully corrects it.
+- **Pin 15 is "4H BUILDING" in English and "ARÉNA 4H" in French.** Reproduced
+  as written rather than harmonised.
+
+Spanish is ours — their plan is EN/FR only.
+
 ### Why SVG and not the aerial render
 
 Hotspots on a raster are pinned to pixel positions, and a regenerated image
