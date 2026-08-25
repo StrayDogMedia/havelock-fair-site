@@ -268,11 +268,31 @@ hand-drawn interpretation, not a survey. Confident: 1, 2, 3, 7, 10, 15, 16.
 The rest are read from relative position and want a look from someone who knows
 the grounds.
 
-Two things the harness pins down that are easy to break by hand: no pin may sit
-outside the artwork (2–98%), and **no two pins may overlap**. At 390px the map
-first rendered 308px wide and the closest pins covered each other — the stage
-scrolls below 820px now, and the check measures real overlap area rather than
-trusting the CSS.
+### The map always fits its frame — never a sideways scroll
+
+The first fix for crowded pins was a 620px `min-width`, which meant a phone had
+to scroll the whole map sideways. That was worse than the problem it solved.
+The map now fits its container at every width, and **zoom** separates crowded
+pins: `+` / `−` / reset, drag to pan, pinch on touch. Pins counter-scale by
+`--pin-inv` (1/zoom) so they keep their real size — and their touch target —
+however far in you go.
+
+Three things the harness pins down that are easy to break by hand:
+
+- no pin may sit outside the artwork (2–98%);
+- the map frame must never be wider than its container at default zoom;
+- **no two pins may overlap by more than 8% of a pin's area.** The threshold
+  started at 35% and waved through a 27% collision between 13 and 15 that was
+  obvious in a screenshot. Pins 1, 13 and 15 are nudged slightly off their exact
+  buildings because of it — they are markers, not survey points.
+
+When zoomed, `overflow: hidden` means the frame *cannot* be scrolled, so
+`scrollWidth > clientWidth` is not a scroll bug; the check looks at
+`overflow-x` instead.
+
+⚠️ `.hf-pin` transitions its transform over 0.18s. Reading a computed style
+straight after clicking a zoom control catches it mid-flight and reports the
+pre-scale size — the harness waits.
 
 A `<button>` also turns Enter into a click, so the keyboard path silently lost
 its focus move to the panel. `e.detail === 0` distinguishes keyboard activation

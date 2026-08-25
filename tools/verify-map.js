@@ -276,6 +276,59 @@ const open = async (b, q = '', w = 1440) => {
     await p.close();
   }
 
+  // ---------- 6c. zoom ----------
+  console.log('\n=== zoom, which is how crowded pins get separated now ===');
+  {
+    const p = await open(browser, '', 390);
+    const start = await p.evaluate(() => {
+      const f = document.getElementById('map-wrap');
+      return { side: Math.max(0, f.scrollWidth - f.clientWidth),
+               t: getComputedStyle(document.getElementById('map-view')).transform };
+    });
+    is('fits the frame at 390px with no sideways scroll', start.side, 0);
+    is('  and starts unzoomed', start.t === 'none' || /matrix\(1,\s*0,\s*0,\s*1/.test(start.t), true);
+
+    await p.evaluate(() => document.querySelector('[data-zoom="in"]').click());
+    /* .hf-pin transitions its transform over 0.18s — reading the computed
+       style straight after the click catches it mid-flight and reports the
+       pre-scale size. Let it land. */
+    await new Promise(r => setTimeout(r, 350));
+    const zoomed = await p.evaluate(() => {
+      const pin = document.querySelector('.hf-pin').getBoundingClientRect();
+      const frame = document.getElementById('map-wrap');
+      return { t: getComputedStyle(document.getElementById('map-view')).transform,
+               pinW: +pin.width.toFixed(1),
+               /* overflow:hidden means the frame CANNOT be scrolled, so
+                  scrollWidth is not the question — whether it is clipped is */
+               clipped: getComputedStyle(frame).overflowX };
+    });
+    /matrix\(1\.6/.test(zoomed.t) ? ok('zoom in scales the map', zoomed.t)
+                                  : bad('zoom in scales the map', zoomed.t, 'scale 1.6');
+    /* the pin counter-scales, so zooming must NOT inflate the touch target
+       away from its designed size */
+    zoomed.pinW >= 24 && zoomed.pinW <= 34
+      ? ok('  pins keep their real size while zoomed', zoomed.pinW + 'px')
+      : bad('pin size while zoomed', zoomed.pinW + 'px', '24-34px');
+    is('  and the overflow stays clipped, never scrollable', zoomed.clipped, 'hidden');
+
+    await p.evaluate(() => document.querySelector('[data-zoom="reset"]').click());
+    await new Promise(r => setTimeout(r, 350));
+    const reset = await p.evaluate(() => {
+      const t = getComputedStyle(document.getElementById('map-view')).transform;
+      return t === 'none' || /matrix\(1,\s*0,\s*0,\s*1/.test(t);
+    });
+    is('reset returns to fit', reset, true);
+
+    await p.evaluate(() => { for (let i = 0; i < 6; i++) document.querySelector('[data-zoom="out"]').click(); });
+    await new Promise(r => setTimeout(r, 350));
+    const floor = await p.evaluate(() => {
+      const t = getComputedStyle(document.getElementById('map-view')).transform;
+      return t === 'none' || /matrix\(1,\s*0,\s*0,\s*1/.test(t);
+    });
+    is('zooming out never shrinks below fit', floor, true);
+    await p.close();
+  }
+
   // ---------- 7. layout ----------
   console.log('\n=== layout, three languages, three widths ===');
   {
@@ -309,17 +362,24 @@ const open = async (b, q = '', w = 1440) => {
               const a = boxes[i], b = boxes[j];
               const ov = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
                          Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
-              if (ov > a.width * a.height * 0.35) collisions++;
+              /* 8%, not 35%: pins 1 and 3 overlapped visibly at 390px and
+                 the looser threshold waved them through */
+              if (ov > a.width * a.height * 0.08) collisions++;
             }
+          /* THE COMPLAINT THIS FIXES: the map used to be forced wider than
+             its frame, so a phone had to scroll sideways to see it. */
+          const frame = document.getElementById('map-wrap');
+          const sideScroll = Math.max(0, frame.scrollWidth - frame.clientWidth);
           return { off: off.slice(0, 3), docOver: document.documentElement.scrollWidth > W + 1,
-                   svgW: Math.round(svg.width), svgH: Math.round(svg.height), pinPx, collisions };
+                   svgW: Math.round(svg.width), svgH: Math.round(svg.height), pinPx, collisions, sideScroll };
         });
         if (r.off.length || r.docOver) { problems++; bad(`${w}px ${lang.toUpperCase()}`, r); }
         else if (lang === 'en') {
           /* a pin number rendered at ~4px is on the page but not readable */
           if (r.pinPx < 24) { problems++; bad(`${w}px pin target size`, r.pinPx + 'px', '>= 24px'); }
-          else if (r.collisions > 0) { problems++; bad(`${w}px pins overlap each other`, r.collisions + ' pairs', '0'); }
-          else ok(`${w}px map renders`, `${r.svgW}x${r.svgH}, pins ${r.pinPx}px, no overlaps`);
+          else if (r.sideScroll) { problems++; bad(`${w}px map must fit its frame`, r.sideScroll + 'px of overflow', 'none'); }
+          else if (r.collisions > 0) { problems++; bad(`${w}px pins overlap at default zoom`, r.collisions + ' pair(s)', '0'); }
+          else ok(`${w}px map fits`, `${r.svgW}x${r.svgH}, pins ${r.pinPx}px, ${r.collisions} overlapping pair(s)`);
         }
         await p.close();
       }

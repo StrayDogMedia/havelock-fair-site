@@ -65,12 +65,19 @@
       <div class="hf-plan" data-reveal>
         <div class="hf-plan-stage">
           <div class="hf-map-wrap" id="map-wrap">
-            <img class="hf-map-art" id="map-art"
-                 src="../images/map/fairgrounds.jpg"
-                 width="1024" height="1536" decoding="async"
-                 alt="" data-i18n-label="map_svg_title">
-            <div class="hf-map-pins" id="map-pins"></div>
+            <div class="hf-map-view" id="map-view">
+              <img class="hf-map-art" id="map-art"
+                   src="../images/map/fairgrounds.jpg"
+                   width="1024" height="1536" decoding="async"
+                   alt="" data-i18n-label="map_svg_title">
+              <div class="hf-map-pins" id="map-pins"></div>
+            </div>
             <div class="hf-map-cal" id="map-cal" hidden></div>
+            <div class="hf-map-zoom" id="map-zoom">
+              <button type="button" data-zoom="in"  aria-label="Zoom in">+</button>
+              <button type="button" data-zoom="out" aria-label="Zoom out">&minus;</button>
+              <button type="button" data-zoom="reset" aria-label="Reset zoom">&#8634;</button>
+            </div>
           </div>
         </div>
 
@@ -306,6 +313,7 @@
         b.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
       render(id);
+      revealPin(id);
       if (focusPanel) panel.focus({ preventScroll: true });
       if (history.replaceState) history.replaceState(null, '', '#loc-' + id);
     }
@@ -383,6 +391,97 @@
         if (b) b.focus();
       }
     });
+
+    /* ---- zoom + pan -------------------------------------------------
+       The map ALWAYS fits its container: forcing a min-width so the closest
+       pins would not overlap meant side-scrolling the whole map on a phone,
+       which is worse than the problem it solved. Zoom is how you separate
+       crowded pins now, and the legend stays a complete alternative. */
+    var zoom = 1, panX = 0, panY = 0;
+    var MIN = 1, MAX = 4;
+    var view = document.getElementById('map-view');
+
+    function clampPan() {
+      /* never drag the artwork away from under the frame */
+      var r = wrap.getBoundingClientRect();
+      var maxX = r.width * (zoom - 1) / 2;
+      var maxY = r.height * (zoom - 1) / 2;
+      panX = Math.max(-maxX, Math.min(maxX, panX));
+      panY = Math.max(-maxY, Math.min(maxY, panY));
+    }
+    function applyZoom() {
+      clampPan();
+      view.style.transform = 'translate(' + panX + 'px,' + panY + 'px) scale(' + zoom + ')';
+      /* counter-scale the pins so they stay the same size on screen — and
+         stay a real touch target — at every zoom level */
+      pins.style.setProperty('--pin-inv', (1 / zoom).toFixed(4));
+      wrap.classList.toggle('is-zoomed', zoom > 1);
+    }
+    function setZoom(z, ox, oy) {
+      var prev = zoom;
+      zoom = Math.max(MIN, Math.min(MAX, z));
+      if (zoom === prev) return;
+      if (zoom === 1) { panX = 0; panY = 0; }
+      else if (ox !== undefined) {
+        var k = zoom / prev;
+        panX = ox - (ox - panX) * k;
+        panY = oy - (oy - panY) * k;
+      }
+      applyZoom();
+    }
+
+    document.getElementById('map-zoom').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-zoom]');
+      if (!b) return;
+      if (b.dataset.zoom === 'in') setZoom(zoom * 1.6);
+      else if (b.dataset.zoom === 'out') setZoom(zoom / 1.6);
+      else setZoom(1);
+    });
+
+    /* drag to pan, only when there is something to pan to */
+    var dragging = false, lastX = 0, lastY = 0, moved = 0;
+    wrap.addEventListener('pointerdown', function (e) {
+      if (zoom === 1 || e.target.closest('.hf-pin, .hf-map-zoom')) return;
+      dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY;
+      wrap.setPointerCapture(e.pointerId);
+    });
+    wrap.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      panX += e.clientX - lastX; panY += e.clientY - lastY;
+      moved += Math.abs(e.clientX - lastX) + Math.abs(e.clientY - lastY);
+      lastX = e.clientX; lastY = e.clientY;
+      applyZoom();
+    });
+    ['pointerup', 'pointercancel'].forEach(function (ev) {
+      wrap.addEventListener(ev, function () { dragging = false; });
+    });
+
+    /* pinch */
+    var pointers = new Map(), pinchStart = 0, zoomStart = 1;
+    wrap.addEventListener('pointerdown', function (e) { pointers.set(e.pointerId, e); });
+    wrap.addEventListener('pointermove', function (e) {
+      if (!pointers.has(e.pointerId)) return;
+      pointers.set(e.pointerId, e);
+      if (pointers.size !== 2) return;
+      var p = [...pointers.values()];
+      var d = Math.hypot(p[0].clientX - p[1].clientX, p[0].clientY - p[1].clientY);
+      if (!pinchStart) { pinchStart = d; zoomStart = zoom; return; }
+      setZoom(zoomStart * (d / pinchStart));
+    });
+    ['pointerup', 'pointercancel'].forEach(function (ev) {
+      wrap.addEventListener(ev, function (e) { pointers.delete(e.pointerId); pinchStart = 0; });
+    });
+
+    /* selecting a crowded pin should bring it into view */
+    function revealPin(id) {
+      if (zoom === 1) return;
+      var loc = mapLocations[id];
+      if (!loc) return;
+      var r = wrap.getBoundingClientRect();
+      panX = (0.5 - loc.x / 100) * r.width * zoom;
+      panY = (0.5 - loc.y / 100) * r.height * zoom;
+      applyZoom();
+    }
 
     /* ?calibrate=1 — the artwork is a picture, so pin positions are pixel
        positions. This prints the percentage under the cursor and copies it on
