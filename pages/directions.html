@@ -48,334 +48,30 @@
         <p class="hf-sec-lede" data-i18n="dir_grounds_subtitle">Find your way around the Havelock Fairgrounds</p>
       </div>
       <!-- ============================================================
-           FAIRGROUNDS PLAN — hand-authored SVG, not an image.
-           Geometry lives here; NAMES live in js/map-data.js and the schedule
-           references the same pin numbers, so the two can never disagree.
-           Inline rather than <img src="*.svg"> because the groups have to be
-           styleable and focusable. Deliberately schematic, and deliberately
-           carries no logo and no founding year — the draft this replaces had
-           "EST. 1846" baked into the artwork while the site says 1871 in 60
-           places, which is exactly the failure a picture makes invisible.
-           Only NUMBERS on the plan; names are in the legend and panel, which
-           keeps it readable at 390px and avoids label collisions entirely.
+           FAIRGROUNDS MAP — illustration + HTML hotspots.
+           The artwork is a picture; everything that carries meaning is HTML
+           over it: the pins, the legend, the panel. That keeps names in
+           js/map-data.js (one source of truth with the schedule), keeps the
+           legend translatable to EN/FR/ES, and makes every location a real
+           <button> — keyboard-reachable and screen-readable, which a tap
+           affordance on a flat image is not.
+           Hotspot positions are PERCENTAGES, so they survive a re-export at a
+           different resolution. If the art is REDRAWN they need rechecking:
+           ?calibrate=1 prints the percentage under the cursor.
+           No text is baked into the illustration on purpose — the draft this
+           replaces had "EST. 1846" in its logo while the site says 1871 in 60
+           places, which is the failure a picture makes invisible.
            ============================================================ -->
       <div class="hf-plan" data-reveal>
         <div class="hf-plan-stage">
-          <svg class="hf-plan-svg" viewBox="0 0 760 1180" role="group"
-               aria-labelledby="plan-title" preserveAspectRatio="xMidYMid meet">
-            <title id="plan-title" data-i18n="map_svg_title">Plan of the Havelock Fairgrounds</title>
-            <defs>
-              <!-- paper grain: keeps large flat fills from looking like vector -->
-              <filter id="grain" x="0" y="0" width="100%" height="100%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7" result="n"/>
-                <feColorMatrix in="n" type="saturate" values="0"/>
-                <feComponentTransfer><feFuncA type="linear" slope="0.055"/></feComponentTransfer>
-                <feComposite operator="in" in2="SourceGraphic"/>
-              </filter>
-              <pattern id="ringSand" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
-                <rect width="7" height="7" fill="#DCCBA0"/>
-                <line x1="0" y1="0" x2="0" y2="7" stroke="#CDB98A" stroke-width="1.1"/>
-              </pattern>
-              <linearGradient id="drive" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#CFC2A2"/><stop offset="1" stop-color="#C0B192"/>
-              </linearGradient>
-              <!-- one tree, reused 40+ times: three overlapping canopies + trunk -->
-              <symbol id="tree" viewBox="0 0 40 46">
-                <path d="M19 46v-11" stroke="#6B5433" stroke-width="3" fill="none" stroke-linecap="round"/>
-                <circle cx="13" cy="24" r="11" fill="#4E6E40"/>
-                <circle cx="26" cy="26" r="10" fill="#43613A"/>
-                <circle cx="20" cy="15" r="12" fill="#5C7F4B"/>
-                <circle cx="16" cy="19" r="5" fill="#6C8F58" opacity="0.75"/>
-              </symbol>
-            </defs>
-
-            <!-- ---------- ground ---------- -->
-            <rect class="pl-paper" x="0" y="0" width="760" height="1180"/>
-            <g class="pl-grass">
-              <rect x="34" y="14" width="692" height="1152" rx="3"/>
-              <!-- mown bands: the field is not one flat colour -->
-              <rect class="pl-mow" x="34" y="150" width="692" height="86"/>
-              <rect class="pl-mow" x="34" y="360" width="692" height="86"/>
-              <rect class="pl-mow" x="34" y="570" width="692" height="86"/>
-              <rect class="pl-mow" x="34" y="780" width="692" height="86"/>
-              <rect class="pl-mow" x="34" y="990" width="692" height="86"/>
-            </g>
-            <rect class="pl-grain" x="34" y="14" width="692" height="1152" filter="url(#grain)"/>
-
-            <!-- the worn drive from the gates up to the ring. Kept clear of
-                 building 8 (x236-424) — it used to run straight through it. -->
-            <path class="pl-drive" d="M470 1156 L470 900 Q470 800 462 740"/>
-            <g class="pl-track" aria-hidden="true">
-              <path d="M462 1150 L462 902 Q462 806 455 744"/>
-              <path d="M478 1150 L478 902 Q478 806 470 744"/>
-            </g>
-
-            <!-- ---------- tree lines ---------- -->
-            <g class="pl-trees" aria-hidden="true">
-              <use href="#tree" x="18" y="30" width="34" height="39"/>
-              <use href="#tree" x="10" y="96" width="30" height="35"/>
-              <use href="#tree" x="20" y="164" width="32" height="37"/>
-              <use href="#tree" x="8" y="236" width="30" height="35"/>
-              <use href="#tree" x="18" y="306" width="34" height="39"/>
-              <use href="#tree" x="10" y="380" width="30" height="35"/>
-              <use href="#tree" x="20" y="452" width="32" height="37"/>
-              <use href="#tree" x="8" y="528" width="30" height="35"/>
-              <use href="#tree" x="18" y="600" width="34" height="39"/>
-              <use href="#tree" x="10" y="676" width="30" height="35"/>
-              <use href="#tree" x="20" y="750" width="32" height="37"/>
-              <use href="#tree" x="8" y="826" width="30" height="35"/>
-              <use href="#tree" x="18" y="900" width="34" height="39"/>
-              <use href="#tree" x="10" y="976" width="30" height="35"/>
-              <use href="#tree" x="20" y="1050" width="32" height="37"/>
-              <use href="#tree" x="712" y="40" width="34" height="39"/>
-              <use href="#tree" x="720" y="112" width="30" height="35"/>
-              <use href="#tree" x="710" y="186" width="32" height="37"/>
-              <use href="#tree" x="722" y="262" width="30" height="35"/>
-              <use href="#tree" x="712" y="336" width="34" height="39"/>
-              <use href="#tree" x="720" y="412" width="30" height="35"/>
-              <use href="#tree" x="710" y="488" width="32" height="37"/>
-              <use href="#tree" x="722" y="564" width="30" height="35"/>
-              <use href="#tree" x="712" y="640" width="34" height="39"/>
-              <use href="#tree" x="720" y="716" width="30" height="35"/>
-              <use href="#tree" x="710" y="792" width="32" height="37"/>
-              <use href="#tree" x="722" y="868" width="30" height="35"/>
-              <use href="#tree" x="712" y="944" width="34" height="39"/>
-              <use href="#tree" x="720" y="1020" width="30" height="35"/>
-              <use href="#tree" x="128" y="1044" width="30" height="35"/>
-              <use href="#tree" x="176" y="1064" width="26" height="30"/>
-              <use href="#tree" x="122" y="316" width="26" height="30"/>
-              <use href="#tree" x="656" y="248" width="26" height="30"/>
-            </g>
-
-            <!-- ---------- locations ----------
-                 Every building is a roof plane plus a gable end, so it reads
-                 as a thing standing on a field rather than a rectangle. -->
-
-            <g id="loc-16" class="loc" data-loc="16" tabindex="0" role="button">
-              <title>16</title>
-              <g class="pl-b">
-                <rect class="sh" x="76" y="60" width="176" height="34"/>
-                <rect class="wall barn" x="72" y="42" width="176" height="30"/>
-                <polygon class="roof barn-r" points="72,42 160,22 248,42"/>
-                <path class="det" d="M92 52v14M112 52v14M132 52v14M152 52v14M172 52v14M192 52v14M212 52v14M232 52v14"/>
-                <path class="vane" d="M160 22v-11M155 13h11M166 13l-4-3M166 13l-4 3"/>
-              </g>
-              <g class="pl-pin" transform="translate(160,84)"><circle r="15"/><text y="6">16</text></g>
-            </g>
-
-            <g id="loc-17" class="loc" data-loc="17" tabindex="0" role="button">
-              <title>17</title>
-              <g class="pl-b">
-                <rect class="sh" x="424" y="58" width="212" height="30"/>
-                <rect class="wall" x="420" y="44" width="212" height="26"/>
-                <polygon class="roof tin" points="420,44 526,26 632,44"/>
-                <path class="det" d="M444 52v12M470 52v12M496 52v12M522 52v12M548 52v12M574 52v12M600 52v12"/>
-              </g>
-              <g class="pl-pin" transform="translate(526,80)"><circle r="15"/><text y="6">17</text></g>
-            </g>
-
-            <g id="loc-15" class="loc" data-loc="15" tabindex="0" role="button">
-              <title>15</title>
-              <g class="pl-b">
-                <rect class="sh" x="486" y="180" width="132" height="42"/>
-                <rect class="wall" x="482" y="140" width="132" height="52"/>
-                <polygon class="roof slate" points="482,140 548,108 614,140"/>
-                <path class="det" d="M506 156v24M530 156v24M566 156v24M590 156v24"/>
-              </g>
-              <g class="pl-pin" transform="translate(548,206)"><circle r="15"/><text y="6">15</text></g>
-            </g>
-
-            <g id="loc-14" class="loc" data-loc="14" tabindex="0" role="button">
-              <title>14</title>
-              <g class="pl-b">
-                <rect class="sh" x="70" y="238" width="58" height="22"/>
-                <rect class="wall" x="66" y="222" width="58" height="24"/>
-                <polygon class="roof tin" points="66,222 95,206 124,222"/>
-              </g>
-              <g class="pl-pin" transform="translate(95,258)"><circle r="15"/><text y="6">14</text></g>
-            </g>
-
-            <g id="loc-12" class="loc" data-loc="12" tabindex="0" role="button">
-              <title>12</title>
-              <g class="pl-b">
-                <rect class="sh" x="72" y="386" width="146" height="26"/>
-                <rect class="wall" x="68" y="368" width="146" height="26"/>
-                <polygon class="roof tin" points="68,368 141,350 214,368"/>
-                <path class="det" d="M90 376v12M114 376v12M138 376v12M162 376v12M186 376v12"/>
-              </g>
-              <g class="pl-pin" transform="translate(141,404)"><circle r="15"/><text y="6">12</text></g>
-            </g>
-
-            <g id="loc-13" class="loc" data-loc="13" tabindex="0" role="button">
-              <title>13</title>
-              <g class="pl-b">
-                <rect class="sh" x="566" y="392" width="102" height="24"/>
-                <rect class="wall" x="562" y="376" width="102" height="24"/>
-                <polygon class="roof slate" points="562,376 613,358 664,376"/>
-                <path class="det" d="M582 384v12M606 384v12M630 384v12"/>
-              </g>
-              <g class="pl-pin" transform="translate(613,410)"><circle r="15"/><text y="6">13</text></g>
-            </g>
-
-            <g id="loc-11" class="loc" data-loc="11" tabindex="0" role="button">
-              <title>11</title>
-              <g class="pl-b">
-                <rect class="sh" x="122" y="512" width="40" height="18"/>
-                <rect class="wall" x="118" y="498" width="40" height="20"/>
-                <polygon class="roof tin" points="118,498 138,484 158,498"/>
-              </g>
-              <g class="pl-pin" transform="translate(138,528)"><circle r="15"/><text y="6">11</text></g>
-            </g>
-
-            <g id="loc-10" class="loc" data-loc="10" tabindex="0" role="button">
-              <title>10</title>
-              <g class="pl-ringwrap">
-                <rect class="ring-sand" x="196" y="486" width="290" height="230" rx="10"/>
-                <rect class="ring-rail" x="196" y="486" width="290" height="230" rx="10"/>
-                <rect class="ring-rail-inner" x="208" y="498" width="266" height="206" rx="8"/>
-                <!-- a horse, because a ring with nothing in it is a rectangle.
-                     Drawn big enough to actually read at map scale. -->
-                <g class="pl-horse" transform="translate(268,556)">
-                  <path class="body" d="M4 30c-2-9 2-16 9-19 7-3 16-4 25-4h10c2-8 5-16 9-22 2-4 6-6 9-5 3 1 3 5 1 8-3 4-5 8-6 13-1 4-1 8-1 12 0 6-3 11-8 14-5 3-11 4-18 4H20c-7 0-13 2-16 6z"/>
-                  <path class="leg" d="M12 32v22M26 34v20M44 32v22M56 28v25"/>
-                  <path class="tail" d="M4 12c-6-1-10 4-10 11"/>
-                  <path class="mane" d="M56 0c2 4 2 9 1 14"/>
-                </g>
-              </g>
-              <g class="pl-pin" transform="translate(341,601)"><circle r="15"/><text y="6">10</text></g>
-            </g>
-
-            <g id="loc-9" class="loc" data-loc="9" tabindex="0" role="button">
-              <title>9</title>
-              <g class="pl-b">
-                <!-- booths appear in three places on the fair's plan -->
-                <rect class="sh" x="70" y="796" width="34" height="46"/>
-                <rect class="wall booth" x="66" y="782" width="34" height="48"/>
-                <polygon class="roof booth-r" points="66,782 83,768 100,782"/>
-                <rect class="sh" x="130" y="884" width="98" height="26"/>
-                <rect class="wall booth" x="126" y="866" width="98" height="26"/>
-                <polygon class="roof booth-r" points="126,866 175,850 224,866"/>
-                <rect class="sh" x="252" y="962" width="96" height="26"/>
-                <rect class="wall booth" x="248" y="944" width="96" height="26"/>
-                <polygon class="roof booth-r" points="248,944 296,928 344,944"/>
-                <!-- bunting strung along the booth row -->
-                <path class="bunting" d="M126 862q25 12 49 8 25-4 49-8"/>
-                <g class="flags">
-                  <polygon points="140,866 148,867 143,874"/>
-                  <polygon points="158,870 166,870 161,877"/>
-                  <polygon points="177,870 185,869 181,877"/>
-                  <polygon points="196,867 204,866 200,874"/>
-                </g>
-              </g>
-              <g class="pl-pin" transform="translate(175,880)"><circle r="15"/><text y="6">9</text></g>
-            </g>
-
-            <g id="loc-8" class="loc" data-loc="8" tabindex="0" role="button">
-              <title>8</title>
-              <g class="pl-b">
-                <rect class="sh" x="240" y="800" width="188" height="40"/>
-                <rect class="wall" x="236" y="768" width="188" height="42"/>
-                <polygon class="roof slate" points="236,768 330,742 424,768"/>
-                <rect class="wall" x="300" y="810" width="62" height="18"/>
-                <polygon class="roof slate" points="300,810 331,798 362,810"/>
-                <path class="det" d="M262 782v20M290 782v20M370 782v20M398 782v20"/>
-                <!-- notes in the open grass beside the music building: put
-                     above it they collided with the ring and read as the ring's -->
-                <g class="pl-note">
-                  <path d="M206 796v-22l14-4v22"/><circle cx="203" cy="796" r="3.4"/><circle cx="217" cy="792" r="3.4"/>
-                  <path d="M182 812v-15l10-3v15"/><circle cx="180" cy="812" r="2.6"/><circle cx="190" cy="809" r="2.6"/>
-                </g>
-              </g>
-              <g class="pl-pin" transform="translate(330,828)"><circle r="15"/><text y="6">8</text></g>
-            </g>
-
-            <g id="loc-6" class="loc" data-loc="6" tabindex="0" role="button">
-              <title>6</title>
-              <g class="pl-b">
-                <rect class="sh" x="110" y="940" width="128" height="30"/>
-                <rect class="wall" x="106" y="918" width="128" height="30"/>
-                <polygon class="roof tin" points="106,918 170,898 234,918"/>
-                <path class="det" d="M128 928v14M152 928v14M188 928v14M212 928v14"/>
-              </g>
-              <g class="pl-pin" transform="translate(170,962)"><circle r="15"/><text y="6">6</text></g>
-            </g>
-
-            <g id="loc-5" class="loc" data-loc="5" tabindex="0" role="button">
-              <title>5</title>
-              <g class="pl-b">
-                <rect class="sh" x="256" y="1016" width="118" height="32"/>
-                <rect class="wall" x="252" y="992" width="118" height="32"/>
-                <polygon class="roof slate" points="252,992 311,970 370,992"/>
-                <path class="det" d="M274 1002v16M298 1002v16M324 1002v16M348 1002v16"/>
-              </g>
-              <g class="pl-pin" transform="translate(311,1038)"><circle r="15"/><text y="6">5</text></g>
-            </g>
-
-            <g id="loc-4" class="loc" data-loc="4" tabindex="0" role="button">
-              <title>4</title>
-              <g class="pl-b">
-                <rect class="sh" x="66" y="1084" width="146" height="32"/>
-                <rect class="wall" x="62" y="1060" width="146" height="32"/>
-                <polygon class="roof slate" points="62,1060 135,1036 208,1060"/>
-                <path class="det" d="M84 1070v16M110 1070v16M160 1070v16M186 1070v16"/>
-              </g>
-              <g class="pl-pin" transform="translate(135,1106)"><circle r="15"/><text y="6">4</text></g>
-            </g>
-
-            <g id="loc-7" class="loc" data-loc="7" tabindex="0" role="button">
-              <title>7</title>
-              <g class="pl-b">
-                <rect class="sh" x="654" y="906" width="40" height="22"/>
-                <rect class="wall sugar" x="650" y="888" width="40" height="24"/>
-                <polygon class="roof sugar-r" points="650,888 670,872 690,888"/>
-                <!-- steam off the sugar shack -->
-                <path class="steam" d="M670 868c-5-6 5-9 0-16"/>
-              </g>
-              <g class="pl-pin" transform="translate(670,924)"><circle r="15"/><text y="6">7</text></g>
-            </g>
-
-            <g id="loc-3" class="loc" data-loc="3" tabindex="0" role="button">
-              <title>3</title>
-              <g class="pl-b">
-                <rect class="sh" x="402" y="1112" width="34" height="18"/>
-                <rect class="wall" x="398" y="1098" width="34" height="20"/>
-                <polygon class="roof tin" points="398,1098 415,1086 432,1098"/>
-              </g>
-              <g class="pl-pin" transform="translate(415,1128)"><circle r="15"/><text y="6">3</text></g>
-            </g>
-
-            <g id="loc-1" class="loc" data-loc="1" tabindex="0" role="button">
-              <title>1</title>
-              <g class="pl-b">
-                <path class="gatepost" d="M216 1160v-30M266 1160v-30"/>
-                <path class="gatearch" d="M212 1130q29-16 58 0"/>
-              </g>
-              <g class="pl-pin" transform="translate(241,1108)"><circle r="15"/><text y="6">1</text></g>
-            </g>
-
-            <g id="loc-2" class="loc" data-loc="2" tabindex="0" role="button">
-              <title>2</title>
-              <g class="pl-b">
-                <path class="gatepost" d="M498 1160v-34M566 1160v-34"/>
-                <path class="gatearch" d="M494 1126q38-18 76 0"/>
-              </g>
-              <g class="pl-pin" transform="translate(532,1104)"><circle r="15"/><text y="6">2</text></g>
-            </g>
-
-            <!-- ---------- chrome ---------- -->
-            <g class="pl-road" aria-hidden="true">
-              <rect x="0" y="1160" width="760" height="20"/>
-              <line x1="0" y1="1170" x2="760" y2="1170"/>
-            </g>
-            <text class="pl-road-label" x="380" y="1174" aria-hidden="true">ROUTE 202</text>
-
-            <g class="pl-compass" transform="translate(694,1096)" aria-hidden="true">
-              <circle r="22"/>
-              <polygon class="n" points="0,-15 5,0 0,4 -5,0"/>
-              <polygon class="s" points="0,15 5,0 0,-4 -5,0"/>
-              <text y="-24">N</text>
-            </g>
-          </svg>
+          <div class="hf-map-wrap" id="map-wrap">
+            <img class="hf-map-art" id="map-art"
+                 src="../images/map/fairgrounds.jpg"
+                 width="1024" height="1536" decoding="async"
+                 alt="" data-i18n-label="map_svg_title">
+            <div class="hf-map-pins" id="map-pins"></div>
+            <div class="hf-map-cal" id="map-cal" hidden></div>
+          </div>
         </div>
 
         <div class="hf-plan-side">
@@ -503,8 +199,9 @@
      from scheduleData by matching `venue` — neither is duplicated here. */
   (function () {
     'use strict';
-    var svg = document.querySelector('.hf-plan-svg');
-    if (!svg) return;
+    var pins = document.getElementById('map-pins');
+    var wrap = document.getElementById('map-wrap');
+    if (!pins) return;
     var panel = document.getElementById('plan-panel');
     var legend = document.getElementById('plan-legend');
     var selected = null;
@@ -598,8 +295,10 @@
 
     function select(id, focusPanel) {
       selected = id;
-      svg.querySelectorAll('.loc').forEach(function (g) {
-        g.classList.toggle('is-on', g.dataset.loc === String(id));
+      pins.querySelectorAll('.hf-pin').forEach(function (b) {
+        var on = b.dataset.loc === String(id);
+        b.classList.toggle('is-on', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
       legend.querySelectorAll('.pl-legend-item').forEach(function (b) {
         var on = b.dataset.loc === String(id);
@@ -613,7 +312,9 @@
 
     function clear() {
       selected = null;
-      svg.querySelectorAll('.loc').forEach(function (g) { g.classList.remove('is-on'); });
+      pins.querySelectorAll('.hf-pin').forEach(function (b) {
+        b.classList.remove('is-on'); b.setAttribute('aria-pressed', 'false');
+      });
       legend.querySelectorAll('.pl-legend-item').forEach(function (b) {
         b.classList.remove('is-on'); b.setAttribute('aria-pressed', 'false');
       });
@@ -643,30 +344,73 @@
       });
     }
 
-    /* accessible names on the SVG groups, refreshed with the language */
     function labelGroups() {
-      svg.querySelectorAll('.loc').forEach(function (g) {
-        var id = +g.dataset.loc;
+      pins.querySelectorAll('.hf-pin').forEach(function (b) {
+        var id = +b.dataset.loc;
         var n = name(id);
-        g.setAttribute('aria-label', n ? id + ' — ' + n : id + ' — ' + L('unnamed'));
+        b.setAttribute('aria-label', n ? id + ' — ' + n : id + ' — ' + L('unnamed'));
       });
     }
 
-    svg.querySelectorAll('.loc').forEach(function (g) {
-      g.addEventListener('click', function () { select(+g.dataset.loc, false); });
-      g.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(+g.dataset.loc, true); }
+    /* Pins are generated from mapLocations, so a location can never exist in
+       the data without being on the map — the two cannot drift. */
+    function buildPins() {
+      var l = lang();
+      pins.innerHTML = Object.keys(mapLocations).sort(function (a, b) { return +a - +b; })
+        .map(function (id) {
+          var loc = mapLocations[id];
+          var cat = mapCategories[loc.cat];
+          return '<button type="button" class="hf-pin" data-loc="' + id + '"' +
+            ' style="left:' + loc.x + '%;top:' + loc.y + '%;--pl-ink:' + cat.ink + '"' +
+            ' aria-pressed="false">' +
+            '<span class="hf-pin-n">' + id + '</span>' +
+            '<span class="sr-only">' + (loc[l] || loc.en) + '</span>' +
+          '</button>';
+        }).join('');
+      pins.querySelectorAll('.hf-pin').forEach(function (b) {
+        /* A <button> fires Enter/Space as a click, so the keyboard path would
+           otherwise never move focus to the answer. e.detail === 0 means the
+           activation did not come from a pointer. */
+        b.addEventListener('click', function (e) {
+          select(+b.dataset.loc, e.detail === 0);
+        });
       });
-    });
+    }
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && selected !== null) {
-        var g = svg.querySelector('.loc[data-loc="' + selected + '"]');
+        var b = pins.querySelector('.hf-pin[data-loc="' + selected + '"]');
         clear();
-        if (g) g.focus();
+        if (b) b.focus();
       }
     });
 
-    function refresh() { buildLegend(); labelGroups(); if (selected !== null) render(selected); else clear(); }
+    /* ?calibrate=1 — the artwork is a picture, so pin positions are pixel
+       positions. This prints the percentage under the cursor and copies it on
+       click, which turns "the art was redrawn" from a chore into a few minutes. */
+    function initCalibrate() {
+      if (!new URLSearchParams(location.search).has('calibrate')) return;
+      var cal = document.getElementById('map-cal');
+      cal.hidden = false;
+      wrap.classList.add('is-calibrating');
+      wrap.addEventListener('mousemove', function (e) {
+        var r = wrap.getBoundingClientRect();
+        var x = ((e.clientX - r.left) / r.width * 100).toFixed(1);
+        var y = ((e.clientY - r.top) / r.height * 100).toFixed(1);
+        cal.textContent = 'x: ' + x + ', y: ' + y;
+        cal.style.left = (e.clientX - r.left) + 'px';
+        cal.style.top = (e.clientY - r.top) + 'px';
+      });
+      wrap.addEventListener('click', function (e) {
+        if (e.target.closest('.hf-pin')) return;
+        var r = wrap.getBoundingClientRect();
+        var t = 'x: ' + ((e.clientX - r.left) / r.width * 100).toFixed(1) +
+                ', y: ' + ((e.clientY - r.top) / r.height * 100).toFixed(1);
+        if (navigator.clipboard) navigator.clipboard.writeText(t);
+        console.log(t);
+      });
+    }
+
+    function refresh() { buildPins(); buildLegend(); labelGroups(); if (selected !== null) select(selected, false); else clear(); }
 
     if (typeof setLanguage === 'function') {
       var orig = setLanguage;
@@ -674,6 +418,7 @@
     }
 
     refresh();
+    initCalibrate();
     /* deep link from the schedule: directions.html#loc-10 */
     var m = (location.hash || '').match(/^#loc-(\d+)$/);
     if (m && mapLocations[m[1]]) select(+m[1], false);

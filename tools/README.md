@@ -251,7 +251,34 @@ At 390px the plan first rendered 304px wide, which put the pin numbers at about
 760px with a `min-width`, and the harness measures the *rendered* height of a
 pin numeral rather than the authored `font-size`, which the viewBox rescales.
 
-### The map is drawn on parchment, and that was the right call
+### The artwork is a picture; everything meaningful is HTML over it
+
+The map is `images/map/fairgrounds.jpg`, a commissioned isometric illustration
+carrying **no text at all**. Pins, legend and panel are HTML on top, which is
+what keeps names in `js/map-data.js` (shared with the schedule), keeps the
+legend translatable, and makes every location a real `<button>`.
+
+Hotspot `x`/`y` in `map-data.js` are **percentages**, so they survive a
+re-export at another resolution. They are still positions on a picture: if the
+art is REDRAWN they all need checking. `?calibrate=1` prints the percentage
+under the cursor and copies it on click, which makes that a few minutes.
+
+⚠️ **Which building is which is partly a guess.** The illustration is a
+hand-drawn interpretation, not a survey. Confident: 1, 2, 3, 7, 10, 15, 16.
+The rest are read from relative position and want a look from someone who knows
+the grounds.
+
+Two things the harness pins down that are easy to break by hand: no pin may sit
+outside the artwork (2–98%), and **no two pins may overlap**. At 390px the map
+first rendered 308px wide and the closest pins covered each other — the stage
+scrolls below 820px now, and the check measures real overlap area rather than
+trusting the CSS.
+
+A `<button>` also turns Enter into a click, so the keyboard path silently lost
+its focus move to the panel. `e.detail === 0` distinguishes keyboard activation
+from a pointer.
+
+### An earlier version was drawn on parchment, and that was still the right call
 
 The section it lives in is `.hf-sec--ivory`. The first version was a dark
 wireframe fighting that ground — grey blobs and circles for trees. It is now a

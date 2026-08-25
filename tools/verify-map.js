@@ -41,7 +41,7 @@ const open = async (b, q = '', w = 1440) => {
     const p = await open(browser);
     const r = await p.evaluate(() => {
       const ids = Object.keys(mapLocations).map(Number).sort((a, b) => a - b);
-      const svgIds = [...document.querySelectorAll('.hf-plan-svg .loc')].map(g => +g.dataset.loc).sort((a, b) => a - b);
+      const svgIds = [...document.querySelectorAll('.hf-pin')].map(g => +g.dataset.loc).sort((a, b) => a - b);
       const legendIds = [...document.querySelectorAll('.pl-legend-item')].map(b => +b.dataset.loc).sort((a, b) => a - b);
       const venues = [];
       for (const d of Object.keys(scheduleData))
@@ -55,6 +55,11 @@ const open = async (b, q = '', w = 1440) => {
         planNotNamed: svgIds.filter(i => !ids.includes(i)),
         venuesWithNoLocation: [...new Set(venues)].filter(v => !ids.includes(v)),
         badCats: ids.filter(i => !mapCategories[mapLocations[i].cat]),
+        noCoords: ids.filter(i => typeof mapLocations[i].x !== 'number' || typeof mapLocations[i].y !== 'number'),
+        /* a pin at 103% is off the picture — easy to do by hand, invisible
+           until someone looks */
+        outside: ids.filter(i => { const l = mapLocations[i];
+          return l.x < 2 || l.x > 98 || l.y < 2 || l.y > 98; }),
         missingLang: ids.filter(i => !['en', 'fr', 'es'].every(l => mapLocations[i][l]))
       };
     });
@@ -65,7 +70,9 @@ const open = async (b, q = '', w = 1440) => {
     is('every location is named in all three languages', r.missingLang, []);
     /* The fair's own bilingual plan named all 17, including 16 (Barn) and the
        four the first draft omitted — 9, 11, 13, 14. Nothing may be unnamed. */
-    is('no pin on the plan is unnamed', r.planNotNamed, []);
+    is('no pin on the map is unnamed', r.planNotNamed, []);
+    is('every location carries hotspot coordinates', r.noCoords, []);
+    is('every hotspot sits within the artwork', r.outside, []);
     is('all seventeen locations are present', r.named.length, 17);
     /* Pin 1 is "Gate #2" and pin 2 is "Gate #1" on the fair's own plan. It
        looks like a transposition and it is not — it matches their signage. */
@@ -82,10 +89,10 @@ const open = async (b, q = '', w = 1440) => {
   {
     const p = await open(browser);
     const r = await p.evaluate(() => {
-      document.querySelector('.loc[data-loc="10"]').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      document.querySelector('.hf-pin[data-loc="10"]').click();
       const panel = document.getElementById('plan-panel');
       return {
-        planOn: [...document.querySelectorAll('.loc.is-on')].map(g => g.dataset.loc),
+        planOn: [...document.querySelectorAll('.hf-pin.is-on')].map(g => g.dataset.loc),
         legendOn: [...document.querySelectorAll('.pl-legend-item.is-on')].map(b => b.dataset.loc),
         name: panel.querySelector('.pp-name').textContent,
         hash: location.hash
@@ -98,7 +105,7 @@ const open = async (b, q = '', w = 1440) => {
 
     const viaLegend = await p.evaluate(() => {
       document.querySelector('.pl-legend-item[data-loc="8"]').click();
-      return { on: [...document.querySelectorAll('.loc.is-on')].map(g => g.dataset.loc),
+      return { on: [...document.querySelectorAll('.hf-pin.is-on')].map(g => g.dataset.loc),
                name: document.querySelector('.pp-name').textContent };
     });
     is('selecting from the legend drives the plan', viaLegend.on, ['8']);
@@ -111,7 +118,7 @@ const open = async (b, q = '', w = 1440) => {
   {
     const p = await open(browser, '?now=2026-09-13T12:00');
     const r = await p.evaluate(() => {
-      document.querySelector('.loc[data-loc="8"]').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      document.querySelector('.hf-pin[data-loc="8"]').click();
       const items = [...document.querySelectorAll('.pp-events li')].map(li => li.textContent);
       const expected = scheduleData.sunday.events.filter(e => e.venue === 8).length;
       return { items, expected };
@@ -120,7 +127,7 @@ const open = async (b, q = '', w = 1440) => {
     /Durham County Poets/.test(r.items.join(' '))
       ? ok('  including Durham County Poets') : bad('Durham in the list', r.items);
     const empty = await p.evaluate(() => {
-      document.querySelector('.loc[data-loc="3"]').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      document.querySelector('.hf-pin[data-loc="3"]').click();
       return document.querySelector('.pp-empty') ? document.querySelector('.pp-empty').textContent : null;
     });
     empty ? ok('a location with nothing on says so', JSON.stringify(empty.trim()))
@@ -132,15 +139,16 @@ const open = async (b, q = '', w = 1440) => {
   console.log('\n=== keyboard, not just tap ===');
   {
     const p = await open(browser);
+    /* real <button>s now, so they are tab-reachable with no tabindex hack */
     const focusable = await p.evaluate(() =>
-      [...document.querySelectorAll('.hf-plan-svg .loc')].every(g => g.getAttribute('tabindex') === '0'));
-    is('every location is tab-reachable', focusable, true);
+      [...document.querySelectorAll('.hf-pin')].every(b => b.tagName === 'BUTTON'));
+    is('every pin is a real button, not a div with a click handler', focusable, true);
 
-    await p.evaluate(() => document.querySelector('.loc[data-loc="7"]').focus());
+    await p.evaluate(() => document.querySelector('.hf-pin[data-loc="7"]').focus());
     await p.keyboard.press('Enter');
     await new Promise(r => setTimeout(r, 200));
     const afterEnter = await p.evaluate(() => ({
-      on: [...document.querySelectorAll('.loc.is-on')].map(g => g.dataset.loc),
+      on: [...document.querySelectorAll('.hf-pin.is-on')].map(g => g.dataset.loc),
       focusIsPanel: document.activeElement.id === 'plan-panel'
     }));
     is('Enter selects it', afterEnter.on, ['7']);
@@ -149,7 +157,7 @@ const open = async (b, q = '', w = 1440) => {
     await p.keyboard.press('Escape');
     await new Promise(r => setTimeout(r, 200));
     const afterEsc = await p.evaluate(() => ({
-      on: [...document.querySelectorAll('.loc.is-on')].length,
+      on: [...document.querySelectorAll('.hf-pin.is-on')].length,
       focusBack: document.activeElement.dataset ? document.activeElement.dataset.loc : null
     }));
     is('Escape clears the selection', afterEsc.on, 0);
@@ -164,12 +172,12 @@ const open = async (b, q = '', w = 1440) => {
     for (const lang of LANGS) {
       const r = await p.evaluate(l => {
         setLanguage(l);
-        document.querySelector('.loc[data-loc="10"]').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        document.querySelector('.hf-pin[data-loc="10"]').click();
         return {
           name: document.querySelector('.pp-name').textContent,
           expect: mapLocations[10][l],
           legend: document.querySelector('.pl-legend-item[data-loc="10"] .pl-legend-name').textContent,
-          aria: document.querySelector('.loc[data-loc="10"]').getAttribute('aria-label'),
+          aria: document.querySelector('.hf-pin[data-loc="10"]').getAttribute('aria-label'),
           today: document.querySelector('.pp-today').textContent
         };
       }, lang);
@@ -217,7 +225,7 @@ const open = async (b, q = '', w = 1440) => {
     const deep = await q.evaluate(() => {
       const l = (() => { try { return currentLang || 'en'; } catch (e) { return 'en'; } })();
       const el = document.querySelector('.pp-name');
-      return { on: [...document.querySelectorAll('.loc.is-on')].map(g => g.dataset.loc),
+      return { on: [...document.querySelectorAll('.hf-pin.is-on')].map(g => g.dataset.loc),
                name: el ? el.textContent : null, expect: mapLocations[10][l], lang: l };
     });
     is('arriving at #loc-10 selects it', deep.on, ['10']);
@@ -233,7 +241,7 @@ const open = async (b, q = '', w = 1440) => {
        name invisible, while all 43 assertions above passed, because they check
        text and not colour. This is that check. */
     const p = await open(browser);
-    await p.evaluate(() => document.querySelector('.loc[data-loc="10"]').dispatchEvent(new MouseEvent('click', { bubbles: true })));
+    await p.evaluate(() => document.querySelector('.hf-pin[data-loc="10"]').click());
     await new Promise(r => setTimeout(r, 250));
     const r = await p.evaluate(() => {
       const px = c => { const m = c.match(/[\d.]+/g).map(Number); return m.length > 3 ? m : [...m, 1]; };
@@ -279,24 +287,39 @@ const open = async (b, q = '', w = 1440) => {
         await new Promise(r => setTimeout(r, 250));
         const r = await p.evaluate(() => {
           const W = innerWidth;
-          const off = [...document.querySelectorAll('.hf-plan-side *, .hf-plan-stage')].filter(e => {
+          /* Pins are deliberately NOT in this sweep: below 820px the stage
+           scrolls, so pins past the fold are correct, not clipped. Their
+           containment is checked against the ARTWORK in the referential
+           section instead (x/y must be 2-98%). */
+        const off = [...document.querySelectorAll('.hf-plan-side *, .hf-plan-stage')].filter(e => {
             const b = e.getBoundingClientRect();
             return b.width > 0 && (b.left < -1 || b.right > W + 1);
           }).map(e => (e.className.baseVal !== undefined ? e.className.baseVal : e.className));
-          const svgEl = document.querySelector('.hf-plan-svg');
+          const svgEl = document.querySelector('.hf-map-art');
           const svg = svgEl.getBoundingClientRect();
-          /* effective on-screen size of a pin numeral: the SVG scales its
-             viewBox, so the authored font-size is not what you actually see */
-          const t = svgEl.querySelector('.pl-pin text');
-          const pinPx = t ? +(t.getBoundingClientRect().height).toFixed(1) : 0;
+          /* pins are fixed-size HTML over a fluid image: check they are still
+             a real touch target and the numeral is legible at every width */
+          const t = document.querySelector('.hf-pin');
+          const pinPx = t ? +(t.getBoundingClientRect().width).toFixed(1) : 0;
+          /* two pins on top of each other are two pins you cannot tap apart */
+          const boxes = [...document.querySelectorAll('.hf-pin')].map(b => b.getBoundingClientRect());
+          let collisions = 0;
+          for (let i = 0; i < boxes.length; i++)
+            for (let j = i + 1; j < boxes.length; j++) {
+              const a = boxes[i], b = boxes[j];
+              const ov = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
+                         Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+              if (ov > a.width * a.height * 0.35) collisions++;
+            }
           return { off: off.slice(0, 3), docOver: document.documentElement.scrollWidth > W + 1,
-                   svgW: Math.round(svg.width), svgH: Math.round(svg.height), pinPx };
+                   svgW: Math.round(svg.width), svgH: Math.round(svg.height), pinPx, collisions };
         });
         if (r.off.length || r.docOver) { problems++; bad(`${w}px ${lang.toUpperCase()}`, r); }
         else if (lang === 'en') {
           /* a pin number rendered at ~4px is on the page but not readable */
-          if (r.pinPx >= 9) ok(`${w}px plan renders`, `${r.svgW}x${r.svgH}, pin numerals ${r.pinPx}px`);
-          else { problems++; bad(`${w}px pin numerals readable`, r.pinPx + 'px', '>= 9px'); }
+          if (r.pinPx < 24) { problems++; bad(`${w}px pin target size`, r.pinPx + 'px', '>= 24px'); }
+          else if (r.collisions > 0) { problems++; bad(`${w}px pins overlap each other`, r.collisions + ' pairs', '0'); }
+          else ok(`${w}px map renders`, `${r.svgW}x${r.svgH}, pins ${r.pinPx}px, no overlaps`);
         }
         await p.close();
       }
