@@ -34,10 +34,9 @@
  * 🔴 STILL OPEN, DO NOT ASSUME:
  *   13 Horse Stalls was displaced by 17 and is PARKED on the open-sided shed
  *      at 82.8/24.0. That is a guess and needs confirming.
- *   12 and 14 are untouched. Jesse said 12 is "the small building below the
- *      real 16, with 14 between them" — which describes their CURRENT
- *      arrangement if "the real 16" means the red barn, and something else
- *      entirely if it means 16's new position. Ambiguous, so left alone.
+ *   14 Other Animals. Jesse placed 12 at 58/17, which resolves "below the
+ *      real 16" as 16's NEW position — so 14 belongs between 16 (65.0/11.6)
+ *      and 12 (58.0/17.0), not out on the left where it still sits.
  *   The RED BARN at 42.0/12.4 now carries no pin at all. It is the most
  *      prominent building on the map; it should probably be something. tools/verify-map.js fails if any two pins overlap by
  * more than 8% of a pin's area at any width, so keep that in mind when moving
@@ -86,7 +85,7 @@ const mapLocations = {
   9:  { cat: "amenities",   x: 32.8, y: 57.0, en: "Booths",                            fr: "Kiosques",                               es: "Casetas" },
   10: { cat: "events",      x: 63.0, y: 39.1, en: "Horse Ring",                        fr: "Aréna équestre",                         es: "Arena ecuestre" },
   11: { cat: "agriculture", x: 33.2, y: 22.5, en: "Big Bird Building",                 fr: "Grosse volaille",                        es: "Aves grandes" },
-  12: { cat: "agriculture", x: 29.3, y: 27.9, en: "Poultry & Rabbit Building",         fr: "Exposition volaille",                    es: "Aves y conejos" },
+  12: { cat: "agriculture", x: 58.0, y: 17.0, en: "Poultry & Rabbit Building",         fr: "Exposition volaille",                    es: "Aves y conejos" },
   13: { cat: "agriculture", x: 81.0, y: 26.5, en: "Horse Stalls",                      fr: "Stalle à chevaux",                       es: "Establos de caballos" },
   14: { cat: "agriculture", x: 26.6, y: 16.3, en: "Other Animals",                     fr: "Bâtisse autre animal",                   es: "Otros animales" },
   15: { cat: "agriculture", x: 83.8, y: 20.8, en: "4-H Building",                      fr: "Aréna 4H",                               es: "Edificio 4-H" },
