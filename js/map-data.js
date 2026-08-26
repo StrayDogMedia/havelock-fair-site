@@ -23,9 +23,23 @@
  * pages/directions.html?calibrate=1 prints the percentage under the cursor and
  * makes that a two-minute job rather than a chore.
  *
- * ⚠️ Pins 1, 13 and 15 are nudged slightly off their exact buildings. 1 sits
- * almost on 3, and 13 sits almost on 15, so their markers overlapped at 390px
- * (13 and 15 by 27%). tools/verify-map.js fails if any two pins overlap by
+ * ⚠️ Pin 1 is nudged slightly along the fence from the exact gate: it sits
+ * almost on 3 and their markers overlapped at 390px.
+ *
+ * CORRECTIONS FROM JESSE, 2026-08-25 (he knows the grounds; I did not):
+ *   16 Barn        -> the long building at 65.0/11.6, NOT the red barn
+ *   17 4-H Stalls  -> 85.7/14.8, where 13 had been
+ *   9  Booths      -> 34.7/55.3, touching 6
+ *
+ * 🔴 STILL OPEN, DO NOT ASSUME:
+ *   13 Horse Stalls was displaced by 17 and is PARKED on the open-sided shed
+ *      at 82.8/24.0. That is a guess and needs confirming.
+ *   12 and 14 are untouched. Jesse said 12 is "the small building below the
+ *      real 16, with 14 between them" — which describes their CURRENT
+ *      arrangement if "the real 16" means the red barn, and something else
+ *      entirely if it means 16's new position. Ambiguous, so left alone.
+ *   The RED BARN at 42.0/12.4 now carries no pin at all. It is the most
+ *      prominent building on the map; it should probably be something. tools/verify-map.js fails if any two pins overlap by
  * more than 8% of a pin's area at any width, so keep that in mind when moving
  * one — these are markers, not survey points.
  *
@@ -69,15 +83,15 @@ const mapLocations = {
   6:  { cat: "exhibits",    x: 40.8, y: 52.1, en: "Vegetable, Fruit & Flower Building",fr: "Exposition fleur, légume et fruit",      es: "Verduras, frutas y flores" },
   7:  { cat: "amenities",   x: 35.2, y: 70.8, en: "Sugar Shack",                       fr: "Cabane à sucre",                         es: "Cabaña de azúcar" },
   8:  { cat: "events",      x: 57.8, y: 55.9, en: "Music Building",                    fr: "Musique",                                es: "Edificio de música" },
-  9:  { cat: "amenities",   x: 31.4, y: 38.5, en: "Booths",                            fr: "Kiosques",                               es: "Casetas" },
+  9:  { cat: "amenities",   x: 32.8, y: 57.0, en: "Booths",                            fr: "Kiosques",                               es: "Casetas" },
   10: { cat: "events",      x: 63.0, y: 39.1, en: "Horse Ring",                        fr: "Aréna équestre",                         es: "Arena ecuestre" },
   11: { cat: "agriculture", x: 33.2, y: 22.5, en: "Big Bird Building",                 fr: "Grosse volaille",                        es: "Aves grandes" },
   12: { cat: "agriculture", x: 29.3, y: 27.9, en: "Poultry & Rabbit Building",         fr: "Exposition volaille",                    es: "Aves y conejos" },
-  13: { cat: "agriculture", x: 88.5, y: 13.2, en: "Horse Stalls",                      fr: "Stalle à chevaux",                       es: "Establos de caballos" },
+  13: { cat: "agriculture", x: 81.0, y: 26.5, en: "Horse Stalls",                      fr: "Stalle à chevaux",                       es: "Establos de caballos" },
   14: { cat: "agriculture", x: 26.6, y: 16.3, en: "Other Animals",                     fr: "Bâtisse autre animal",                   es: "Otros animales" },
   15: { cat: "agriculture", x: 83.8, y: 20.8, en: "4-H Building",                      fr: "Aréna 4H",                               es: "Edificio 4-H" },
-  16: { cat: "agriculture", x: 42.2, y: 12.4, en: "Barn",                              fr: "Grange",                                 es: "Granero" },
-  17: { cat: "agriculture", x: 65.2, y: 11.7, en: "4-H Stalls",                        fr: "Stalle 4H",                              es: "Establos 4-H" }
+  16: { cat: "agriculture", x: 65.0, y: 11.6, en: "Barn",                              fr: "Grange",                                 es: "Granero" },
+  17: { cat: "agriculture", x: 85.7, y: 14.8, en: "4-H Stalls",                        fr: "Stalle 4H",                              es: "Establos 4-H" }
 };
 
 /* Order the legend renders in, grouped by category. */
