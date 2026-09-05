@@ -28,6 +28,7 @@
   ];
 
   var MOBILE_LINKS = LINKS.slice(0, 5).concat([
+    { key: 'rules',        href: P + 'rules.html',        i18n: 'nav_rules',        label: 'Rules' },
     { key: 'sponsors',     href: P + 'sponsors.html',     i18n: 'nav_sponsors',     label: 'Sponsors' },
     { key: 'gallery',      href: P + 'gallery.html',      i18n: 'nav_photos',       label: 'Photos' },
     { key: 'contact',      href: P + 'contact.html',      i18n: 'nav_contact',      label: 'Contact' }
@@ -87,6 +88,7 @@
           '<div class="hf-footer-links">' +
             '<a href="' + P + 'schedule.html" data-i18n="nav_schedule">Schedule</a>' +
             '<a href="' + P + 'registration.html" data-i18n="nav_registration">Registration</a>' +
+            '<a href="' + P + 'rules.html" data-i18n="nav_rules">Rules</a>' +
             '<a href="' + P + 'sponsors.html" data-i18n="nav_sponsors">Sponsors</a>' +
             '<a href="' + P + 'about.html" data-i18n="nav_about">About</a>' +
             '<a href="' + P + 'gallery.html" data-i18n="nav_gallery">Photos</a>' +

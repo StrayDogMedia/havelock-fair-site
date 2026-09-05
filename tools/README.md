@@ -29,6 +29,38 @@ browser and quietly lose exhibitor names in the sheet. Both site categories
 Content-type must stay `text/plain;charset=utf-8` — `application/json` triggers a
 CORS preflight that Apps Script answers with 405.
 
+## verify-rules.js
+
+Covers `pages/rules.html`, the regulations page built from the 2026 fair book.
+
+```sh
+python3 -m http.server 8765            # in another shell, from the repo root
+NODE_PATH=/path/to/node_modules node tools/verify-rules.js
+```
+
+63 checks. The two that matter:
+
+**The regulations are legal text.** All 17 must be present and in order, and the
+EN and FR are the fair's own wording in *both* languages — not translations of
+each other. Do not copy-edit either. The figures that bind an exhibitor (11:00,
+4:00 p.m., $10, $15, $80, 30 days) are asserted directly in EN and FR.
+
+**Colour is measured from rendered pixels**, on both grounds — the facts strip
+sits on ivory, the regulations on espresso. This repo has shipped a page whose
+headings were ivory-on-ivory while every DOM assertion passed.
+
+⚠️ `i18n.js` assigns `textContent`, so no HTML entity or tag may appear in any
+translation string — `&amp;` or `<em>` prints literally. Asserted in all three
+languages.
+
+⚠️ Reveal is an **inline** `style.opacity` set by `heritage-chrome.js`, not a
+class. To screenshot or measure the page, clear `el.style.opacity` directly;
+adding some `is-visible` class does nothing and yields a blank-looking page.
+
+⚠️ `getComputedStyle(li,'::before').content` returns the unresolved
+`counter(hf-rule)`, never the digit — it cannot verify numbering. The harness
+checks marker geometry instead.
+
 ## verify-entry-count.js
 
 Functional check of the entry counter (not a payload test).
