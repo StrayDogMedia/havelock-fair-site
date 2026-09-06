@@ -1159,64 +1159,90 @@ a.ev-venue:hover { color: var(--hf-gold-bright); }
 }
 
 /* ============================================================
-   MUSIC PAGE — lineup sets
+   MUSIC PAGE — the lineup, laid out like the printed poster
+   Two day columns side by side; within a day, each set is a
+   small gold time label ABOVE a large serif act name. That is
+   the poster's hierarchy: you scan act names first, times
+   second. Stacks to one column on a phone.
    .set-photo is commented out in the markup until band photos
-   arrive, so the row must read correctly with OR without it:
-   the photo is a fixed-width flex item that simply isn't there
-   yet, and nothing below depends on its height.
+   arrive, so a set must read correctly with OR without one.
    ============================================================ */
+.lineup {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 30px 56px;
+  margin-bottom: 8px;
+}
+.day { min-width: 0; }
 .day-heading {
   font-family: var(--hf-serif, 'Newsreader', serif);
   font-size: clamp(26px, 3.4vw, 34px);
   font-weight: 400;
   color: var(--hf-ivory-bright);
-  margin: 0 0 22px;
+  margin: 0 0 18px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--hf-rule-ivory);
+  text-wrap: balance;
 }
 .hf-sec--ivory .day-heading { color: var(--hf-charcoal); border-bottom-color: var(--hf-rule); }
-.day-heading + .set-list { margin-bottom: 54px; }
-.set-list { list-style: none; margin: 0 0 40px; padding: 0; }
+.set-list { list-style: none; margin: 0; padding: 0; }
+
+/* Each set: time label on its own line, act name large beneath it. */
 .set {
-  display: flex;
+  /* The time is a sibling of .set-info, not a child, so the text column is a
+     two-row stack (time, then info) with the optional photo spanning both.
+     Assigning time and info to the SAME grid area overlapped them — the gold
+     time struck straight through the act name, and only a screenshot caught
+     it: every DOM assertion still passed. */
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "time  photo"
+    "info  photo";
   align-items: center;
-  gap: 22px;
-  padding: 18px 0;
+  gap: 0 18px;
+  padding: 15px 0;
   border-bottom: 1px solid var(--hf-rule-ivory);
 }
 .hf-sec--ivory .set { border-bottom-color: var(--hf-rule); }
 .set:last-child { border-bottom: 0; }
+.set-info { grid-area: info; min-width: 0; align-self: start; }
+
+/* The time is a label, not a column — small, gold, above the name. */
 .set-time {
-  flex: 0 0 132px;
+  display: block;
+  grid-area: time;
+  align-self: end;
   font-family: var(--hf-sans, 'Manrope', sans-serif);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--hf-gold, #C6A15B);
+  margin-bottom: 5px;
 }
-.set-info { flex: 1 1 auto; min-width: 0; }
 .set-act {
   font-family: var(--hf-serif, 'Newsreader', serif);
-  font-size: clamp(19px, 2.2vw, 23px);
-  font-weight: 500;
-  line-height: 1.25;
-  margin: 0 0 4px;
+  font-size: clamp(21px, 2.5vw, 27px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 0 3px;
   color: var(--hf-ivory-bright);
+  text-wrap: balance;
 }
 .hf-sec--ivory .set-act { color: var(--hf-charcoal); }
 .set-stage {
   display: block;
-  font-size: 13px;
+  font-size: 12.5px;
   letter-spacing: 0.06em;
   color: var(--hf-body-on-dark);
 }
 .hf-sec--ivory .set-stage { color: var(--hf-body-on-ivory); }
 /* Only occupies space once a real photo is uncommented. */
 .set-photo {
-  flex: 0 0 108px;
-  width: 108px;
-  height: 108px;
+  grid-area: photo;
+  width: 84px;
+  height: 84px;
   object-fit: cover;
   border-radius: 4px;
   border: 1px solid var(--hf-rule-ivory);
@@ -1230,10 +1256,16 @@ a.ev-venue:hover { color: var(--hf-gold-bright); }
 }
 .hf-sec--ivory .note { color: var(--hf-body-on-ivory); }
 .note-muted { opacity: 0.7; font-size: 14px; }
+
+/* One column below the point where two columns would crowd the act names.
+   Kept AFTER the rules above so it wins on cascade order. */
+@media (max-width: 700px) {
+  .lineup { grid-template-columns: 1fr; gap: 6px; }
+  .day + .day { margin-top: 26px; }
+}
 @media (max-width: 620px) {
-  .set { flex-wrap: wrap; gap: 6px 18px; padding: 16px 0; }
-  .set-time { flex: 0 0 100%; order: -1; margin-bottom: 2px; }
-  .set-photo { flex-basis: 76px; width: 76px; height: 76px; }
+  .set { padding: 13px 0; gap: 0 14px; }
+  .set-photo { width: 68px; height: 68px; }
 }
 
 /* ============================================================
