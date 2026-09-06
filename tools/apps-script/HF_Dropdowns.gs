@@ -116,11 +116,20 @@ function hfddApply_(tabName, header, values, multi, helpText) {
     } catch (e) { built = null; }
   }
   if (!built) {
+    // Multi-select was wanted but this runtime has no setMultiSelect (confirmed
+    // 2026-09-06 — every field came back single). A STRICT list would now be
+    // worse than no dropdown at all: it would reject "Class 3, Class 10" and
+    // make a judge covering several classes unrecordable. So when multi was
+    // asked for and denied, keep the list as a suggestion but ALLOW free text.
     built = SpreadsheetApp.newDataValidation()
       .requireValueInList(values, true)
-      .setAllowInvalid(false)
-      .setHelpText(helpText || 'Pick from the list.')
+      .setAllowInvalid(!!multi)
+      .setHelpText(multi
+        ? ((helpText || '') + ' Multi-select is unavailable on this account, so the list is a ' +
+           'suggestion: pick one, or type several separated by commas.').trim()
+        : (helpText || 'Pick from the list.'))
       .build();
+    if (multi) mode = 'single, free text allowed';
   }
   range.setDataValidation(built);
   return tabName + ' · ' + header + ' — ' + values.length + ' options (' + mode + ')';
@@ -138,8 +147,6 @@ function HF_installDropdowns() {
   var judgeStat = hfddList_('JudgeStatus');
   var province  = hfddList_('Province');
   var yesNo     = hfddList_('YesNo');
-  var status    = hfddList_('Status');
-  var payment   = hfddList_('PaymentMethod');
   var memberTyp = hfddList_('MemberType');
   var division  = hfddList_('Division');
   var ageCat    = hfddList_('AgeCategory');
@@ -167,21 +174,24 @@ function HF_installDropdowns() {
 
   // ---- EXHIBITORS ------------------------------------------------
   log.push(hfddApply_('EXHIBITORS', 'PROVINCE', province, false, 'Province.'));
-  log.push(hfddApply_('EXHIBITORS', 'STATUS', status, false, 'Exhibitor status.'));
-  log.push(hfddApply_('EXHIBITORS', 'MEMBER TYPE', memberTyp, false, 'Membership type.'));
-  log.push(hfddApply_('EXHIBITORS', 'PAYMENT METHOD', payment, false, 'How they were paid.'));
+  // Header names confirmed against the live tab 2026-09-06. EXHIBITORS has no
+  // STATUS and no PAYMENT METHOD column; the membership one is MEMBERSHIP TYPE,
+  // not MEMBER TYPE. It does have AGE CATEGORY, which was being read and then
+  // never used.
+  log.push(hfddApply_('EXHIBITORS', 'MEMBERSHIP TYPE', memberTyp, false, 'Membership type.'));
+  log.push(hfddApply_('EXHIBITORS', 'AGE CATEGORY', ageCat, false, 'Senior or Junior.'));
 
   // ---- CHEQUE REGISTER -------------------------------------------
-  log.push(hfddApply_('CHEQUE REGISTER', 'CHEQUE ISSUED?', yesNo, false,
-                      'Tick once the cheque is actually written.'));
+  // No 'CHEQUE ISSUED?' column exists; the tab tracks issue by DATE ISSUED,
+  // which is a date and wants a date picker, not a dropdown. Nothing to apply.
 
   // ---- CLASSES / SECTIONS ----------------------------------------
   log.push(hfddApply_('SECTIONS', 'DIVISION', division, false, 'Division.'));
   log.push(hfddApply_('CLASSES', 'TYPE', entryType, false, 'Animal or Indoor.'));
 
   // ---- DIRECTORS -------------------------------------------------
-  log.push(hfddApply_('DIRECTORS', 'CLASS(ES) ASSIGNED', classes, true,
-                      'Tick every class in this director’s portfolio.'));
+  // DIRECTORS has no CLASS(ES) ASSIGNED column — its nearest field is
+  // 'ROLE / PORTFOLIO', which is free text by design. Nothing to apply.
 
   var kept = [], skipped = [];
   for (var i = 0; i < log.length; i++) {
@@ -202,11 +212,9 @@ function HF_removeDropdowns() {
     ['JUDGES', 'CLASS(ES) ASSIGNED'], ['JUDGES', 'CONFIRMATION STATUS'],
     ['RESULTS', 'PLACING'], ['RESULTS', 'DONATED?'],
     ['REGISTRATIONS', 'Province'], ['REGISTRATIONS', 'Under 13?'],
-    ['EXHIBITORS', 'PROVINCE'], ['EXHIBITORS', 'STATUS'],
-    ['EXHIBITORS', 'MEMBER TYPE'], ['EXHIBITORS', 'PAYMENT METHOD'],
-    ['CHEQUE REGISTER', 'CHEQUE ISSUED?'],
-    ['SECTIONS', 'DIVISION'], ['CLASSES', 'TYPE'],
-    ['DIRECTORS', 'CLASS(ES) ASSIGNED']
+    ['EXHIBITORS', 'PROVINCE'], ['EXHIBITORS', 'MEMBERSHIP TYPE'],
+    ['EXHIBITORS', 'AGE CATEGORY'],
+    ['SECTIONS', 'DIVISION'], ['CLASSES', 'TYPE']
   ];
   var n = 0;
   for (var i = 0; i < targets.length; i++) {

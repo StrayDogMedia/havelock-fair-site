@@ -53,9 +53,30 @@ which field and I'll match it to the new name.
 `MEMBER TYPE` and `PAYMENT METHOD` on EXHIBITORS are the two most likely to skip — I could
 confirm every other header against the live workbook but not those two.
 
-## Note on multi-select
+## 🔴 Multi-select is NOT available on this account — confirmed 2026-09-06
 
-Multi-select validation needs the current Apps Script runtime. If the account is on an older
-one the two class fields **fall back to single-pick automatically** and the run still
-completes — the report will say `(single)` instead of `(multi)`. Tell me if you see that and
-I'll switch those fields to a different approach.
+The first install returned `(single)` on **every** field: `setMultiSelect` threw and the
+fallback caught it. The JUDGES class list is correct (27 options, read live from CLASSES) but
+they are plain list items with no checkboxes.
+
+**So `CLASS(ES) ASSIGNED` now allows free text**, and the report says
+`single, free text allowed`. This matters: a *strict* list would be **worse than no dropdown**
+— it would reject `Class 3, Class 10` and make a judge covering several classes impossible to
+record. The list still appears as a suggestion; type several separated by commas.
+
+## Header names — corrected 2026-09-06
+
+The first run reported 5 SKIPPED fields. Read off the live tabs:
+
+| Was looking for | Reality |
+|---|---|
+| `EXHIBITORS · MEMBER TYPE` | is **`MEMBERSHIP TYPE`** — fixed |
+| `EXHIBITORS · STATUS` | **no such column** — removed |
+| `EXHIBITORS · PAYMENT METHOD` | **no such column** — removed |
+| `CHEQUE REGISTER · CHEQUE ISSUED?` | **no such column.** The tab tracks issue via `DATE ISSUED`, a date — wants a date picker, not a dropdown. Removed |
+| `DIRECTORS · CLASS(ES) ASSIGNED` | **no such column.** Nearest is `ROLE / PORTFOLIO`, free text by design. Removed |
+
+Added: **`EXHIBITORS · AGE CATEGORY`** — the script was already reading the `AgeCategory` list
+and never using it.
+
+**Re-run `HF_installDropdowns` to pick these up.** It should now report 0 SKIPPED.
