@@ -62,9 +62,10 @@ const scheduleData = {
       { time: "13:00", cat: "animals", en: "Heritage Cattle Show", fr: "Exposition de bétail du patrimoine", es: "Exhibición de ganado patrimonial" },
       { time: "13:00", cat: "animals", en: "Beef, sheep, goats, and pig show", fr: "Exposition de bœufs, moutons, chèvres et porcs", es: "Exhibición de ganado vacuno, ovejas, cabras y cerdos" },
       { time: "13:00", cat: "animals", en: "Miniature Horse and Pony Show", fr: "Exposition de miniatures et de poneys", es: "Exhibición de caballos miniatura y ponis" },
-      /* "Pat's Pets" is a proper noun and stays identical in all three
-         languages, like the band names. No end time was given. */
-      { time: "14:00", cat: "kids", en: "Pat's Pets", fr: "Pat's Pets", es: "Pat's Pets" },
+      /* Proper noun — identical in all three languages, like the band names.
+         Spelled to match the long-standing SUNDAY entry exactly: the same
+         attraction runs both days and must not appear under two names. */
+      { time: "14:00", cat: "kids", en: "Pat's Pet Show", fr: "Pat's Pet Show", es: "Pat's Pet Show" },
       { time: "16:30", cat: "general", en: "Doors close for indoor exhibitions", fr: "Fin des événements", es: "Cierre de las exposiciones interiores" }
     ]
   },
