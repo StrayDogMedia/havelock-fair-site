@@ -1,9 +1,8 @@
 /* Fairgrounds locations — the single source of truth for place names.
  *
- * Names and numbering come from the fair's own bilingual site plan (Jesse,
- * 2026-08-24), which is authoritative. It resolved every open question from
- * the earlier draft: 9, 11, 13 and 14 DO exist, 16 is the Barn, and 17 is the
- * 4-H Stalls rather than "Stalls".
+ * Names and numbering come from the fair's own bilingual site plan, which is
+ * authoritative: 9, 11, 13 and 14 DO exist, 16 is the Barn, 17 is the 4-H
+ * Stalls rather than "Stalls".
  *
  * ⚠️ THE GATE NUMBERS LOOK WRONG AND ARE NOT. Pin 1 is "Gate #2 (pedestrian)"
  * and pin 2 is "Gate #1 (vehicles)" — pin number and gate name are inverted on
@@ -17,37 +16,33 @@
  * (`venue: 10`) rather than repeating a name, so pages/schedule.html and the
  * map can never disagree, and renaming a building is one edit here.
  *
- * x / y are PERCENTAGES of the illustration, so they survive the artwork
- * being re-exported at a different resolution. They are pixel positions on a
- * picture, though — if the illustration is REDRAWN, every one needs checking.
+ * x / y are PERCENTAGES of images/map/fairgrounds.jpg, so they survive the
+ * artwork being re-exported at another resolution. They are still positions on
+ * a picture: if the art is REDRAWN they all need rechecking, and
  * pages/directions.html?calibrate=1 prints the percentage under the cursor and
- * makes that a two-minute job rather than a chore.
+ * copies it on click, which makes that minutes rather than a chore.
  *
- * ⚠️ Pin 1 is nudged slightly along the fence from the exact gate: it sits
- * almost on 3 and their markers overlapped at 390px.
+ * THE ARTWORK (2026-09-06, Jesse). A top-down illustrated plan commissioned to
+ * match the fair's own numbered site plan building for building. Two versions
+ * were generated: a labelled one carrying painted number badges and a bilingual
+ * legend, and this UNLABELLED plate. The unlabelled plate is what ships — the
+ * badges would have doubled up with the HTML pins, and a baked-in legend cannot
+ * translate to Spanish or be reached by a keyboard. The labelled version stays
+ * useful as the reference for WHICH BUILDING IS WHICH when re-measuring pins.
  *
- * CORRECTIONS FROM JESSE, 2026-08-25 (he knows the grounds; I did not):
- *   16 Barn        -> the long building at 65.0/11.6, NOT the red barn
- *   17 4-H Stalls  -> 85.7/14.8, where 13 had been
- *   9  Booths      -> 34.7/55.3, touching 6
+ * These coordinates were read off the artwork with a 5% grid overlaid, against
+ * that labelled reference. Landmarks worth knowing if you re-measure: 4 and 8
+ * have BLUE roofs, 5 is the big red barn-like hall, 7 is the small dark-red
+ * shack with a chimney, 6 has a green roof, 14 is a set of fenced PENS rather
+ * than a building, and 9 is the row of white marquee tents down the west track.
  *
- * 🔴 STILL OPEN, DO NOT ASSUME:
- *   13 Horse Stalls was displaced by 17 and is PARKED on the open-sided shed
- *      at 82.8/24.0. That is a guess and needs confirming.
- *   14 Other Animals. Jesse placed 12 at 58/17, which resolves "below the
- *      real 16" as 16's NEW position — so 14 belongs between 16 (65.0/11.6)
- *      and 12 (58.0/17.0), not out on the left where it still sits.
- *   The RED BARN at 42.0/12.4 now carries no pin at all. It is the most
- *      prominent building on the map; it should probably be something. tools/verify-map.js fails if any two pins overlap by
- * more than 8% of a pin's area at any width, so keep that in mind when moving
- * one — these are markers, not survey points.
+ * ⚠️ Pin 11 sits at the lower edge of its hut rather than its centre: centred,
+ * its marker overlapped 12's by 11% at 390px. The two really are that close on
+ * the grounds. Markers are markers, not survey points.
  *
- * ⚠️ WHICH BUILDING IS WHICH IS PARTLY A GUESS. The illustration is a
- * hand-drawn interpretation, not a survey, so it does not preserve the exact
- * arrangement of the fair's plan. Confident: 1, 2, 3, 7, 10, 15, 16 (the
- * gates, the office, the sugar shack with its chimney, the ring, the big 4-H
- * block, the red barn). The rest are read from relative position and need
- * Jesse's eye. A wrong pin sends someone to the wrong barn.
+ * ⚠️ 9 Booths is really THREE locations — the fair's plan marks it three times,
+ * and the art draws a row of tents. One pin can only sit at one of them; it is
+ * placed on the upper cluster, which is the largest.
  *
  * Spanish is ours — the fair's plan is EN/FR only.
  */
@@ -74,23 +69,23 @@ const mapCategories = {
  */
 
 const mapLocations = {
-  1:  { cat: "services",    x: 43.0, y: 81.5, en: "Gate #2 (Pedestrian)",              fr: "Gate #2 (piéton)",                       es: "Puerta n.º 2 (peatonal)" },
-  2:  { cat: "services",    x: 56.4, y: 80.0, en: "Gate #1 (Vehicles)",                fr: "Gate #1 (véhicules)",                    es: "Puerta n.º 1 (vehículos)" },
-  3:  { cat: "services",    x: 49.4, y: 76.0, en: "Office",                            fr: "Bureau",                                 es: "Oficina" },
-  4:  { cat: "exhibits",    x: 35.2, y: 64.5, en: "Dining Hall & Art Display",         fr: "Salle à dîner et exposition d'art",      es: "Comedor y exposición de arte" },
-  5:  { cat: "exhibits",    x: 54.9, y: 65.9, en: "Baked Goods & Handicraft Building", fr: "Exposition confection et artisanat",     es: "Repostería y artesanía" },
-  6:  { cat: "exhibits",    x: 40.8, y: 52.1, en: "Vegetable, Fruit & Flower Building",fr: "Exposition fleur, légume et fruit",      es: "Verduras, frutas y flores" },
-  7:  { cat: "amenities",   x: 35.2, y: 70.8, en: "Sugar Shack",                       fr: "Cabane à sucre",                         es: "Cabaña de azúcar" },
-  8:  { cat: "events",      x: 57.8, y: 55.9, en: "Music Building",                    fr: "Musique",                                es: "Edificio de música" },
-  9:  { cat: "amenities",   x: 32.8, y: 57.0, en: "Booths",                            fr: "Kiosques",                               es: "Casetas" },
-  10: { cat: "events",      x: 63.0, y: 39.1, en: "Horse Ring",                        fr: "Aréna équestre",                         es: "Arena ecuestre" },
-  11: { cat: "agriculture", x: 33.2, y: 22.5, en: "Big Bird Building",                 fr: "Grosse volaille",                        es: "Aves grandes" },
-  12: { cat: "agriculture", x: 58.0, y: 17.0, en: "Poultry & Rabbit Building",         fr: "Exposition volaille",                    es: "Aves y conejos" },
-  13: { cat: "agriculture", x: 81.0, y: 26.5, en: "Horse Stalls",                      fr: "Stalle à chevaux",                       es: "Establos de caballos" },
-  14: { cat: "agriculture", x: 26.6, y: 16.3, en: "Other Animals",                     fr: "Bâtisse autre animal",                   es: "Otros animales" },
-  15: { cat: "agriculture", x: 83.8, y: 20.8, en: "4-H Building",                      fr: "Aréna 4H",                               es: "Edificio 4-H" },
-  16: { cat: "agriculture", x: 65.0, y: 11.6, en: "Barn",                              fr: "Grange",                                 es: "Granero" },
-  17: { cat: "agriculture", x: 85.7, y: 14.8, en: "4-H Stalls",                        fr: "Stalle 4H",                              es: "Establos 4-H" }
+  1:  { cat: "services",    x:  36.5, y:  77.5, en: "Gate #2 (Pedestrian)",              fr: "Gate #2 (piéton)",                       es: "Puerta n.º 2 (peatonal)" },
+  2:  { cat: "services",    x:  60.5, y:  84.5, en: "Gate #1 (Vehicles)",                fr: "Gate #1 (véhicules)",                    es: "Puerta n.º 1 (vehículos)" },
+  3:  { cat: "services",    x:  49.5, y:  82.5, en: "Office",                            fr: "Bureau",                                 es: "Oficina" },
+  4:  { cat: "exhibits",    x:  24.0, y:  69.0, en: "Dining Hall & Art Display",         fr: "Salle à dîner et exposition d'art",      es: "Comedor y exposición de arte" },
+  5:  { cat: "exhibits",    x:  45.0, y:  72.5, en: "Baked Goods & Handicraft Building", fr: "Exposition confection et artisanat",     es: "Repostería y artesanía" },
+  6:  { cat: "exhibits",    x:  31.0, y:  56.5, en: "Vegetable, Fruit & Flower Building",fr: "Exposition fleur, légume et fruit",      es: "Verduras, frutas y flores" },
+  7:  { cat: "amenities",   x:  66.5, y:  68.5, en: "Sugar Shack",                       fr: "Cabane à sucre",                         es: "Cabaña de azúcar" },
+  8:  { cat: "events",      x:  48.0, y:  52.0, en: "Music Building",                    fr: "Musique",                                es: "Edificio de música" },
+  9:  { cat: "amenities",   x:  22.0, y:  43.0, en: "Booths",                            fr: "Kiosques",                               es: "Casetas" },
+  10: { cat: "events",      x:  55.0, y:  37.0, en: "Horse Ring",                        fr: "Aréna équestre",                         es: "Arena ecuestre" },
+  11: { cat: "agriculture", x:  43.5, y:  21.3, en: "Large Poultry",                     fr: "Grosse volaille",                        es: "Aves grandes"   },
+  12: { cat: "agriculture", x:  49.0, y:  15.5, en: "Poultry & Rabbit Building",         fr: "Exposition volaille",                    es: "Aves y conejos" },
+  13: { cat: "agriculture", x:  71.0, y:  22.5, en: "Horse Stalls",                      fr: "Stalle à chevaux",                       es: "Establos de caballos" },
+  14: { cat: "agriculture", x:  30.0, y:   9.0, en: "Other Animals",                     fr: "Bâtisse autre animal",                   es: "Otros animales" },
+  15: { cat: "agriculture", x:  68.0, y:  15.5, en: "4-H Building",                      fr: "Aréna 4H",                               es: "Edificio 4-H" },
+  16: { cat: "agriculture", x:  51.0, y:   4.0, en: "Barn",                              fr: "Grange",                                 es: "Granero" },
+  17: { cat: "agriculture", x:  73.0, y:   9.0, en: "4-H Stalls",                        fr: "Stalle 4H",                              es: "Establos 4-H" }
 };
 
 /* Order the legend renders in, grouped by category. */

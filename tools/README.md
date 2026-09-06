@@ -285,20 +285,37 @@ pin numeral rather than the authored `font-size`, which the viewBox rescales.
 
 ### The artwork is a picture; everything meaningful is HTML over it
 
-The map is `images/map/fairgrounds.jpg`, a commissioned isometric illustration
-carrying **no text at all**. Pins, legend and panel are HTML on top, which is
-what keeps names in `js/map-data.js` (shared with the schedule), keeps the
-legend translatable, and makes every location a real `<button>`.
+The map is `images/map/fairgrounds.jpg`, a commissioned top-down illustrated
+plan drawn to match the fair's own numbered site plan building for building.
+Pins, legend and panel are HTML on top, which keeps names in `js/map-data.js`
+(shared with the schedule), keeps the legend translatable to EN/FR/ES, and makes
+every location a real `<button>`.
 
-Hotspot `x`/`y` in `map-data.js` are **percentages**, so they survive a
-re-export at another resolution. They are still positions on a picture: if the
-art is REDRAWN they all need checking. `?calibrate=1` prints the percentage
-under the cursor and copies it on click, which makes that a few minutes.
+⚠️ **Two versions of the artwork exist and only one ships.** A labelled version
+carries painted number badges and a bilingual legend; the **unlabelled** plate
+is what the site uses. The badges would have doubled up with the HTML pins, and
+a baked-in legend can neither translate to Spanish nor be reached by a keyboard.
+Keep the labelled version as the reference for *which building is which*.
 
-⚠️ **Which building is which is partly a guess.** The illustration is a
-hand-drawn interpretation, not a survey. Confident: 1, 2, 3, 7, 10, 15, 16.
-The rest are read from relative position and want a look from someone who knows
-the grounds.
+Hotspot `x`/`y` are **percentages**, so they survive a re-export at another
+resolution. They are still positions on a picture: if the art is redrawn they
+all need rechecking. `?calibrate=1` prints the percentage under the cursor and
+copies it on click.
+
+Landmarks for re-measuring: **4** and **8** have blue roofs, **5** is the big
+red barn-like hall, **7** is the small dark-red shack with a chimney, **6** has
+a green roof, **14** is fenced *pens* rather than a building, and **9** is the
+row of white marquee tents down the west track.
+
+⚠️ **9 Booths is really three locations** — the fair's plan marks it three
+times and the art draws a row of tents. One pin can sit at only one of them; it
+is on the largest cluster.
+
+⚠️ An earlier attempt replaced the artwork with a **generated SVG** whose pins
+and buildings were emitted from one projection, so they could not drift. That
+guarantee was real, but the drawing never matched the character of the site, and
+it was dropped once a proper illustration existed. If pins ever need to be
+re-derived rather than re-measured, that approach is in the git history.
 
 ### The map always fits its frame — never a sideways scroll
 
@@ -314,9 +331,11 @@ Three things the harness pins down that are easy to break by hand:
 - no pin may sit outside the artwork (2–98%);
 - the map frame must never be wider than its container at default zoom;
 - **no two pins may overlap by more than 8% of a pin's area.** The threshold
-  started at 35% and waved through a 27% collision between 13 and 15 that was
-  obvious in a screenshot. Pins 1, 13 and 15 are nudged slightly off their exact
-  buildings because of it — they are markers, not survey points.
+  started at 35% and waved through a 27% collision that was obvious in a
+  screenshot. Since the map became generated, collisions are fixed in
+  `tools/build-map.js` — by correcting a building's plan position, or by
+  choosing a different frame — never by nudging a coordinate in `map-data.js`,
+  which the generator would overwrite anyway.
 
 When zoomed, `overflow: hidden` means the frame *cannot* be scrolled, so
 `scrollWidth > clientWidth` is not a scroll bug; the check looks at

@@ -48,19 +48,23 @@
         <p class="hf-sec-lede" data-i18n="dir_grounds_subtitle">Find your way around the Havelock Fairgrounds</p>
       </div>
       <!-- ============================================================
-           FAIRGROUNDS MAP — illustration + HTML hotspots.
-           The artwork is a picture; everything that carries meaning is HTML
-           over it: the pins, the legend, the panel. That keeps names in
-           js/map-data.js (one source of truth with the schedule), keeps the
-           legend translatable to EN/FR/ES, and makes every location a real
-           <button> — keyboard-reachable and screen-readable, which a tap
-           affordance on a flat image is not.
-           Hotspot positions are PERCENTAGES, so they survive a re-export at a
-           different resolution. If the art is REDRAWN they need rechecking:
-           ?calibrate=1 prints the percentage under the cursor.
-           No text is baked into the illustration on purpose — the draft this
-           replaces had "EST. 1846" in its logo while the site says 1871 in 60
-           places, which is the failure a picture makes invisible.
+           FAIRGROUNDS MAP — generated isometric plan + HTML hotspots.
+           Everything that carries meaning is HTML over the drawing: the pins,
+           the legend, the panel. That keeps names in js/map-data.js (one
+           source of truth with the schedule), keeps the legend translatable to
+           EN/FR/ES, and makes every location a real <button> — keyboard-
+           reachable and screen-readable, which a tap affordance on a flat
+           image is not.
+           ⚠️ The drawing AND the pin coordinates are GENERATED together by
+           tools/build-map.js from the fair's own numbered site plan. Do not
+           hand-edit either the SVG or the x/y in js/map-data.js: edit PLAN in
+           the generator and re-run it. Both come out of one projection, which
+           is why a pin can no longer sit beside the building it names — the
+           commissioned artwork it replaces was an interpretation, and several
+           pins ended up on grass, on a road, or in trees.
+           No text is baked into the drawing on purpose — an early draft had
+           "EST. 1846" in its logo while the site says 1871 in 60 places, which
+           is the failure a picture makes invisible.
            ============================================================ -->
       <div class="hf-plan" data-reveal>
         <div class="hf-plan-stage">
@@ -68,7 +72,7 @@
             <div class="hf-map-view" id="map-view">
               <img class="hf-map-art" id="map-art"
                    src="../images/map/fairgrounds.jpg"
-                   width="1024" height="1536" decoding="async"
+                   width="974" height="1400" decoding="async"
                    alt="" data-i18n-label="map_svg_title">
               <div class="hf-map-pins" id="map-pins"></div>
             </div>
@@ -239,6 +243,11 @@
       return loc ? mapCategories[loc.cat] : null;
     };
 
+    /* One artwork, one coordinate set. Kept as a function because pins and the
+       zoom-reveal both need it, and a single definition is what stops the two
+       from drifting apart. */
+    function xy(loc) { return [loc.x, loc.y]; }
+
     /* the ?now= override the schedule already uses, so this is testable */
     function currentDate() {
       var q = new URLSearchParams(location.search).get('now');
@@ -369,7 +378,7 @@
           var loc = mapLocations[id];
           var cat = mapCategories[loc.cat];
           return '<button type="button" class="hf-pin" data-loc="' + id + '"' +
-            ' style="left:' + loc.x + '%;top:' + loc.y + '%;--pl-ink:' + cat.ink + '"' +
+            ' style="left:' + xy(loc)[0] + '%;top:' + xy(loc)[1] + '%;--pl-ink:' + cat.ink + '"' +
             ' aria-pressed="false">' +
             '<span class="hf-pin-n">' + id + '</span>' +
             '<span class="sr-only">' + (loc[l] || loc.en) + '</span>' +
@@ -478,8 +487,9 @@
       var loc = mapLocations[id];
       if (!loc) return;
       var r = wrap.getBoundingClientRect();
-      panX = (0.5 - loc.x / 100) * r.width * zoom;
-      panY = (0.5 - loc.y / 100) * r.height * zoom;
+      var c = xy(loc);
+      panX = (0.5 - c[0] / 100) * r.width * zoom;
+      panY = (0.5 - c[1] / 100) * r.height * zoom;
       applyZoom();
     }
 

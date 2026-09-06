@@ -420,6 +420,9 @@ const translations = {
     rules_note_text: "Entries are accepted right up to fair day — you can register online now, or complete your form and bring it to the office before judging begins at 11:00 a.m. Registering ahead of time simply means less to do on the morning.",
     rules_cta_title: "Ready to Enter?",
     rules_cta_text: "Pick your classes and register online — it takes a few minutes.",
+    // Fairgrounds map (pages/directions.html)
+    map_svg_title: "Illustrated plan of the Havelock fairgrounds",
+    map_hint: "Select a location for details and what is on there today.",
   },
 
   fr: {
@@ -829,6 +832,9 @@ const translations = {
     rules_note_text: "Les inscriptions sont acceptées jusqu'au jour de la foire — vous pouvez vous inscrire en ligne dès maintenant, ou remplir votre formulaire et l'apporter au bureau avant le début du jugement à 11 h. S'inscrire à l'avance, c'est simplement moins à faire le matin même.",
     rules_cta_title: "Prêt à vous inscrire ?",
     rules_cta_text: "Choisissez vos classes et inscrivez-vous en ligne — quelques minutes suffisent.",
+    // Plan des terrains (pages/directions.html)
+    map_svg_title: "Plan illustré des terrains de la Foire Havelock",
+    map_hint: "Choisissez un lieu pour en savoir plus et voir ce qui s'y passe aujourd'hui.",
   },
 
   es: {
@@ -1238,6 +1244,9 @@ const translations = {
     rules_note_text: "Las inscripciones se aceptan hasta el día mismo de la feria — puede inscribirse en línea ahora, o completar su formulario y llevarlo a la oficina antes de que comience el juicio a las 11:00. Inscribirse con antelación simplemente significa menos que hacer esa mañana.",
     rules_cta_title: "¿Listo para inscribirse?",
     rules_cta_text: "Elija sus clases e inscríbase en línea — solo toma unos minutos.",
+    // Plano del recinto (pages/directions.html)
+    map_svg_title: "Plano ilustrado del recinto de la Feria Havelock",
+    map_hint: "Elija un lugar para ver los detalles y lo que ocurre allí hoy.",
   }
 };
 

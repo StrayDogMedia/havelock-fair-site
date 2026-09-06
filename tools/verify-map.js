@@ -387,6 +387,27 @@ const open = async (b, q = '', w = 1440) => {
     if (!problems) ok('nothing clips either edge, any width, any language');
   }
 
+  /* ---------- every key on the page is really translated ----------
+     `setLanguage` skips a key that is missing from a dictionary, leaving the
+     English fallback that is authored in the HTML. That fails SILENTLY and
+     looks like a design choice: map_hint and map_svg_title sat untranslated
+     this way, so a Spanish visitor read an English sentence under a fully
+     Spanish legend, and the map's accessible name was English for everyone. */
+  console.log('\n=== every data-i18n key on the page exists in all three dictionaries ===');
+  {
+    const fs2 = require('fs');
+    const src = fs2.readFileSync(__dirname + '/../js/i18n.js', 'utf8');
+    const t = eval('(function(){var module={exports:{}};' +
+      'var localStorage={getItem:function(){return null},setItem:function(){}};' +
+      'var document={querySelectorAll:function(){return[]},addEventListener:function(){},documentElement:{}};' +
+      src + '; module.exports=translations; return module.exports;})()');
+    const html = fs2.readFileSync(__dirname + '/../pages/directions.html', 'utf8');
+    const keys = [...new Set([...html.matchAll(/data-i18n(?:-label)?="([^"]+)"/g)].map(m => m[1]))];
+    const missing = [];
+    for (const k of keys) for (const l of LANGS) if (!(k in t[l])) missing.push(l + ':' + k);
+    is(`all ${keys.length} keys present in en/fr/es`, missing, []);
+  }
+
   await browser.close();
   console.log('\n' + (fail === 0 ? `✅ all map checks passed (${pass})` : `❌ ${fail} failed, ${pass} passed`));
   process.exit(fail ? 1 : 0);
