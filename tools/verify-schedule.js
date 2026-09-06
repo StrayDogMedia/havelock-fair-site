@@ -141,7 +141,10 @@ const open = async (browser, query = '', w = 1440) => {
     await p.close();
   };
   await at('2026-09-12T07:15', 'saturday', { now: ['6:00'], next: ['8:00'], done: 0 });
-  await at('2026-09-12T13:20', 'saturday', { now: ['13:00'], next: ['15:00'] });
+  // Next after 13:00 is 14:00 (Pat's Pets, added 2026-09-06), not the 15:00
+  // Ramblers set. This expectation is data-dependent: adding a Saturday event
+  // between 13:00 and 15:00 legitimately changes it.
+  await at('2026-09-12T13:20', 'saturday', { now: ['13:00'], next: ['14:00'] });
   await at('2026-09-12T23:00', 'saturday', { now: ['16:30'], next: [] });
   await at('2026-09-13T12:30', 'sunday',  { now: ['12:00'], next: ['13:00'] });
   {
