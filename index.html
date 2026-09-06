@@ -243,7 +243,12 @@
 
   <!-- ========== CINEMATIC BREAK ========== -->
   <section class="hf-break">
-    <img src="images/home/break.jpg" alt="Neighbours gathered on hay bales inside the cattle barn" data-parallax>
+    <!-- Points at the gallery file rather than duplicating it into images/home/.
+         images/home/break.jpg is still used by pages/about.html's hero, so
+         overwriting it would silently change that page too. -->
+    <img src="images/gallery/percheron-pair.jpg"
+         alt="A pair of black Percherons in harness, heads together, at the Havelock Fair"
+         width="1400" height="933" data-parallax>
     <div class="hf-break-scrim"></div>
     <div class="hf-break-line">
       <p data-i18n="break_quote">&ldquo;You don't visit the Havelock Fair. You return to it.&rdquo;</p>

@@ -1,0 +1,12 @@
+# Lightroom / Camera Raw sidecars. Jesse edits the photos in images/ directly
+# in Lightroom and exports over the same filename; Lightroom drops these
+# alongside them. They are editing metadata, not site assets — GitHub Pages
+# would serve them to no purpose.
+*.acr
+*.xmp
+
+# macOS
+.DS_Store
+
+# Local agent scratch, never part of the site
+.agents/
