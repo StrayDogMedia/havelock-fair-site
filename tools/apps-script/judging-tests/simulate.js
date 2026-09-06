@@ -30,56 +30,17 @@ const readline = require('readline');
 const HERE = __dirname;
 const book = JSON.parse(fs.readFileSync(path.join(HERE, 'mock-book.json'), 'utf8'));
 
-/* ---- the same mock SpreadsheetApp the test harness uses ---- */
-function pad(grid) {
-  const w = Math.max(...grid.map(r => r.length), 30);
-  return grid.map(r => { const c = r.slice(); while (c.length < w) c.push(''); return c; });
-}
-const TABS = {};
-Object.keys(book).forEach(k => { TABS[k] = pad(book[k]); });
+/* ---- shared mock (mock-sheets.js), so this and gas-test.js cannot drift ---- */
+const mock = require('./mock-sheets.js').makeBook(book);
+const SHEETS = mock.SHEETS;
+global.SpreadsheetApp = mock.SpreadsheetApp;
 
-function Range(sheet, r, c, nr, nc) {
-  return {
-    setValues(v) {
-      for (let i = 0; i < v.length; i++) for (let j = 0; j < v[i].length; j++) {
-        sheet._ensure(r + i, c + j); sheet.g[r + i - 1][c + j - 1] = v[i][j];
-      } return this;
-    },
-    setValue(v) { sheet._ensure(r, c); sheet.g[r - 1][c - 1] = v; return this; },
-    getValues() {
-      const o = [];
-      for (let i = 0; i < nr; i++) { const row = [];
-        for (let j = 0; j < nc; j++) { sheet._ensure(r + i, c + j); row.push(sheet.g[r + i - 1][c + j - 1]); }
-        o.push(row); } return o;
-    },
-    clearContent() { for (let i = 0; i < nr; i++) for (let j = 0; j < nc; j++) { sheet._ensure(r+i,c+j); sheet.g[r+i-1][c+j-1]=''; } return this; },
-    setBackground(){return this;}, setFontColor(){return this;},
-    setFontWeight(){return this;}, setFontSize(){return this;}
-  };
-}
-function Sheet(name, grid) {
-  return {
-    name, g: grid,
-    _ensure(r, c) { while (this.g.length < r) this.g.push([]); const row = this.g[r-1]; while (row.length < c) row.push(''); },
-    getDataRange() { const h=this.g.length, w=Math.max(...this.g.map(r=>r.length),1); return Range(this,1,1,h,w); },
-    getRange(r,c,nr,nc) { return Range(this,r,c,nr===undefined?1:nr,nc===undefined?1:nc); },
-    clear() { this.g = [[]]; return this; },
-    setFrozenRows(){return this;}, autoResizeColumns(){return this;}
-  };
-}
-const SHEETS = {};
-Object.keys(TABS).forEach(k => { SHEETS[k] = Sheet(k, TABS[k]); });
-
-global.SpreadsheetApp = {
-  openById: () => ({ getSheetByName: n => SHEETS[n] || null,
-                     insertSheet: n => (SHEETS[n] = Sheet(n, [[]])) }),
-  getUi: () => { throw new Error('no ui'); }
-};
 let QUIET = true;
 global.Logger = { log: m => { if (!QUIET) console.log('   ' + String(m).split('\n')[0]); } };
 
 /* ---- load the REAL script under test ---- */
 eval(fs.readFileSync(path.join(HERE, '..', 'HF_JudgingSystem.gs'), 'utf8'));
+eval(fs.readFileSync(path.join(HERE, '..', 'HF_JudgingEntry.gs'), 'utf8'));
 
 /* ---- build entries once, quietly ---- */
 HF_buildEntries();
@@ -216,7 +177,8 @@ console.log('\n  ' + C.c + 'E1001 1st' + C.x + '   award a placing        ' +
 console.log('  ' + C.c + 'run' + C.x + '         price it + cheques     ' +
             C.c + 'who E1001' + C.x + '  what is this entry');
 console.log('  ' + C.c + 'undo' + C.x + '        remove the last        ' +
-            C.c + 'clear' + C.x + '     start over        ' + C.c + 'quit' + C.x + '\n');
+            C.c + 'clear' + C.x + '     start over        ' + C.c + 'quit' + C.x);
+console.log('  ' + C.c + 'judge' + C.x + '       section-by-section, the way the JUDGING ENTRY tab works\n');
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout, prompt: '› ' });
 rl.prompt();
@@ -235,6 +197,42 @@ rl.on('line', line => {
     return rl.prompt();
   }
   if (lc === 'run')   { run(); return rl.prompt(); }
+
+  // 'judge' walks the JUDGING ENTRY tab the way the office will: one section
+  // at a time, prizes listed, pick a winner by number.
+  if (lc === 'judge') {
+    HF_buildJudgingEntry();
+    const J = SHEETS['JUDGING ENTRY'].g;
+    const secs = [];
+    let cur = null;
+    J.forEach((r, i) => {
+      const n = i + 1; if (n < 3) return;
+      if (String(r[6]).trim()) { cur = { key: String(r[6]).trim(), title: String(r[0]), rows: [] }; secs.push(cur); }
+      else if (cur && ['1st','2nd','3rd','4th'].indexOf(String(r[1]).trim()) >= 0)
+        cur.rows.push({ row: n, prize: String(r[1]).trim(), amount: Number(r[2] || 0) });
+    });
+    const want = rest.join(' ').toLowerCase();
+    const list = want ? secs.filter(x => x.title.toLowerCase().includes(want)) : secs;
+    if (!list.length) { console.log(C.y + '  no section matches "' + want + '"' + C.x + '\n'); return rl.prompt(); }
+    if (!want) {
+      console.log('\n  ' + C.dim + secs.length + ' sections. Narrow it: ' + C.c + 'judge maple' + C.x + '\n');
+      secs.forEach((x, i) => console.log('   ' + C.dim + String(i + 1).padStart(3) + C.x + '  ' + x.title));
+      console.log('');
+      return rl.prompt();
+    }
+    list.slice(0, 3).forEach(sec => {
+      console.log('\n  ' + C.b + sec.title + C.x);
+      const opts = SHEETS['JUDGING ENTRY']._getDV(sec.rows[0].row, 4)._spec.values;
+      sec.rows.forEach(pr => {
+        const got = String(SHEETS['JUDGING ENTRY'].g[pr.row - 1][3] || '').trim();
+        console.log('    ' + C.y + pr.prize + C.x + '  ' + C.dim + money(pr.amount) + C.x +
+                    '   ' + (got ? C.g + got + C.x : C.dim + '(not awarded)' + C.x));
+      });
+      console.log('    ' + C.dim + 'entries here: ' + opts.join(' · ') + C.x);
+    });
+    console.log('\n  ' + C.dim + 'Pick with the normal command, e.g. ' + C.c + 'E1001 1st' + C.x + '\n');
+    return rl.prompt();
+  }
   if (lc === 'who')   {
     const r = byId[(rest[0]||'').toUpperCase()];
     if (!r) { console.log(C.r + '  no such entry' + C.x + '\n'); return rl.prompt(); }

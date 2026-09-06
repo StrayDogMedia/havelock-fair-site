@@ -10,3 +10,6 @@
 
 # Local agent scratch, never part of the site
 .agents/
+
+# dev-only: installed with --no-save for the verification harnesses
+node_modules/

@@ -63,6 +63,17 @@ var HF_PROT_CHEQUES = {
   editable: ['CHEQUE ISSUED?', 'DATE ISSUED', 'MEMO', 'NOTES']
 };
 
+/**
+ * JUDGING ENTRY is generated, but the office picks winners in it all fair day.
+ * Same shape as CHEQUE REGISTER: lock the sheet, punch holes for the columns a
+ * human legitimately fills in.
+ */
+var HF_PROT_JUDGING_ENTRY = {
+  tab: 'JUDGING ENTRY',
+  reason: 'Built by "2b. Build JUDGING ENTRY". Pick winners in WINNER; the rest is generated.',
+  editable: ['WINNER', 'NOTES']
+};
+
 /** Tabs deliberately left wide open, and why. Used by the report only. */
 var HF_PROT_OPEN = {
   'RESULTS':    'This is the fair-day typing tab — placings go here.',
@@ -150,6 +161,28 @@ function HF_protectTabs() {
     if (holes.length) cp.setUnprotectedRanges(holes);
     log.push('LOCKED  · ' + HF_PROT_CHEQUES.tab +
              (names.length ? '  (still editable: ' + names.join(', ') + ')' : '  (no editable columns found)'));
+  }
+
+  // ---- judging entry: locked, with holes for the judge ------------
+  var je = ss.getSheetByName(HF_PROT_JUDGING_ENTRY.tab);
+  if (!je) {
+    log.push('SKIPPED · ' + HF_PROT_JUDGING_ENTRY.tab + ' — tab not found (run "2b. Build JUDGING ENTRY" first)');
+  } else {
+    hfpClearOurs_(je);
+    var jp = je.protect().setDescription(HF_PROT_TAG + ' ' + HF_PROT_JUDGING_ENTRY.reason);
+    jp.addEditor(me);
+    try { jp.removeEditors(jp.getEditors().filter(function (u) {
+      return u.getEmail() !== me.getEmail(); })); } catch (e) {}
+    var jholes = [], jnames = [];
+    HF_PROT_JUDGING_ENTRY.editable.forEach(function (h) {
+      var c = hfpFindCol_(je, h);
+      if (!c) return;
+      jholes.push(je.getRange(1, c, Math.max(je.getMaxRows(), 2), 1));
+      jnames.push(h);
+    });
+    if (jholes.length) jp.setUnprotectedRanges(jholes);
+    log.push('LOCKED  · ' + HF_PROT_JUDGING_ENTRY.tab +
+             (jnames.length ? '  (still editable: ' + jnames.join(', ') + ')' : ''));
   }
 
   var msg = 'Tab protection applied.\n\n' + log.join('\n') +

@@ -42,7 +42,8 @@ var HF_TABS = {
   results:       'RESULTS',
   prizeCalc:     'PRIZE CALCULATIONS',
   cheques:       'CHEQUE REGISTER',
-  judging:       'JUDGING SHEETS'
+  judging:       'JUDGING SHEETS',
+  judgingEntry:  'JUDGING ENTRY'
 };
 
 var HF_MEMBERSHIP_FEE = 15;   // 13+ — deducted from winnings
@@ -238,15 +239,26 @@ function hfPickDivision_(hits, chosen) {
 }
 
 function HF_buildEntries() {
-  // Refuse to renumber entries if results already exist.
+  // Refuse to renumber entries if any placing has been recorded — renumbering
+  // would silently re-point it at a different exhibit.
   var existing = 0;
   try {
     var res = hfReadTable_(HF_TABS.results, ['RESULT #', 'ENTRY #', 'PLACING', 'FINAL PRIZE ($)']);
     existing = res.rows.filter(function (r) { return hfStr_(r['PLACING']).trim() !== ''; }).length;
   } catch (e) { /* RESULTS may be untouched */ }
-  if (existing > 0) {
-    throw new Error('RESULTS already contains ' + existing + ' placing(s). Rebuilding ENTRIES would renumber them. ' +
-                    'Clear RESULTS first, or edit ENTRIES by hand.');
+
+  // Picks can also sit in JUDGING ENTRY without having been synced to RESULTS
+  // yet — a morning of judging with nothing in RESULTS at all. Counting only
+  // RESULTS would let a rebuild renumber straight through it.
+  var picks = 0;
+  try { picks = hfjeCountPicks_(); } catch (e) { /* tab may not exist */ }
+
+  if (existing > 0 || picks > 0) {
+    var what = [];
+    if (existing) what.push('RESULTS holds ' + existing + ' placing(s)');
+    if (picks)    what.push('JUDGING ENTRY holds ' + picks + ' un-synced pick(s)');
+    throw new Error(what.join(' and ') + '. Rebuilding ENTRIES would renumber them. ' +
+                    'Clear them first, or edit ENTRIES by hand.');
   }
 
   var idx  = hfSectionIndex_();
@@ -613,7 +625,11 @@ function onOpen() {
       .addItem('0b. Check the Code.gs patch',            'HF_checkPatch')
       .addSeparator()
       .addItem('1. Build entries from registrations', 'HF_buildEntries')
-      .addItem('2. Make judging sheets',              'HF_makeJudgingSheets')
+      .addItem('2. Make judging sheets (to print)',   'HF_makeJudgingSheets')
+      .addItem('2b. Build JUDGING ENTRY (pick winners)', 'HF_buildJudgingEntry')
+      .addSeparator()
+      .addItem('2c. Check JUDGING ENTRY for problems', 'HF_checkJudgingEntry')
+      .addItem('2d. Send picks to RESULTS',            'HF_syncJudgingToResults')
       .addSeparator()
       .addItem('3. Calculate prizes & cheques',       'HF_calculatePrizes')
       .addItem('4. Verify before writing cheques',    'HF_verify')

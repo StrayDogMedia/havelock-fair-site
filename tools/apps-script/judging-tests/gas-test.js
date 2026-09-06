@@ -3,59 +3,20 @@
 const fs = require('fs');
 const book = JSON.parse(fs.readFileSync(require('path').join(__dirname, 'mock-book.json'), 'utf8'));
 
-function pad(grid) {
-  const w = Math.max(...grid.map(r => r.length), 30);
-  return grid.map(r => { const c = r.slice(); while (c.length < w) c.push(''); return c; });
-}
-const TABS = {};
-Object.keys(book).forEach(k => { TABS[k] = pad(book[k]); });
-
-function Range(sheet, r, c, nr, nc) {
-  return {
-    setValues(v) {
-      for (let i = 0; i < v.length; i++) for (let j = 0; j < v[i].length; j++) {
-        sheet._ensure(r + i, c + j); sheet.g[r + i - 1][c + j - 1] = v[i][j];
-      }
-      return this;
-    },
-    setValue(v) { sheet._ensure(r, c); sheet.g[r - 1][c - 1] = v; return this; },
-    getValues() {
-      const o = [];
-      for (let i = 0; i < nr; i++) { const row = [];
-        for (let j = 0; j < nc; j++) { sheet._ensure(r + i, c + j); row.push(sheet.g[r + i - 1][c + j - 1]); }
-        o.push(row); }
-      return o;
-    },
-    clearContent() { for (let i = 0; i < nr; i++) for (let j = 0; j < nc; j++) { sheet._ensure(r+i, c+j); sheet.g[r+i-1][c+j-1] = ''; } return this; },
-    setBackground() { return this; }, setFontColor() { return this; },
-    setFontWeight() { return this; }, setFontSize() { return this; }
-  };
-}
-function Sheet(name, grid) {
-  return {
-    name, g: grid,
-    _ensure(r, c) { while (this.g.length < r) this.g.push([]); const row = this.g[r-1]; while (row.length < c) row.push(''); },
-    getDataRange() { const h = this.g.length, w = Math.max(...this.g.map(r => r.length), 1); return Range(this, 1, 1, h, w); },
-    getRange(r, c, nr, nc) { return Range(this, r, c, nr === undefined ? 1 : nr, nc === undefined ? 1 : nc); },
-    clear() { this.g = [[]]; return this; },
-    setFrozenRows() { return this; }, autoResizeColumns() { return this; }
-  };
-}
-const SHEETS = {};
-Object.keys(TABS).forEach(k => { SHEETS[k] = Sheet(k, TABS[k]); });
-
-global.SpreadsheetApp = {
-  openById: () => ({
-    getSheetByName: n => SHEETS[n] || null,
-    insertSheet: n => (SHEETS[n] = Sheet(n, [[]]))
-  }),
-  getUi: () => { throw new Error('no ui'); }
-};
+// The mock lives in mock-sheets.js so this harness and simulate.js share ONE
+// copy. They had drifted, and data-validation support would have needed
+// writing twice.
+const mock = require('./mock-sheets.js').makeBook(book);
+const SHEETS = mock.SHEETS;
+global.SpreadsheetApp = mock.SpreadsheetApp;
 global.Logger = { log: m => console.log('   [log] ' + String(m).split('\n')[0]) };
 
 // load the script under test
 const src = fs.readFileSync(require('path').join(__dirname, '..', 'HF_JudgingSystem.gs'), 'utf8');
 eval(src);
+// The JUDGING ENTRY tab builder lives in its own file so the install is a
+// new-file paste rather than a replace of the file running the money chain.
+eval(fs.readFileSync(require('path').join(__dirname, '..', 'HF_JudgingEntry.gs'), 'utf8'));
 
 let fails = 0;
 const flaggedIds = () => {
@@ -174,9 +135,175 @@ ck('verify counts only real ENTRY #s, not the flag block',
    /ENTRY # unique \((\d+) entries/.exec(rep)[1] + ' vs ' + erows.length);
 
 console.log('\n=== 5. guard: rebuilding entries with results present must refuse ===');
-let refused = false;
-try { HF_buildEntries(); } catch (err) { refused = /already contains/.test(err.message); }
-ck('HF_buildEntries refuses to renumber over recorded placings', refused);
+let refused = false, guardMsg = '';
+try { HF_buildEntries(); } catch (err) { guardMsg = err.message; refused = /would renumber/.test(err.message); }
+ck('HF_buildEntries refuses to renumber over recorded placings', refused, guardMsg);
+ck('the refusal names RESULTS as the reason', /RESULTS holds/.test(guardMsg), guardMsg);
+
+console.log('\n=== 6. JUDGING ENTRY — build ===');
+console.log('  ' + HF_buildJudgingEntry());
+const JE = SHEETS['JUDGING ENTRY'];
+const jeg = JE.g;
+const jeCol = { section:0, prize:1, amount:2, winner:3, key:6, entry:7 };
+const jeHeaders = jeg.slice(2).filter(r => String(r[jeCol.key]).trim());
+const jePrizeRows = jeg.slice(2).filter(r => ['1st','2nd','3rd','4th'].indexOf(String(r[jeCol.prize]).trim()) >= 0);
+
+// Derived from the fixture, never frozen: the fixture grows on every refresh.
+const groupKeys = new Set(erows.map(r =>
+  [r[eh.indexOf('CLASS #')], r[eh.indexOf('DIVISION')], r[eh.indexOf('SECTION CODE')]].join('||')));
+ck('one section header per section with entries', jeHeaders.length === groupKeys.size,
+   jeHeaders.length + ' vs ' + groupKeys.size);
+ck('four prize rows per section', jePrizeRows.length === groupKeys.size * 4,
+   jePrizeRows.length + ' vs ' + (groupKeys.size * 4));
+ck('every section header key is a real group', jeHeaders.every(r => groupKeys.has(String(r[jeCol.key]).trim())));
+
+// 🔴 All 13 position-only sections have an EMPTY CLASS #. The older
+// HF_makeJudgingSheets format string renders those as "Class  — 4-H".
+ck('no section heading renders "Class  — "',
+   !jeHeaders.some(r => /Class\s{2,}—/.test(String(r[jeCol.section]))),
+   jeHeaders.filter(r => /Class\s{2,}—/.test(String(r[jeCol.section]))).map(r=>r[jeCol.section])[0]);
+
+// Dropdowns: one rule per prize row, none on a section header.
+const dvAt = (rowIdx1) => JE._getDV(rowIdx1, 4);
+const headerRowNums = [], prizeRowNums = [];
+jeg.forEach((r, i) => {
+  const n = i + 1;
+  if (n < 3) return;
+  if (String(r[jeCol.key]).trim()) headerRowNums.push(n);
+  else if (['1st','2nd','3rd','4th'].indexOf(String(r[jeCol.prize]).trim()) >= 0) prizeRowNums.push(n);
+});
+ck('every prize row has a dropdown', prizeRowNums.every(n => !!dvAt(n)));
+ck('no section header has a dropdown', headerRowNums.every(n => !dvAt(n)));
+ck('dropdowns are strict (no free text)',
+   prizeRowNums.every(n => dvAt(n)._spec.allowInvalid === false));
+
+// A section's list must be EXACTLY that section's entries — no more, no fewer.
+const sectionOfRow = {};
+{ let k = ''; jeg.forEach((r, i) => { const n = i + 1; if (n < 3) return;
+    if (String(r[jeCol.key]).trim()) k = String(r[jeCol.key]).trim();
+    sectionOfRow[n] = k; }); }
+let listMismatch = null;
+prizeRowNums.forEach(n => {
+  const want = erows.filter(r =>
+    [r[eh.indexOf('CLASS #')], r[eh.indexOf('DIVISION')], r[eh.indexOf('SECTION CODE')]].join('||') === sectionOfRow[n])
+    .map(r => String(r[0]).trim()).sort();
+  const got = dvAt(n)._spec.values.map(v => hfjeParseEntryId_(v)).sort();
+  if (JSON.stringify(want) !== JSON.stringify(got) && !listMismatch)
+    listMismatch = sectionOfRow[n] + ' want ' + want + ' got ' + got;
+});
+ck('each dropdown lists exactly its own section\'s entries', !listMismatch, listMismatch);
+
+// Every label must round-trip to its entry number.
+const allLabels = prizeRowNums.flatMap(n => dvAt(n)._spec.values);
+ck('every label is "E#### — ..." and parses back',
+   allLabels.every(l => /^E\d+ — /.test(l) && hfjeParseEntryId_(l) === l.split(' ')[0]));
+
+// 🔴 The real collision: Class 17 Sec 37 holds TWO entries for Lise Brown.
+// A name-only label would put two identical strings in one list.
+const lise = erows.filter(r => String(r[1]).trim() === 'HF2026-1020' &&
+  String(r[eh.indexOf('SECTION CODE')]).trim() === '37');
+if (lise.length > 1) {
+  const row = prizeRowNums.find(n => sectionOfRow[n] ===
+    [lise[0][eh.indexOf('CLASS #')], lise[0][eh.indexOf('DIVISION')], lise[0][eh.indexOf('SECTION CODE')]].join('||'));
+  const labels = dvAt(row)._spec.values;
+  ck('duplicate exhibitor in one section gets distinguishable labels',
+     new Set(labels).size === labels.length && lise.every(l => labels.some(x => hfjeParseEntryId_(x) === String(l[0]).trim())),
+     labels.join(' | '));
+} else {
+  ck('duplicate exhibitor case present in fixture', false, 'expected 2 Lise Brown entries in sec 37');
+}
+
+// Position-only sections show no dollar figure.
+const posKeys = new Set(erows.filter(r => r[iTier] === 'NO PRIZE — POSITION ONLY')
+  .map(r => [r[eh.indexOf('CLASS #')], r[eh.indexOf('DIVISION')], r[eh.indexOf('SECTION CODE')]].join('||')));
+ck('position-only sections are labelled, not priced',
+   jeHeaders.filter(r => posKeys.has(String(r[jeCol.key]).trim()))
+            .every(r => String(r[jeCol.prize]).trim() === 'POSITION ONLY'));
+ck('position-only prize rows carry $0',
+   prizeRowNums.filter(n => posKeys.has(sectionOfRow[n])).every(n => Number(jeg[n-1][jeCol.amount]) === 0));
+
+console.log('\n=== 7. JUDGING ENTRY — pick, validate, sync ===');
+// Clear RESULTS so the new path is measured on its own.
+const rhdr = SHEETS['RESULTS'].g[1];
+for (let r = 3; r <= SHEETS['RESULTS'].g.length; r++)
+  if (SHEETS['RESULTS'].g[r-1]) for (let c = 0; c < rhdr.length; c++) SHEETS['RESULTS'].g[r-1][c] = '';
+SHEETS['PRIZE CALCULATIONS'].g = SHEETS['PRIZE CALCULATIONS'].g.slice(0, 2);
+SHEETS['CHEQUE REGISTER'].g = SHEETS['CHEQUE REGISTER'].g.slice(0, 2);
+
+// Pick the SAME awards section 3 typed straight into RESULTS.
+const pickInto = (entryId, placing) => {
+  const key = (() => { const r = erows.find(x => String(x[0]).trim() === entryId);
+    return [r[eh.indexOf('CLASS #')], r[eh.indexOf('DIVISION')], r[eh.indexOf('SECTION CODE')]].join('||'); })();
+  const row = prizeRowNums.find(n => sectionOfRow[n] === key &&
+    String(jeg[n-1][jeCol.prize]).trim() === placing);
+  const label = dvAt(row)._spec.values.find(v => hfjeParseEntryId_(v) === entryId);
+  JE.g[row-1][jeCol.winner] = label;
+  return row;
+};
+pickInto(claudia[0][0], '1st'); pickInto(claudia[1][0], '2nd'); pickInto(claudia[2][0], '3rd');
+pickInto(karen[0][0], '1st');   pickInto(riley[0][0], '1st');   pickInto(riley[1][0], '4th');
+pickInto(fh1[0], '1st');
+
+ck('check reports no blocking problems', /no blocking problems/.test(HF_checkJudgingEntry()));
+console.log('  ' + HF_syncJudgingToResults().split('\n')[0]);
+
+const resRows = SHEETS['RESULTS'].g.slice(2).filter(r => String(r[rhdr.indexOf('ENTRY #')]).trim());
+ck('sync wrote one RESULTS row per pick', resRows.length === 7, resRows.length);
+ck('placings are plain 1st/2nd/3rd/4th',
+   resRows.every(r => ['1st','2nd','3rd','4th'].indexOf(String(r[rhdr.indexOf('PLACING')]).trim()) >= 0));
+
+// 🔴 THE LOAD-BEARING CHECK: the new path must produce the SAME money as the
+// old one. Section 3 typed these same awards straight into RESULTS and got
+// Claudia 27 / Karen 5 / Riley 20, three cheques.
+SHEETS['RESULTS'].g[2][rhdr.indexOf('DONATED?')] = 'Yes';   // Claudia's 3rd, as before
+// (row 3 is Claudia's 1st; find her 3rd instead)
+resRows.forEach((r, i) => { r[rhdr.indexOf('DONATED?')] = ''; });
+const claudia3 = resRows.find(r => String(r[rhdr.indexOf('ENTRY #')]).trim() === claudia[2][0]);
+claudia3[rhdr.indexOf('DONATED?')] = 'Yes';
+console.log('  ' + HF_calculatePrizes());
+const calc2 = SHEETS['PRIZE CALCULATIONS'].g, ch2 = calc2[1];
+const gc2 = (id, col) => { const r = calc2.slice(2).find(x => String(x[0]).trim() === id);
+  return r ? Number(r[ch2.indexOf(col)]) : null; };
+ck('JUDGING ENTRY path: Claudia net = 27 (same as typing it)', gc2('HF2026-1001','NET CHEQUE ($)') === 27, gc2('HF2026-1001','NET CHEQUE ($)'));
+ck('JUDGING ENTRY path: Karen net = 5', gc2('HF2026-1002','NET CHEQUE ($)') === 5, gc2('HF2026-1002','NET CHEQUE ($)'));
+ck('JUDGING ENTRY path: Riley net = 20', gc2('HF2026-1003','NET CHEQUE ($)') === 20, gc2('HF2026-1003','NET CHEQUE ($)'));
+const chq2 = SHEETS['CHEQUE REGISTER'].g.slice(2).filter(r => String(r[0]).trim());
+ck('JUDGING ENTRY path: same 3 cheques, same $52 total',
+   chq2.length === 3 && chq2.reduce((s,r)=>s+Number(r[6]||0),0) === 52,
+   chq2.length + ' cheques, $' + chq2.reduce((s,r)=>s+Number(r[6]||0),0));
+ck('verify still passes on the new path', /ALL CHECKS PASSED/.test(HF_verify()));
+
+console.log('\n=== 8. JUDGING ENTRY — safety ===');
+// Rebuild must preserve picks.
+const before = jePrizeRows.filter(r => String(r[jeCol.winner]).trim()).length;
+HF_buildJudgingEntry();
+const after = SHEETS['JUDGING ENTRY'].g.slice(2)
+  .filter(r => ['1st','2nd','3rd','4th'].indexOf(String(r[jeCol.prize]).trim()) >= 0 && String(r[jeCol.winner]).trim()).length;
+ck('a rebuild preserves picks', after === 7, before + ' -> ' + after);
+
+// The same entry cannot take two positions in one section.
+const jg = SHEETS['JUDGING ENTRY'].g;
+let firstK = '', r1st = -1, r2nd = -1;
+for (let i = 2; i < jg.length; i++) {
+  const k = String(jg[i][jeCol.key]).trim();
+  if (k && !firstK) firstK = k;
+  if (firstK && String(jg[i][jeCol.prize]).trim() === '1st' && r1st < 0) r1st = i;
+  if (firstK && String(jg[i][jeCol.prize]).trim() === '2nd' && r2nd < 0) r2nd = i;
+  if (r1st >= 0 && r2nd >= 0) break;
+}
+const dupLabel = JE._getDV(r1st + 1, 4)._spec.values[0];
+jg[r1st][jeCol.winner] = dupLabel; jg[r2nd][jeCol.winner] = dupLabel;
+const dupReport = HF_syncJudgingToResults();
+ck('same entry twice in one section is REFUSED', /REFUSING TO SYNC/.test(dupReport), dupReport.split('\n')[0]);
+jg[r2nd][jeCol.winner] = '';   // undo
+
+// Unsynced picks must block a rebuild of ENTRIES.
+for (let r = 3; r <= SHEETS['RESULTS'].g.length; r++)
+  if (SHEETS['RESULTS'].g[r-1]) for (let c = 0; c < rhdr.length; c++) SHEETS['RESULTS'].g[r-1][c] = '';
+let blocked = '';
+try { HF_buildEntries(); } catch (err) { blocked = err.message; }
+ck('picks in JUDGING ENTRY block a renumber even with RESULTS empty',
+   /JUDGING ENTRY holds/.test(blocked), blocked || '(did not throw)');
 
 console.log(fails ? `\n❌ ${fails} check(s) FAILED` : '\n✅ ALL CHECKS PASSED');
 process.exit(fails ? 1 : 0);
