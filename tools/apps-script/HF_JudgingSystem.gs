@@ -388,7 +388,12 @@ function HF_makeJudgingSheets() {
   var t = hfReadTable_(HF_TABS.entries, ['ENTRY #', 'EXHIBITOR #', 'SECTION CODE', 'PRIZE TIER']);
   var groups = {}, order = [];
   t.rows.forEach(function (e) {
-    if (!e['ENTRY #']) return;
+    // Only real entries. The NEEDS ATTENTION block sits below the entries in the
+    // SAME sheet, so a bare truthiness test swept its banner and the flagged
+    // exhibitor IDs into a phantom 27th section that PRINTED on the judges' paper
+    // as a blank Class with two junk lines under it. Same fix already made in
+    // HF_verify and hfjeGroups_.
+    if (!/^E\d+$/.test(hfStr_(e['ENTRY #']).trim())) return;
     var k = [e['CLASS #'], e['DIVISION'], e['SECTION CODE']].join('||');
     if (!groups[k]) { groups[k] = []; order.push(k); }
     groups[k].push(e);

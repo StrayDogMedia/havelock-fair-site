@@ -153,6 +153,14 @@ const groupKeys = new Set(erows.map(r =>
   [r[eh.indexOf('CLASS #')], r[eh.indexOf('DIVISION')], r[eh.indexOf('SECTION CODE')]].join('||')));
 ck('one section header per section with entries', jeHeaders.length === groupKeys.size,
    jeHeaders.length + ' vs ' + groupKeys.size);
+// The two builders must agree. They did NOT: HF_makeJudgingSheets grouped on a
+// bare truthiness test and swept the ⚠ NEEDS ATTENTION block into a phantom
+// extra section, which PRINTED on the judges' paper as a blank class with two
+// junk lines. Found on 2026-09-06 by the install check that said the counts
+// must match. Assert it so they can never drift apart again.
+const jsSecs = Number((HF_makeJudgingSheets().match(/(\d+) section/) || [])[1]);
+ck('JUDGING SHEETS and JUDGING ENTRY report the same section count',
+   jsSecs === groupKeys.size, jsSecs + ' vs ' + groupKeys.size);
 ck('four prize rows per section', jePrizeRows.length === groupKeys.size * 4,
    jePrizeRows.length + ' vs ' + (groupKeys.size * 4));
 ck('every section header key is a real group', jeHeaders.every(r => groupKeys.has(String(r[jeCol.key]).trim())));
