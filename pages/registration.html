@@ -738,7 +738,7 @@ const CLASSES = [
     sections:['1. Yearling Stallion / Poulain d\'un an','2. Yearling Filly / Jument d\'un an','3. Mares (open) / Jument (ouvert)','4. Gelding / Hongre','5. Mare with Foal / Jument avec poulain','6. Four Horse Hitch / Attelage à quatre chevaux','7. Team / Équipe','8. Cart / Chariot','9. Halter / Licou'] },
   { id:2,  name:'Class 2 — Miniature Horse & Pony / Cheval Miniature & Poney', livestock:true, breeds:null,
     sections:['1. Halter / Licou','2. Conformation','3. Showmanship / Présentation','4. Long Rein / Longues rênes','5. Driving / Attelage','6. Trail / Obstacles','7. In Hand Agility / Agilité en main','8. In Hand Jumping / Saut en main'] },
-  { id:3,  name:'Class 3 — Dairy Cattle / Vaches laitières', livestock:true, breeds:['A. Ayrshire','B. Holstein','C. Jersey','D. Canadienne','E. Guernsey'],
+  { id:3,  name:'Class 3 — Dairy Cattle / Vaches laitières', livestock:true, breeds:['A. Holstein','B. Coloured Breeds (Ayrshire, Jersey, Canadienne, Guernsey & Brown Swiss)'],
     sections:['1. Junior Heifer — born Mar 1–May 31, 2026','2. Intermediate Heifer — born Dec 1, 2025–Feb 28, 2026','3. Senior Heifer — born Sept 1–Nov 30, 2025','4. Summer Yearling Heifer — born Jun 1–Aug 31, 2025','5. Junior Yearling Heifer — born Mar 1–May 31, 2025','6. Senior Yearling Heifer — born Sept 1, 2024–Feb 28, 2025','7. 2 & 3 year olds in milk — born Sept 1, 2022–Aug 31, 2024','8. 4 & 5 year olds in milk — born Sept 1, 2020–Aug 31, 2022','9. Mature cow in milk — born before Sept 1, 2020','10. Breeder\'s herd (3 animals bred & owned by exhibitor)'] },
   { id:4,  name:'Class 4 — Heritage Livestock / Élevage patrimonial', livestock:true, breeds:null,
     sections:['1. Heifer calf, junior — born Jan 1–Mar 31, 2026','2. Heifer calf, senior — born Apr 1–Dec 31, 2025','3. Heifer, 1 year old — born Jan 1–Mar 31, 2025','4. Heifer, 1 year old senior — born Apr 1–Dec 31, 2024','5. Heifer, 2 year old and over — born before Apr 1, 2024','6. Mature female / Vache'] },
@@ -803,7 +803,9 @@ const YOUTH_SECTIONS = {
 const EQ_SHOW_SECTIONS = ['1. Showmanship at halter, horse or pony','2. Pleasure, horse or pony','3. Command class, horse or pony','4. Pony equitation walk/trot (juniors only)','5. Pony pleasure walk/trot (juniors only)','6. Equitation English/Western all ages together','7. Lead line (guide, 16 years minimum)','8. Costume class, all ages together','9. Walk/trot, novices only, all ages together'];
 const GYMKHANA_SECTIONS = ['10. Barrel race / Course de barils','11. Musical pads / Chaises musicales','12. Pole bending / Pliage des poteaux','13. Sit a buck / Sans selle'];
 const FH_SECTIONS = ['1. Junior Heifer — born Mar 1–May 31, 2026','2. Intermediate Heifer — born Dec 1, 2025–Feb 28, 2026','3. Senior Heifer — born Sept 1–Nov 30, 2025','4. Summer Yearling Heifer — born Jun 1–Aug 31, 2025','5. Junior Yearling Heifer — born Mar 1–May 31, 2025'];
-const FH_BREEDS = ['A. Ayrshire','B. Holstein','C. Jersey','D. Canadiens','E. Guernsey'];
+// Two breed divisions only (Jesse, 2026-09-09): Holstein, and everything
+// else as Coloured Breeds. Class 3 above uses the same two.
+const FH_BREEDS = ['A. Holstein','B. Coloured Breeds (Ayrshire, Jersey, Canadienne, Guernsey & Brown Swiss)'];
 
 let currentLang = (() => { try { return localStorage.getItem('hf-lang') || 'en'; } catch (e) { return 'en'; } })();
 /* The chrome carries data-es; the FORM deliberately does not — the class and
