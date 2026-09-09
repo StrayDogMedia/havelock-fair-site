@@ -80,6 +80,21 @@ keep a repair path that carries the original data verbatim (`HF_restoreClass3Sec
   more useful than the full `read_file_content`, which returns markdown tables and may be
   truncated.
 
+## Columns are found by NAME — except where they are not
+
+`hfReadTable_` maps by header name, so reordering columns is safe on most tabs. **Two
+exceptions, and they fail silently:**
+
+- **PRIZE CALCULATIONS** and **CHEQUE REGISTER** are written **positionally** — a fixed
+  10-wide and 9-wide array starting at column A (`HF_calculatePrizes`). Reorder their headers
+  and values land under the wrong labels **without erroring**, and the totals still reconcile.
+- **JUDGING ENTRY** is position-locked via `HF_JE_COL` (winner = D, machine keys = G/H), but it
+  is regenerated on every `2b`, so edits there are overwritten anyway.
+
+Visual formatting — colours, widths, frozen panes — is read by nothing and entirely safe.
+**Renaming a header is not**: every lookup is by exact name, so `Under 13?` → `Under 13`
+breaks the fee waiver quietly.
+
 ## Fixtures: derive, never freeze
 
 `judging-tests/mock-book.json` mirrors live registrations and **grows every time it is
