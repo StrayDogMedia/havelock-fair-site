@@ -638,6 +638,8 @@ function onOpen() {
       .addSeparator()
       .addItem('3. Calculate prizes & cheques',       'HF_calculatePrizes')
       .addItem('4. Verify before writing cheques',    'HF_verify')
+      .addSeparator()
+      .addItem('5. Export judging data (for the website)', 'HF_exportJudgingData')
       .addToUi();
   } catch (e) { /* standalone project — menu only appears on a bound script */ }
 }

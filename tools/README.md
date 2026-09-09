@@ -382,3 +382,34 @@ moves the buildings — every pin would need re-measuring after every art
 revision. In SVG the pins **are** the map. It also carries no logo and no
 founding year: the draft had "EST. 1846" baked in while the site says 1871 in
 60 places, which is the failure mode a picture makes invisible.
+
+## verify-judging.js
+
+Covers `pages/judging.html`, the fair-day judging page (see
+`apps-script/INSTALL_JUDGING_WEB.md`).
+
+```sh
+python3 -m http.server 8765            # in another shell, from the repo root
+NODE_PATH=$PWD/node_modules node tools/verify-judging.js
+```
+
+80 checks in real Chrome. The Apps Script endpoint is **faked** with request
+interception (the page reads `window.HF_JUDGING_ENDPOINT_OVERRIDE`), answering
+success, a per-section refusal, or a dropped connection, so the whole
+not-sent → sending → sent / refused / retry cycle runs without the workbook.
+POST bodies are captured and asserted: `text/plain`, `kind:'judging-results'`,
+entry ids not labels.
+
+The checks that matter: **"not sent" is visible on the picker**, not only inside
+a class; a failed send keeps the picks; the same entry cannot take two prizes;
+touch targets ≥ 56px; contrast from rendered pixels; and the page **reloads
+offline** through its service worker.
+
+⚠️ Each test opens its own browser context — a service worker registered by one
+test would otherwise control the next page and its fetches bypass request
+interception. ⚠️ The page's `beforeunload` warning (unsent picks) must be
+accepted via `page.on('dialog')` or `reload()` hangs for 30 s.
+
+`js/judging-data.js` is **generated** — in dev from the fixture
+(`node tools/apps-script/judging-tests/build-judging-data.js`), on fair morning
+from the workbook (🏆 menu → 5. Export judging data). Never edit it by hand.

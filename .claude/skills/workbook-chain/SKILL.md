@@ -9,7 +9,7 @@ Workbook `1TBxMBM4RSyqDDTxuTiAyxWhOiRvyNfxMzK4LgXqFID0`. Scripts live in
 `tools/apps-script/` in this repo. Harness:
 
 ```bash
-node tools/apps-script/judging-tests/gas-test.js   # 70 checks, no deps
+node tools/apps-script/judging-tests/gas-test.js   # 103 checks, no deps (section 10 = the web app)
 ```
 
 The chain: REGISTRATIONS → **ENTRIES** → **JUDGING SHEETS** → RESULTS →
@@ -140,3 +140,22 @@ hardcoded — which is why VALIDATION LISTS warns against renaming columns. 🔴
 field returned `(single)` because `setMultiSelect` throws. So `CLASS(ES) ASSIGNED` on JUDGES
 **allows free text**: a judge covers several classes, and a strict list would make that
 impossible to record. DIRECTORS has no such column.
+
+## The judging web page (since 2026-09-09)
+
+`pages/judging.html` lets judges pick winners per section from a dropdown and **Send** them;
+`HF_JudgingWeb.gs` (its **own** web-app deployment in the Havelock Forms project — never the
+registration project) merges them into RESULTS by ENTRY # and logs every submission in a
+**JUDGING LOG** tab. `INSTALL_JUDGING_WEB.md` has the steps and acceptance checks.
+
+- The page ships its entries in **`js/judging-data.js`** — GENERATED (🏆 menu → **5. Export
+  judging data**, or in dev `judging-tests/build-judging-data.js` off the fixture). Regenerate it
+  after every ENTRIES rebuild; a stale file makes the workbook **refuse** the pick by name.
+- A submitted section is **authoritative** for that section: unlisted entries get their placing
+  cleared (row kept). DONATED?/NOTES are never touched; JUDGE only when blank.
+- **Two paths into RESULTS now exist** (JUDGING ENTRY `2d`, and the page). Both merge by ENTRY #,
+  last write wins — decide per class which one is used on the day.
+- The load-bearing test is gas-test section 10: the page's POST must produce the **same cheques**
+  as typing the same awards into RESULTS by hand.
+- Browser side: `tools/verify-judging.js` (80 checks, needs the site served; the endpoint is
+  faked via `window.HF_JUDGING_ENDPOINT_OVERRIDE`).

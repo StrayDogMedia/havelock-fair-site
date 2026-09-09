@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#1B1611">
+  <title>Judging — Havelock Fair 2026</title>
+  <!--
+    FAIR-DAY JUDGING — internal, unlisted, deliberately not in the site nav.
+
+    One page. Pick a class, pick the winner of each prize from a dropdown
+    that lists only that section's entries, press Send. Picks persist in
+    localStorage on this device; Send POSTs them to HF_JudgingWeb.gs (its
+    OWN Apps Script deployment — never the registration backend), which
+    merges them into the workbook's RESULTS tab.
+
+    The entries ship WITH the page (../js/judging-data.js) — no read
+    endpoint, no CORS surface, works with no signal in a barn. Regenerate
+    that file whenever ENTRIES is rebuilt: 🏆 Havelock Fair → 5. Export.
+
+    ⚠ The POST is text/plain, never application/json — JSON triggers a CORS
+      preflight that Apps Script answers 405. Same trap as registration.html.
+    ⚠ Dropdown labels are ENTRY-NUMBER FIRST: one section holds two entries
+      for the same exhibitor, and a name-only label is two identical options.
+    ⚠ localStorage is a scratchpad, not a backup. Send is the backup.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/heritage.css">
+  <link rel="stylesheet" href="../css/judging.css">
+</head>
+<body class="hf-judging">
+
+  <header class="jd-top">
+    <a class="jd-brand" href="../index.html" data-en="Havelock Fair 2026" data-fr="Foire Havelock 2026">Havelock Fair 2026</a>
+    <span class="jd-brand-sub" data-en="Judging" data-fr="Jugement">Judging</span>
+    <div class="jd-top-right">
+      <span id="jd-status" class="jd-status" role="status" aria-live="polite"></span>
+      <div class="jd-lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button>
+        <button type="button" data-lang="fr" aria-pressed="false" lang="fr">FR</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="jd-main">
+
+    <!-- VIEW 1 — the picker -->
+    <section id="view-picker" class="jd-view">
+      <div class="jd-head">
+        <span class="hf-eyebrow hf-eyebrow--bright" data-en="Fair-day results" data-fr="Résultats du jour">Fair-day results</span>
+        <h1 class="jd-h1" data-en="Pick a class" data-fr="Choisir une classe">Pick a class</h1>
+        <p class="jd-lede" data-en="Choose the class in front of you. Picks save on this phone as you go — press Send so they reach the office."
+           data-fr="Choisissez la classe devant vous. Les choix restent sur ce téléphone — appuyez sur Envoyer pour qu'ils parviennent au bureau.">Choose the class in front of you. Picks save on this phone as you go — press Send so they reach the office.</p>
+      </div>
+      <label class="jd-judge">
+        <span data-en="Your name (optional — goes on the results)" data-fr="Votre nom (facultatif — inscrit sur les résultats)">Your name (optional — goes on the results)</span>
+        <input id="jd-judge" type="text" autocomplete="name" maxlength="80">
+      </label>
+      <div id="jd-groups" class="jd-groups"></div>
+      <p class="jd-foot" id="jd-foot"></p>
+    </section>
+
+    <!-- VIEW 2 — one class -->
+    <section id="view-class" class="jd-view" hidden>
+      <button type="button" class="jd-back" id="jd-back"><span aria-hidden="true">←</span> <span data-en="All classes" data-fr="Toutes les classes">All classes</span></button>
+      <div class="jd-head">
+        <span class="hf-eyebrow hf-eyebrow--bright" id="jd-class-eyebrow"></span>
+        <h1 class="jd-h1" id="jd-class-title"></h1>
+        <p class="jd-lede" id="jd-class-lede"></p>
+      </div>
+      <div id="jd-sections"></div>
+    </section>
+
+  </main>
+
+  <div id="jd-bar" class="jd-bar" hidden>
+    <span id="jd-bar-msg" class="jd-bar-msg"></span>
+    <button type="button" id="jd-send" class="hf-btn-gold" data-en="Send now" data-fr="Envoyer">Send now</button>
+  </div>
+
+  <script src="../js/judging-data.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    /* ---- the endpoint --------------------------------------------------
+       The URL of the HF_JudgingWeb.gs deployment (Havelock Forms project →
+       Deploy → Web app). NOT the registration endpoint. Until it is pasted
+       in, the page still works as a local scratchpad and says so. */
+    var ENDPOINT = window.HF_JUDGING_ENDPOINT_OVERRIDE || 'PASTE_THE_JUDGING_WEB_APP_URL_HERE';
+    var ENDPOINT_OK = /^https:\/\//.test(ENDPOINT);
+
+    var KEY = 'hf-judging-2026';
+    var PLACINGS = ['1st', '2nd', '3rd', '4th'];
+    var PLACING_FR = { '1st': '1er', '2nd': '2e', '3rd': '3e', '4th': '4e' };
+    var RETRY_MS = 45000;
+
+    var DATA = window.HF_JUDGING || { groups: [], sections: [] };
+    var SECTIONS = {}; DATA.sections.forEach(function (s) { SECTIONS[s.key] = s; });
+    var $ = function (id) { return document.getElementById(id); };
+
+    /* ---- language -----------------------------------------------------
+       Same convention as registration.html: data-en/data-fr on static text,
+       L() for runtime strings, 'hf-lang' in localStorage shared with the
+       rest of the site. Class and section names are NEVER translated — they
+       are verbatim from the prize book and must match the judging sheets. */
+    var lang = (function () { try { var l = localStorage.getItem('hf-lang'); return l === 'fr' ? 'fr' : 'en'; } catch (e) { return 'en'; } })();
+    function L(en, fr) { return lang === 'fr' ? fr : en; }
+    function setLang(l) {
+      lang = l === 'fr' ? 'fr' : 'en';
+      try { localStorage.setItem('hf-lang', lang); } catch (e) {}
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-en]').forEach(function (el) { el.textContent = el.dataset[lang] || el.dataset.en; });
+      document.querySelectorAll('.jd-lang button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'); });
+      render();
+    }
+    document.querySelectorAll('.jd-lang button').forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.lang); }); });
+
+    /* ---- state --------------------------------------------------------
+       picks[key][placing] = entry id.  sent[key] = {at, sig} — what the
+       workbook last acknowledged for that section.  refused[key] = {sig, msg}.
+       A section is PENDING when its current picks differ from what was
+       last acknowledged — so a cleared pick (a retraction) is pending too. */
+    var state = load();
+    var sending = false, lastError = '', lastSentAt = '';
+    var current = null;   // open group id, or null on the picker
+
+    function load() {
+      var s = null;
+      try { s = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+      s = s && typeof s === 'object' ? s : {};
+      s.picks = s.picks || {}; s.sent = s.sent || {}; s.refused = s.refused || {};
+      s.device = s.device || ('d' + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4));
+      s.judge = s.judge || '';
+      return s;
+    }
+    function save() {
+      try { localStorage.setItem(KEY, JSON.stringify(state)); return true; }
+      catch (e) { lastError = L('Could not save on this device — send now.', 'Impossible d’enregistrer sur cet appareil — envoyez maintenant.'); return false; }
+    }
+
+    function clean(p) { var o = {}; PLACINGS.forEach(function (pl) { if (p && p[pl]) o[pl] = p[pl]; }); return o; }
+    function sig(p) { return PLACINGS.map(function (pl) { return (p && p[pl]) || ''; }).join('|'); }
+    var EMPTY_SIG = sig({});
+    function ackSig(key) { return state.sent[key] ? state.sent[key].sig : EMPTY_SIG; }
+    function isPending(key) { return sig(state.picks[key]) !== ackSig(key); }
+    function isRefused(key) { return !!(state.refused[key] && state.refused[key].sig === sig(state.picks[key])); }
+    function isJudged(key) { return sig(state.picks[key]) !== EMPTY_SIG; }
+    function dupes(key) {
+      var seen = {}, out = [], p = state.picks[key] || {};
+      PLACINGS.forEach(function (pl) { var id = p[pl]; if (!id) return; if (seen[id]) out.push(id); seen[id] = 1; });
+      return out;
+    }
+    function pendingKeys() { return DATA.sections.map(function (s) { return s.key; }).filter(isPending); }
+    function sendableKeys() { return pendingKeys().filter(function (k) { return !dupes(k).length && !isRefused(k); }); }
+
+    /* ---- helpers ------------------------------------------------------ */
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function money(n) { n = Number(n) || 0; return '$' + (n % 1 ? n.toFixed(2) : n); }
+    function hhmm(iso) { var d = new Date(iso); if (isNaN(d)) return ''; return (d.getHours() < 10 ? '0' : '') + d.getHours() + ':' + (d.getMinutes() < 10 ? '0' : '') + d.getMinutes(); }
+    function plural(n, en1, enN, fr1, frN) { return n + ' ' + (n === 1 ? L(en1, fr1) : L(enN, frN)); }
+    function placingLabel(pl) { return lang === 'fr' ? PLACING_FR[pl] : pl; }
+    function groupSections(gid) { return DATA.sections.filter(function (s) { return s.group === gid; }); }
+    function groupOf(gid) { for (var i = 0; i < DATA.groups.length; i++) if (DATA.groups[i].id === gid) return DATA.groups[i]; return null; }
+
+    /* ---- render ------------------------------------------------------- */
+    function render() {
+      renderStatus();
+      if (current) renderClass(current); else renderPicker();
+      renderBar();
+    }
+
+    function renderStatus() {
+      var el = $('jd-status'), n = pendingKeys().length, cls = 'jd-status';
+      var off = (navigator.onLine === false) ? L('Offline · ', 'Hors ligne · ') : '';
+      var txt;
+      if (!ENDPOINT_OK) { txt = L('Sending not set up', 'Envoi non configuré'); cls += ' jd-status--off'; }
+      else if (sending)  { txt = L('Sending…', 'Envoi…'); cls += ' jd-status--sending'; }
+      else if (n)        { txt = off + plural(n, 'not sent', 'not sent', 'non envoyé', 'non envoyés'); cls += ' jd-status--pending'; }
+      else if (Object.keys(state.sent).length) { txt = off + L('All sent ✓', 'Tout envoyé ✓'); cls += ' jd-status--sent'; }
+      else               { txt = off + L('Nothing to send', 'Rien à envoyer'); }
+      el.textContent = txt; el.className = cls;
+    }
+
+    function renderPicker() {
+      $('view-picker').hidden = false; $('view-class').hidden = true;
+      var host = $('jd-groups'), html = '';
+      DATA.groups.forEach(function (g) {
+        var secs = groupSections(g.id);
+        var judged = secs.filter(function (s) { return isJudged(s.key); }).length;
+        var pend = secs.filter(function (s) { return isPending(s.key); }).length;
+        var refused = secs.filter(function (s) { return isRefused(s.key); }).length;
+        var cls = 'jd-group' + (pend ? ' jd-group--pending' : (judged === secs.length && secs.length ? ' jd-group--done' : ''));
+        var chip = '';
+        if (refused) chip = '<span class="jd-chip jd-chip--refused">' + esc(plural(refused, 'refused', 'refused', 'refusé', 'refusés')) + '</span>';
+        else if (pend) chip = '<span class="jd-chip jd-chip--pending">' + esc(plural(pend, 'not sent', 'not sent', 'non envoyé', 'non envoyés')) + '</span>';
+        else if (judged) chip = '<span class="jd-chip jd-chip--sent">' + esc(L('Sent ✓', 'Envoyé ✓')) + '</span>';
+        html += '<button type="button" class="' + cls + '" data-group="' + esc(g.id) + '">' +
+          '<span class="jd-group-cls">' + esc(g.cls ? L('Class ', 'Classe ') + g.cls : L('Position only', 'Position seulement')) + '</span>' +
+          '<span class="jd-group-name">' + esc(g.name) + '</span>' +
+          '<span class="jd-group-meta">' + esc(plural(secs.length, 'section', 'sections', 'section', 'sections') + ' · ' +
+             judged + ' ' + L('judged', 'jugée' + (judged === 1 ? '' : 's'))) + '</span>' +
+          chip + '<span class="jd-group-arrow" aria-hidden="true">›</span>' +
+        '</button>';
+      });
+      host.innerHTML = html || '<p class="jd-lede">' + esc(L('No entries loaded. The office needs to export the judging data.', 'Aucune inscription chargée. Le bureau doit exporter les données de jugement.')) + '</p>';
+      host.querySelectorAll('.jd-group').forEach(function (b) { b.addEventListener('click', function () { openGroup(b.dataset.group); }); });
+      var total = DATA.sections.length, judgedAll = DATA.sections.filter(function (s) { return isJudged(s.key); }).length;
+      $('jd-foot').innerHTML = esc(judgedAll + ' / ' + total + ' ' + L('sections judged on this phone.', 'sections jugées sur ce téléphone.')) +
+        (DATA.generatedAt ? ' ' + esc(L('Entries as of', 'Inscriptions au') + ' ' + new Date(DATA.generatedAt).toLocaleString(lang === 'fr' ? 'fr-CA' : 'en-CA', { dateStyle: 'medium', timeStyle: 'short' }) + '.') : '') +
+        ' ' + esc(L('Missing an entry? Ask the office — the list is rebuilt from the registrations.', 'Il manque une inscription? Demandez au bureau — la liste est reconstruite à partir des inscriptions.'));
+    }
+
+    function renderClass(gid) {
+      var g = groupOf(gid); if (!g) { current = null; renderPicker(); return; }
+      $('view-picker').hidden = true; $('view-class').hidden = false;
+      $('jd-class-eyebrow').textContent = g.cls ? L('Class ', 'Classe ') + g.cls : L('Position only — no prize money', 'Position seulement — aucun prix en argent');
+      $('jd-class-title').textContent = g.name;
+      var secs = groupSections(gid);
+      $('jd-class-lede').textContent = L('Pick the winner of each prize. Leave a prize blank if it is not awarded.', 'Choisissez le gagnant de chaque prix. Laissez vide si le prix n’est pas décerné.') +
+        ' ' + plural(secs.length, 'section', 'sections', 'section', 'sections') + '.';
+
+      var host = $('jd-sections'), html = '';
+      secs.forEach(function (s) {
+        var p = state.picks[s.key] || {};
+        var pend = isPending(s.key), ref = isRefused(s.key), dup = dupes(s.key);
+        var chip;
+        if (ref) chip = '<span class="jd-chip jd-chip--refused">' + esc(L('Refused', 'Refusé')) + '</span>';
+        else if (sending && pend && !dup.length) chip = '<span class="jd-chip jd-chip--sending">' + esc(L('Sending…', 'Envoi…')) + '</span>';
+        else if (pend) chip = '<span class="jd-chip jd-chip--pending">' + esc(L('Not sent', 'Non envoyé')) + '</span>';
+        else if (state.sent[s.key] && isJudged(s.key)) chip = '<span class="jd-chip jd-chip--sent">' + esc(L('Sent', 'Envoyé') + ' ' + hhmm(state.sent[s.key].at)) + '</span>';
+        else chip = '<span class="jd-chip">' + esc(L('Not judged', 'Non jugée')) + '</span>';
+
+        html += '<article class="jd-sec' + (ref ? ' jd-sec--refused' : (pend ? ' jd-sec--pending' : '')) + '" data-key="' + esc(s.key) + '">' +
+          '<header class="jd-sec-head">' +
+            '<div class="jd-sec-code">' + esc(L('Section', 'Section') + ' ' + s.code) + '</div>' +
+            '<h2 class="jd-sec-title">' + esc(s.desc) + '</h2>' +
+            '<div class="jd-sec-meta">' + esc((s.division ? s.division + ' · ' : '') + plural(s.entries.length, 'entry', 'entries', 'inscription', 'inscriptions')) + '</div>' +
+            chip +
+          '</header>';
+
+        var options = '<option value="">' + esc(L('— not awarded —', '— non décerné —')) + '</option>' +
+          s.entries.map(function (e) { return '<option value="' + esc(e.id) + '">' + esc(e.label || (e.id + ' — ' + e.name)) + '</option>'; }).join('');
+        PLACINGS.forEach(function (pl, i) {
+          var id = 'pick-' + s.key.replace(/[^a-z0-9]+/gi, '-') + '-' + pl;
+          var chosen = p[pl] || '';
+          html += '<div class="jd-row">' +
+            '<label class="jd-row-label" for="' + id + '"><span class="jd-place">' + esc(placingLabel(pl)) + '</span>' +
+              (s.positionOnly ? '<span class="jd-money jd-money--none">' + esc(L('position only', 'position seulement')) + '</span>'
+               : !Number(s.prizes[i]) ? '<span class="jd-money jd-money--none">' + esc(L('no prize money', 'sans prix en argent')) + '</span>'
+                              : '<span class="jd-money">' + esc(money(s.prizes[i])) + '</span>') + '</label>' +
+            '<select class="jd-pick' + (chosen ? ' is-picked' : '') + '" id="' + id + '" data-key="' + esc(s.key) + '" data-placing="' + pl + '">' + options + '</select>' +
+          '</div>';
+        });
+
+        if (dup.length) html += '<p class="jd-warn">⚠ ' + esc(dup.join(', ') + ' ' + L('is picked for two prizes in this section. Fix it before it can be sent.', 'est choisi pour deux prix dans cette section. Corrigez avant l’envoi.')) + '</p>';
+        else if (ref) html += '<p class="jd-warn">⚠ ' + esc(L('The office’s script refused this section: ', 'Le script du bureau a refusé cette section : ') + state.refused[s.key].msg) + '</p>';
+        else {
+          for (var k = 1; k < PLACINGS.length; k++) {
+            if (p[PLACINGS[k]] && !p[PLACINGS[k - 1]]) {
+              html += '<p class="jd-note">' + esc(placingLabel(PLACINGS[k]) + ' ' + L('is awarded but', 'est décerné mais') + ' ' + placingLabel(PLACINGS[k - 1]) + ' ' + L('is blank — fine if that is intended.', 'est vide — correct si c’est voulu.')) + '</p>';
+              break;
+            }
+          }
+        }
+        html += '</article>';
+      });
+      host.innerHTML = html;
+
+      host.querySelectorAll('.jd-pick').forEach(function (sel) {
+        var p = state.picks[sel.dataset.key] || {};
+        sel.value = p[sel.dataset.placing] || '';
+        sel.addEventListener('change', function () { pick(sel.dataset.key, sel.dataset.placing, sel.value); });
+      });
+    }
+
+    function renderBar() {
+      var bar = $('jd-bar'), msg = $('jd-bar-msg'), btn = $('jd-send');
+      var pend = pendingKeys(), blocked = pend.filter(function (k) { return dupes(k).length; }).length;
+      var refused = pend.filter(isRefused).length;
+      var ok = sendableKeys().length;
+      if (!pend.length && !lastError) { bar.hidden = true; return; }
+      bar.hidden = false;
+      msg.className = 'jd-bar-msg';
+      if (!ENDPOINT_OK) {
+        msg.innerHTML = '<b>' + esc(L('Sending is not set up on this page.', 'L’envoi n’est pas configuré sur cette page.')) + '</b> ' +
+          esc(L('Your picks are saved here — give them to the office.', 'Vos choix sont enregistrés ici — remettez-les au bureau.'));
+        btn.disabled = true; return;
+      }
+      if (sending) { msg.innerHTML = esc(L('Sending…', 'Envoi…')); btn.disabled = true; return; }
+      var parts = [];
+      if (pend.length) parts.push('<b>' + esc(plural(pend.length, 'section not sent yet', 'sections not sent yet', 'section non envoyée', 'sections non envoyées')) + '</b>');
+      if (blocked) parts.push(esc(plural(blocked, 'needs a fix first', 'need a fix first', 'à corriger d’abord', 'à corriger d’abord')));
+      if (refused) parts.push(esc(plural(refused, 'refused — change the picks or call the office', 'refused — change the picks or call the office', 'refusée — modifiez les choix ou appelez le bureau', 'refusées — modifiez les choix ou appelez le bureau')));
+      if (lastError) { msg.classList.add('is-error'); parts.push('<b>' + esc(L('Last attempt failed: ', 'Dernier essai échoué : ') + lastError) + '</b> ' + esc(L('Kept on this phone; will retry.', 'Conservé sur ce téléphone; nouvel essai à venir.'))); }
+      else if (lastSentAt && !pend.length) parts.push(esc(L('Sent', 'Envoyé') + ' ' + hhmm(lastSentAt) + ' ✓'));
+      msg.innerHTML = parts.join(' · ');
+      btn.disabled = !ok;
+    }
+
+    /* ---- actions ------------------------------------------------------ */
+    function pick(key, placing, id) {
+      if (!state.picks[key]) state.picks[key] = {};
+      if (id) state.picks[key][placing] = id; else delete state.picks[key][placing];
+      if (!Object.keys(state.picks[key]).length) delete state.picks[key];
+      save();
+      render();
+    }
+
+    function openGroup(gid) {
+      if (!groupOf(gid)) return;
+      current = gid;
+      try { history.replaceState(null, '', location.pathname + '?class=' + encodeURIComponent(gid)); } catch (e) {}
+      render();
+      window.scrollTo(0, 0);
+    }
+    function closeGroup() {
+      current = null;
+      try { history.replaceState(null, '', location.pathname); } catch (e) {}
+      render();
+      window.scrollTo(0, 0);
+      if (sendableKeys().length) send();   // leaving a class is a natural checkpoint
+    }
+    $('jd-back').addEventListener('click', closeGroup);
+    $('jd-send').addEventListener('click', function () { send(); });
+    $('jd-judge').value = state.judge;
+    $('jd-judge').addEventListener('input', function () { state.judge = $('jd-judge').value.trim().slice(0, 80); save(); });
+
+    /* ---- send --------------------------------------------------------- */
+    function send() {
+      if (sending || !ENDPOINT_OK) return Promise.resolve(false);
+      var keys = sendableKeys();
+      if (!keys.length) { render(); return Promise.resolve(false); }
+      var sigs = {}; keys.forEach(function (k) { sigs[k] = sig(state.picks[k]); });   // what we are sending, even if edited mid-flight
+      var payload = {
+        kind: 'judging-results', version: 1, device: state.device, judge: state.judge,
+        sentAt: new Date().toISOString(),
+        sections: keys.map(function (k) { return { key: k, picks: clean(state.picks[k]) }; })
+      };
+      sending = true; lastError = ''; render();
+      // text/plain on purpose — see the note at the top of the file.
+      return fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!data || !data.ok) throw new Error((data && data.error) || L('Rejected', 'Rejeté'));
+          var at = data.receivedAt || new Date().toISOString();
+          (data.sections || []).forEach(function (s) {
+            if (!s || !sigs.hasOwnProperty(s.key)) return;
+            if (s.ok) { state.sent[s.key] = { at: at, sig: sigs[s.key] }; delete state.refused[s.key]; }
+            else state.refused[s.key] = { sig: sigs[s.key], msg: (s.errors || []).join(' ') };
+          });
+          lastSentAt = at; save();
+        })
+        .catch(function (err) { lastError = String(err && err.message ? err.message : err); })
+        .then(function () { sending = false; render(); return !lastError; });
+    }
+
+    // Retry on its own: when the signal comes back, when the tab is looked at
+    // again, and on a slow heartbeat — a judge should never have to babysit a
+    // failed send. Only sections that are still pending go out.
+    window.addEventListener('online', function () { renderStatus(); send(); });
+    window.addEventListener('offline', function () { renderStatus(); });
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') send(); });
+    setInterval(function () { if (sendableKeys().length && navigator.onLine !== false) send(); }, RETRY_MS);
+    window.addEventListener('beforeunload', function (ev) {
+      if (pendingKeys().length && ENDPOINT_OK) { ev.preventDefault(); ev.returnValue = ''; }
+    });
+
+    /* ---- boot --------------------------------------------------------- */
+    setLang(lang);   // renders too
+    var want = null;
+    try { want = new URLSearchParams(location.search).get('class'); } catch (e) {}
+    if (want && groupOf(want)) openGroup(want);
+
+    if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) {
+      navigator.serviceWorker.register('judging-sw.js').catch(function () { /* still works online */ });
+    }
+
+    // exposed for the harness (tools/verify-judging.js)
+    window.__hfJudging = { state: function () { return state; }, pending: pendingKeys, send: send, open: openGroup, close: closeGroup, endpointOk: ENDPOINT_OK };
+  })();
+  </script>
+</body>
+</html>

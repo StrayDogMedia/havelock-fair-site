@@ -357,5 +357,121 @@ try { HF_buildEntries(); } catch (err) { blocked = err.message; }
 ck('picks in JUDGING ENTRY block a renumber even with RESULTS empty',
    /JUDGING ENTRY holds/.test(blocked), blocked || '(did not throw)');
 
+
+console.log('\n=== 10. HF_JudgingWeb — the web page\'s Submit ===');
+// The web app lives in its own file (own deployment). It needs LockService and
+// ContentService, which the sheet mock does not carry; stub them here.
+global.LockService = { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) };
+global.ContentService = { createTextOutput: s => ({ setMimeType() { return { getContent: () => s }; } }), MimeType: { JSON: 'json' } };
+global.HtmlService = { createHtmlOutput: () => ({ setWidth() { return this; }, setHeight() { return this; } }) };
+eval(fs.readFileSync(require('path').join(__dirname, '..', 'HF_JudgingWeb.gs'), 'utf8'));
+const post = body => JSON.parse(doPost({ postData: { contents: typeof body === 'string' ? body : JSON.stringify(body) } }).getContent());
+const keyOf = id => { const r = erows.find(x => String(x[0]).trim() === id);
+  return [r[eh.indexOf('CLASS #')], r[eh.indexOf('DIVISION')], r[eh.indexOf('SECTION CODE')]].join('||'); };
+const resRowsNow = () => SHEETS['RESULTS'].g.slice(2).filter(r => String(r[rhdr.indexOf('ENTRY #')]).trim());
+const placingOf = id => { const r = resRowsNow().find(x => String(x[rhdr.indexOf('ENTRY #')]).trim() === id); return r ? String(r[rhdr.indexOf('PLACING')]).trim() : null; };
+
+// Start from a clean RESULTS (section 8 emptied it) and no picks in JUDGING ENTRY.
+SHEETS['JUDGING ENTRY'].g.slice(2).forEach(r => { r[jeCol.winner] = ''; r[jeCol.entry] = ''; });
+SHEETS['PRIZE CALCULATIONS'].g = SHEETS['PRIZE CALCULATIONS'].g.slice(0, 2);
+SHEETS['CHEQUE REGISTER'].g = SHEETS['CHEQUE REGISTER'].g.slice(0, 2);
+
+// --- refusals are loud, and nothing is written
+ck('doGet answers a health check', JSON.parse(doGet({}).getContent()).app === 'HF_JudgingWeb');
+ck('a non-JSON body is refused', post('hello').ok === false);
+ck('a registration-shaped payload is refused, not written',
+   post({ formType: 'General', firstName: 'X' }).ok === false && resRowsNow().length === 0);
+ck('a payload with no sections is refused', post({ kind: 'judging-results', sections: [] }).ok === false);
+
+// --- the data file: same sections as JUDGING ENTRY, and no contact details
+const data = hfjwBuildData_();
+ck('judging-data covers every section JUDGING ENTRY has', data.sections.length === jeHeaders.length, data.sections.length + ' vs ' + jeHeaders.length);
+ck('judging-data section keys match the workbook keys', data.sections.every(s => groupKeys.has(s.key)));
+ck('every entry in judging-data is in ENTRIES', data.sections.every(s => s.entries.every(e => erows.some(r => String(r[0]).trim() === e.id))));
+ck('dropdown labels are entry-number first', data.sections.every(s => s.entries.every(e => /^E\d+ — /.test(e.label))));
+ck('position-only groups are "4h" and "eq", never a blank class id',
+   data.groups.filter(g => g.positionOnly).map(g => g.id).sort().join(',') === '4h,eq',
+   data.groups.filter(g => g.positionOnly).map(g => g.id).join(','));
+const fileText = hfjwDataFile_(data, 'test');
+ck('the data file carries no email, phone or DOB', !/@|"phone"|"email"|"dob"/i.test(fileText));
+ck('the data file is valid JS that defines window.HF_JUDGING',
+   (() => { const w = {}; new Function('window', fileText)(w); return !!w.HF_JUDGING && w.HF_JUDGING.sections.length === data.sections.length; })());
+
+// --- 🔴 THE LOAD-BEARING CHECK: the same awards as section 3 (typed by hand)
+//     and section 7 (JUDGING ENTRY), sent from the page, must produce the SAME
+//     money: Claudia 27 / Karen 5 / Riley 20, three cheques, $52.
+const r1 = post({ kind: 'judging-results', version: 1, device: 'test-phone', judge: 'Pat', sections: [
+  { key: keyOf(claudia[0][0]), picks: { '1st': claudia[0][0] } },
+  { key: keyOf(claudia[1][0]), picks: { '1st': claudia[1][0] } },
+  { key: keyOf(claudia[2][0]), picks: { '1st': claudia[2][0] } },
+  { key: keyOf(karen[0][0]),   picks: { '1st': karen[0][0] } },
+  { key: keyOf(riley[0][0]),   picks: { '1st': riley[0][0] } },
+  { key: keyOf(riley[1][0]),   picks: { '4th': riley[1][0] } },
+  { key: keyOf(fh1[0]),        picks: { '1st': fh1[0] } }
+]});
+ck('a clean submit is accepted, every section ok', r1.ok === true && r1.sections.every(s => s.ok), JSON.stringify(r1).slice(0, 200));
+ck('seven RESULTS rows, one per awarded entry', resRowsNow().length === 7, resRowsNow().length);
+ck('RESULT #s are unique', new Set(resRowsNow().map(r => String(r[rhdr.indexOf('RESULT #')]))).size === 7);
+ck('the judge name lands in JUDGE', resRowsNow().every(r => String(r[rhdr.indexOf('JUDGE')]) === 'Pat'));
+ck('JUDGING LOG records one line per section', SHEETS['JUDGING LOG'].g.slice(1).filter(r => String(r[0]).trim()).length === 7);
+
+// Section 3 awarded Claudia 1st / 2nd / 3rd across her three sections.
+// Those are three one-entry sections, so from the page that is 1st / 2nd / 3rd
+// of three different sections. Re-send two of them as corrections.
+const r2 = post({ kind: 'judging-results', device: 'test-phone', judge: 'Pat', sections: [
+  { key: keyOf(claudia[1][0]), picks: { '2nd': claudia[1][0] } },
+  { key: keyOf(claudia[2][0]), picks: { '3rd': claudia[2][0] } }
+]});
+ck('a corrected placing UPDATES the row instead of appending', r2.ok && r2.totals.updated === 2 && r2.totals.added === 0 && resRowsNow().length === 7,
+   JSON.stringify(r2.totals) + ' rows=' + resRowsNow().length);
+ck('the corrected placings are what was sent', placingOf(claudia[1][0]) === '2nd' && placingOf(claudia[2][0]) === '3rd');
+const r2b = post({ kind: 'judging-results', device: 'test-phone', sections: [{ key: keyOf(claudia[2][0]), picks: { '3rd': claudia[2][0] } }] });
+ck('re-sending the same picks is reported unchanged, not updated', r2b.ok && r2b.totals.unchanged === 1 && r2b.totals.updated === 0, JSON.stringify(r2b.totals));
+
+// Claudia donates her 3rd back — typed by hand in RESULTS, and the web app must
+// not have wiped it on the re-send (it only touches PLACING / RESULT # / JUDGE).
+const claudia3row = resRowsNow().find(r => String(r[rhdr.indexOf('ENTRY #')]).trim() === claudia[2][0]);
+claudia3row[rhdr.indexOf('DONATED?')] = 'Yes';
+post({ kind: 'judging-results', device: 'test-phone', sections: [{ key: keyOf(claudia[2][0]), picks: { '3rd': claudia[2][0] } }] });
+ck('a re-send leaves a hand-typed DONATED? alone', String(claudia3row[rhdr.indexOf('DONATED?')]) === 'Yes');
+
+console.log('  ' + HF_calculatePrizes());
+const calc3 = SHEETS['PRIZE CALCULATIONS'].g, ch3 = calc3[1];
+const gc3 = (id, col) => { const r = calc3.slice(2).find(x => String(x[0]).trim() === id); return r ? Number(r[ch3.indexOf(col)]) : null; };
+ck('WEB path: Claudia net = 27 (same as typing it)', gc3('HF2026-1001', 'NET CHEQUE ($)') === 27, gc3('HF2026-1001', 'NET CHEQUE ($)'));
+ck('WEB path: Karen net = 5', gc3('HF2026-1002', 'NET CHEQUE ($)') === 5, gc3('HF2026-1002', 'NET CHEQUE ($)'));
+ck('WEB path: Riley net = 20', gc3('HF2026-1003', 'NET CHEQUE ($)') === 20, gc3('HF2026-1003', 'NET CHEQUE ($)'));
+const chq3 = SHEETS['CHEQUE REGISTER'].g.slice(2).filter(r => String(r[0]).trim());
+ck('WEB path: same 3 cheques, same $52 total', chq3.length === 3 && chq3.reduce((s, r) => s + Number(r[6] || 0), 0) === 52,
+   chq3.length + ' cheques, $' + chq3.reduce((s, r) => s + Number(r[6] || 0), 0));
+ck('HF_verify passes on the web path', /ALL CHECKS PASSED/.test(HF_verify()));
+
+// --- a retraction: the section is re-sent with the prize blank
+const r3 = post({ kind: 'judging-results', device: 'test-phone', sections: [{ key: keyOf(riley[1][0]), picks: {} }] });
+ck('sending a section with the prize blank CLEARS the placing', r3.ok && r3.totals.cleared === 1 && placingOf(riley[1][0]) === '', JSON.stringify(r3.totals) + ' placing=' + JSON.stringify(placingOf(riley[1][0])));
+ck('the retracted row is kept, not deleted (nothing vanishes)', resRowsNow().length === 7, resRowsNow().length);
+console.log('  ' + HF_calculatePrizes());
+ck('HF_verify still passes after a retraction', /ALL CHECKS PASSED/.test(HF_verify()));
+
+// --- one bad section in a POST is refused on its own; the good one still lands
+const r4 = post({ kind: 'judging-results', device: 'test-phone', sections: [
+  { key: keyOf(karen[0][0]), picks: { '1st': claudia[0][0] } },          // Claudia's entry is not in Karen's section
+  { key: keyOf(riley[1][0]), picks: { '4th': riley[1][0] } }             // fine — re-awards the retracted 4th
+]});
+const bad4 = r4.sections.find(s => s.key === keyOf(karen[0][0])), good4 = r4.sections.find(s => s.key === keyOf(riley[1][0]));
+ck('an entry from another section is REFUSED for that section only', r4.ok && bad4 && bad4.ok === false && /not entered in this section/.test(bad4.errors.join(' ')), JSON.stringify(bad4));
+ck('the good section in the same POST still goes through', good4 && good4.ok === true && placingOf(riley[1][0]) === '4th');
+ck('Karen\'s existing 1st is untouched by the refused section', placingOf(karen[0][0]) === '1st');
+ck('the refusal is in JUDGING LOG', SHEETS['JUDGING LOG'].g.some(r => String(r[5]) === 'REFUSED'));
+
+// --- the same entry in two placings of one section
+const twoIn37 = data.sections.find(s => s.entries.length >= 2 && !s.positionOnly);
+const r5 = post({ kind: 'judging-results', device: 'test-phone', sections: [{ key: twoIn37.key, picks: { '1st': twoIn37.entries[0].id, '2nd': twoIn37.entries[0].id } }] });
+ck('the same entry for two prizes is refused', r5.ok && r5.sections[0].ok === false && /both/.test(r5.sections[0].errors.join(' ')), JSON.stringify(r5.sections[0]));
+ck('unknown entry id is refused', post({ kind: 'judging-results', sections: [{ key: twoIn37.key, picks: { '1st': 'E9999' } }] }).sections[0].ok === false);
+ck('unknown section key is refused', post({ kind: 'judging-results', sections: [{ key: '99||x||1', picks: { '1st': twoIn37.entries[0].id } }] }).sections[0].ok === false);
+ck('a bogus placing name is refused', post({ kind: 'judging-results', sections: [{ key: twoIn37.key, picks: { 'winner': twoIn37.entries[0].id } }] }).sections[0].ok === false);
+ck('nothing from the refused posts reached RESULTS', resRowsNow().length === 7, resRowsNow().length);
+
 console.log(fails ? `\n❌ ${fails} check(s) FAILED` : '\n✅ ALL CHECKS PASSED');
 process.exit(fails ? 1 : 0);
