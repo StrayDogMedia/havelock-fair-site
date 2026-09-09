@@ -9,7 +9,7 @@ Workbook `1TBxMBM4RSyqDDTxuTiAyxWhOiRvyNfxMzK4LgXqFID0`. Scripts live in
 `tools/apps-script/` in this repo. Harness:
 
 ```bash
-node tools/apps-script/judging-tests/gas-test.js   # 35 checks, no deps
+node tools/apps-script/judging-tests/gas-test.js   # 70 checks, no deps
 ```
 
 The chain: REGISTRATIONS → **ENTRIES** → **JUDGING SHEETS** → RESULTS →
@@ -48,6 +48,25 @@ vanish silently.
 
 The load-bearing assertion in the harness is
 **"every registration row produced at least one entry or a flag"**. Keep it.
+
+## Writing into a column that has a dropdown
+
+🔴 **Clear the validation before writing new vocabulary.** `HF_Dropdowns.gs` puts a **strict**
+rule (`setAllowInvalid(false)`) on several columns. Writing a value that is not in the list
+makes Sheets **reject the whole `setValues()`** — and Apps Script surfaces the rule's help text
+as the *entire* error message, with no stack. On 2026-09-09 a merge failed with the single word
+`Division.`, and because `clearContent()` had already run, 50 SECTIONS rows were wiped.
+
+So: `range.clearDataValidations()` → write → **re-run `HF_installDropdowns`** to rebuild the
+rule with the new vocabulary.
+
+⚠️ **Never "fix" this with `setAllowInvalid(true)`.** The strict rule is the point.
+⚠️ **An Apps Script error that is a bare help-text string with no stack is a rejected write.**
+
+⚠️ **Never rebuild a block from the rows you are about to overwrite.** That merge read its
+section descriptions from the very rows it cleared, so a re-run would have written blanks over
+the real data. Guard with a health check that refuses on a damaged block (`hfbmClass3_`), and
+keep a repair path that carries the original data verbatim (`HF_restoreClass3Sections`).
 
 ## Reading the sheet without being lied to
 
@@ -102,6 +121,7 @@ RESULTS stays open — it is the fair-day typing tab.
 ## Dropdowns
 
 `HF_Dropdowns.gs` reads its lists **from the workbook** (CLASSES tab + VALIDATION LISTS), never
-hardcoded — which is why VALIDATION LISTS warns against renaming columns. `CLASS(ES) ASSIGNED`
-on JUDGES/DIRECTORS is **multi-select**: a judge covers several classes. Multi-select needs the
-newer Apps Script runtime and falls back to single-pick automatically.
+hardcoded — which is why VALIDATION LISTS warns against renaming columns. 🔴 **Multi-select is NOT available on this account** — confirmed by install 2026-09-06; every
+field returned `(single)` because `setMultiSelect` throws. So `CLASS(ES) ASSIGNED` on JUDGES
+**allows free text**: a judge covers several classes, and a strict list would make that
+impossible to record. DIRECTORS has no such column.

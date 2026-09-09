@@ -134,6 +134,50 @@ ck('verify counts only real ENTRY #s, not the flag block',
    /ENTRY # unique \((\d+) entries/.exec(rep)[1] === String(erows.length),
    /ENTRY # unique \((\d+) entries/.exec(rep)[1] + ' vs ' + erows.length);
 
+console.log('\n=== 9. breed merge — the damaged-block guard ===');
+eval(fs.readFileSync(require('path').join(__dirname, '..', 'HF_BreedMerge.gs'), 'utf8'));
+
+// A healthy block merges cleanly: 5 divisions x 10 sections -> 2 x 10.
+const secTbl = () => hfReadTable_(HF_TABS.sections, ['CLASS #','SECTION CODE','SECTION DESCRIPTION','PRIZE TIER']);
+ck('Class 3 starts healthy', hfbmClass3_(secTbl()).healthy);
+const mergeMsg = HF_mergeBreeds();
+ck('merge reports the rewrite', /Class 3 rewritten from \d+ rows to 20/.test(mergeMsg), mergeMsg.split('\n')[2]);
+ck('merge is idempotent', /0 cell\(s\) relabelled/.test(HF_mergeBreeds()));
+
+// 🔴 THE REGRESSION. On 2026-09-09 HF_Dropdowns had put a STRICT validation on
+// SECTIONS·DIVISION whose list did not contain "A. Holstein", so Sheets rejected
+// setValues() — and Apps Script surfaced the rule's help text as the whole error
+// message ("Division.", no stack). clearContent() had already run, so Class 3 was
+// wiped and never rewritten. Worse, the builder reads its section descriptions
+// from the rows it is about to overwrite, so a re-run would have written ten
+// BLANK sections over the real ones. The guard must refuse instead.
+const SS = SHEETS['SECTIONS'];
+const st = secTbl();
+const c3rows = st.rows.filter(r => String(r['CLASS #']).trim() === '3');
+const descCol = st.cols.indexOf('SECTION DESCRIPTION') + 1;
+const wiped = c3rows.slice(0, 5).map(r => r.__row);
+wiped.forEach(rn => { SS._ensure(rn, descCol); SS.g[rn - 1][descCol - 1] = ''; });
+
+const health = hfbmClass3_(secTbl());
+ck('a damaged Class 3 block reports healthy:false', health.healthy === false,
+   'blanks=' + health.blanks + ' codes=' + health.distinctCodes);
+
+let threw = '';
+try { HF_mergeBreeds(); } catch (err) { threw = err.message; }
+ck('merge REFUSES on a damaged block rather than rebuilding from it',
+   /damaged/i.test(threw), threw || '(did not throw — it would have written blanks)');
+
+// And the repair path puts the original 50 rows back, verbatim.
+const restoreMsg = HF_restoreClass3Sections();
+ck('restore rewrites all 50 original rows', /50 rows/.test(restoreMsg), restoreMsg.split('\n')[2]);
+const c3After = hfbmClass3_(secTbl());
+ck('Class 3 is healthy again after restore', c3After.healthy, 'blanks=' + c3After.blanks);
+// It reports "looks intact — 50 rows…" and writes nothing; assert on the
+// behaviour (no rewrite happened) rather than the exact wording.
+const idemMsg = HF_restoreClass3Sections();
+ck('restore refuses when the block is already healthy',
+   /intact|healthy|already/i.test(idemMsg) && !/rows written/i.test(idemMsg), idemMsg.split('\n')[0]);
+
 console.log('\n=== 5. guard: rebuilding entries with results present must refuse ===');
 let refused = false, guardMsg = '';
 try { HF_buildEntries(); } catch (err) { guardMsg = err.message; refused = /would renumber/.test(err.message); }
