@@ -6,7 +6,7 @@ in the browser (paste script → deploy → paste URL → export data on fair mo
 exports `js/judging-data.js`), `pages/judging.html` + `css/judging.css` + `pages/judging-sw.js`
 (offline reload), `judging-tests/build-judging-data.js`, gas-test section 10 (33 checks, incl.
 the same-money equivalence), `tools/verify-judging.js` (80 checks in real Chrome, fake endpoint).
-Not yet done: the deployment URL is a placeholder in the page until step 3.
+Deployed 2026-09-09 evening: the web app URL is in the page and answers the health check; step 4 (fair-morning export) remains.
 
 The plan below is kept as written — it is the brief the build was verified against.
 

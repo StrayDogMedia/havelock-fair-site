@@ -106,11 +106,16 @@ const PRIZE_KEY = DATA.sections.find(s => !s.positionOnly && s.entries.length >=
       classShown: getComputedStyle(document.getElementById('view-class')).display,
       status: document.getElementById('jd-status').textContent,
       sendDisabled: document.getElementById('jd-send').disabled,
-      barShown: getComputedStyle(document.getElementById('jd-bar')).display
+      barShown: getComputedStyle(document.getElementById('jd-bar')).display,
+      endpointOk: window.__hfJudging.endpointOk
     }));
     is('one card per grouping, in data order', r.groups, DATA.groups.map(g => g.id));
     is('picker visible, class view hidden', [r.pickerShown !== 'none', r.classShown], [true, 'none']);
-    is('no endpoint pasted → the page says so instead of pretending', r.status, 'Sending not set up');
+    // The shipped page carries the real deployment URL (since 2026-09-09). If it
+    // ever regresses to the placeholder, the page must say so instead of pretending.
+    is('endpoint configured → idle pill; placeholder → "Sending not set up"',
+       r.status, r.endpointOk ? 'Nothing to send' : 'Sending not set up');
+    truthy('the shipped page has a real https endpoint', r.endpointOk);
     is('send bar hidden when nothing is pending', r.barShown, 'none');
     const labels = await p.evaluate(() => [...document.querySelectorAll('.jd-group-cls')].map(e => e.textContent));
     truthy('position-only cards never render "Class  —"', !labels.some(l => /Class\s*$/.test(l)) && labels.filter(l => /Position only/.test(l)).length === DATA.groups.filter(g => g.positionOnly).length, labels);

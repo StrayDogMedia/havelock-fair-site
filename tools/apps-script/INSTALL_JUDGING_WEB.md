@@ -45,7 +45,12 @@ This app is its own deployment so that can never happen to a judging payload.
 ⚠️ **Every later edit to `HF_JudgingWeb.gs` needs Deploy → Manage deployments → ✎ → New version.**
 A saved script is not a deployed script; the URL keeps serving the old code until you do this.
 
-## 3. Put the URL in the page (1 min + push)
+## 3. Put the URL in the page (1 min + push) — ✅ DONE 2026-09-09
+
+Deployment URL (answers the health check, pasted into the page and pushed the same evening):
+`https://script.google.com/macros/s/AKfycbxzDl5BItys09XGvtgTOUhjOXyt3KTvR_0wgW5bc2n_FU3nA7oNi-6zYUyACA3R5wws/exec`
+
+If the deployment is ever re-created (a NEW deployment, not a new version), repeat this step with the new URL.
 
 In `pages/judging.html`, near the top of the script:
 ```js
