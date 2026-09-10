@@ -22,10 +22,17 @@
  * pages/directions.html?calibrate=1 prints the percentage under the cursor and
  * copies it on click, which makes that minutes rather than a chore.
  *
- * THE ARTWORK (2026-09-06, Jesse). A top-down illustrated plan commissioned to
- * match the fair's own numbered site plan building for building. Two versions
- * were generated: a labelled one carrying painted number badges and a bilingual
- * legend, and this UNLABELLED plate. The unlabelled plate is what ships — the
+ * THE ARTWORK (2026-09-06, revised 2026-09-10, Jesse). A top-down illustrated
+ * plan commissioned to match the fair's own numbered site plan building for
+ * building. Several versions were generated: a labelled one carrying painted
+ * number badges and a bilingual legend, and UNLABELLED plates. The plate that
+ * ships is "Spaced-Buildings-No-Tents": the exhibitor tents run along the WEST
+ * FENCE rather than through the middle of the grounds, the two small tents
+ * beside 6 are gone, and the buildings along Route 202 are spread further
+ * apart. Source is a 4096x6144 PNG; the shipped JPEG is the 3864x5556 window
+ * at offset (200, 320), scaled to 974x1400. Pins 1-6 and 9 were re-measured
+ * for it; 7, 8 and 10-17 carried over unchanged because that half of the
+ * drawing did not move. The unlabelled plate is what ships — the
  * badges would have doubled up with the HTML pins, and a baked-in legend cannot
  * translate to Spanish or be reached by a keyboard. The labelled version stays
  * useful as the reference for WHICH BUILDING IS WHICH when re-measuring pins.
@@ -41,8 +48,8 @@
  * the grounds. Markers are markers, not survey points.
  *
  * ⚠️ 9 Booths is really THREE locations — the fair's plan marks it three times,
- * and the art draws a row of tents. One pin can only sit at one of them; it is
- * placed on the upper cluster, which is the largest.
+ * and the art draws a row of tents along the west fence. One pin can only sit
+ * at one of them; it is placed on the middle tent of the row.
  *
  * Spanish is ours — the fair's plan is EN/FR only.
  */
@@ -69,15 +76,15 @@ const mapCategories = {
  */
 
 const mapLocations = {
-  1:  { cat: "services",    x:  36.5, y:  77.5, en: "Gate #2 (Pedestrian)",              fr: "Gate #2 (piéton)",                       es: "Puerta n.º 2 (peatonal)" },
-  2:  { cat: "services",    x:  60.5, y:  84.5, en: "Gate #1 (Vehicles)",                fr: "Gate #1 (véhicules)",                    es: "Puerta n.º 1 (vehículos)" },
-  3:  { cat: "services",    x:  49.5, y:  82.5, en: "Office",                            fr: "Bureau",                                 es: "Oficina" },
-  4:  { cat: "exhibits",    x:  24.0, y:  69.0, en: "Dining Hall & Art Display",         fr: "Salle à dîner et exposition d'art",      es: "Comedor y exposición de arte" },
-  5:  { cat: "exhibits",    x:  45.0, y:  72.5, en: "Baked Goods & Handicraft Building", fr: "Exposition confection et artisanat",     es: "Repostería y artesanía" },
-  6:  { cat: "exhibits",    x:  31.0, y:  56.5, en: "Vegetable, Fruit & Flower Building",fr: "Exposition fleur, légume et fruit",      es: "Verduras, frutas y flores" },
+  1:  { cat: "services",    x:  44.0, y:  82.0, en: "Gate #2 (Pedestrian)",              fr: "Gate #2 (piéton)",                       es: "Puerta n.º 2 (peatonal)" },
+  2:  { cat: "services",    x:  67.5, y:  89.5, en: "Gate #1 (Vehicles)",                fr: "Gate #1 (véhicules)",                    es: "Puerta n.º 1 (vehículos)" },
+  3:  { cat: "services",    x:  56.5, y:  87.0, en: "Office",                            fr: "Bureau",                                 es: "Oficina" },
+  4:  { cat: "exhibits",    x:  22.0, y:  71.5, en: "Dining Hall & Art Display",         fr: "Salle à dîner et exposition d'art",      es: "Comedor y exposición de arte" },
+  5:  { cat: "exhibits",    x:  46.5, y:  73.5, en: "Baked Goods & Handicraft Building", fr: "Exposition confection et artisanat",     es: "Repostería y artesanía" },
+  6:  { cat: "exhibits",    x:  29.5, y:  60.5, en: "Vegetable, Fruit & Flower Building",fr: "Exposition fleur, légume et fruit",      es: "Verduras, frutas y flores" },
   7:  { cat: "amenities",   x:  66.5, y:  68.5, en: "Sugar Shack",                       fr: "Cabane à sucre",                         es: "Cabaña de azúcar" },
   8:  { cat: "events",      x:  48.0, y:  52.0, en: "Music Building",                    fr: "Musique",                                es: "Edificio de música" },
-  9:  { cat: "amenities",   x:  22.0, y:  43.0, en: "Booths",                            fr: "Kiosques",                               es: "Casetas" },
+  9:  { cat: "amenities",   x:  15.5, y:  28.5, en: "Booths",                            fr: "Kiosques",                               es: "Casetas" },
   10: { cat: "events",      x:  55.0, y:  37.0, en: "Horse Ring",                        fr: "Aréna équestre",                         es: "Arena ecuestre" },
   11: { cat: "agriculture", x:  43.5, y:  21.3, en: "Large Poultry",                     fr: "Grosse volaille",                        es: "Aves grandes"   },
   12: { cat: "agriculture", x:  49.0, y:  15.5, en: "Poultry & Rabbit Building",         fr: "Exposition volaille",                    es: "Aves y conejos" },
