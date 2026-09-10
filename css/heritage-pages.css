@@ -1098,8 +1098,22 @@ a.ev-venue:hover { color: var(--hf-gold-bright); }
 /* ============================================================
    SPONSORS — tier headers + cards
    (class names kept from the sponsor builder script)
+
+   2026-09-10 rebuild: Jesse wants the logos and cards "much more
+   prominent" — the old row (54px logo, name beside it, both fighting
+   for attention at the same size) undersold every sponsor equally.
+   Cards flipped to LOGO ON TOP, large, filling most of the card; the
+   name is now a caption underneath, not a co-equal element. The plate
+   is what's prominent, not the text describing it.
+
+   Tier still controls scale, but now three things shrink together as
+   tier steps down — plate size, card padding, name size — so a Bronze
+   card isn't just a smaller Gold card with more crowding, and Featured
+   reads unmistakably as the top of the page. A card with a real logo
+   and a card with only initials use the SAME plate size within a tier:
+   what's missing is dignity of blank space, never a smaller box.
    ============================================================ */
-.sponsor-tier { margin-bottom: clamp(48px, 7vh, 80px); }
+.sponsor-tier { margin-bottom: clamp(56px, 8vh, 96px); }
 .sponsor-tier:last-child { margin-bottom: 0; }
 .tier-header {
   display: flex;
@@ -1107,7 +1121,7 @@ a.ev-venue:hover { color: var(--hf-gold-bright); }
   gap: 18px;
   border-bottom: 1px solid var(--hf-rule);
   padding-bottom: 16px;
-  margin-bottom: 26px;
+  margin-bottom: 32px;
 }
 .tier-title {
   font-family: var(--hf-serif);
@@ -1115,54 +1129,77 @@ a.ev-venue:hover { color: var(--hf-gold-bright); }
   font-size: clamp(26px, 3vw, 40px);
   color: var(--hf-ivory-bright);
 }
-.sponsor-grid { display: grid; gap: 14px; }
-.sponsor-grid.featured { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
-.sponsor-grid.gold { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-.sponsor-grid.silver { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-.sponsor-grid.bronze { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
-.sponsor-grid.community { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.tier-count {
+  font-family: var(--hf-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hf-body-on-dark);
+}
+
+.sponsor-grid { display: grid; gap: 22px; }
+.sponsor-grid.featured  { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px; }
+.sponsor-grid.gold      { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+.sponsor-grid.silver    { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+.sponsor-grid.bronze    { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; }
+.sponsor-grid.friends   { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; }
+.sponsor-grid.community { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+
 .sponsor-card {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
+  flex-direction: column;
   border: 1px solid var(--hf-rule);
   background: var(--hf-charcoal);
   color: var(--hf-ivory);
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
-.sponsor-card:hover { border-color: var(--hf-gold); }
-.sponsor-card[href="#"] { cursor: default; }
-.sponsor-card[href="#"]:hover { border-color: var(--hf-rule); }
-.sponsor-logo {
-  flex-shrink: 0;
-  width: 54px;
-  height: 54px;
+.sponsor-card:hover {
+  border-color: var(--hf-gold);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.35);
+}
+.sponsor-card[href="#"]:hover {
+  border-color: var(--hf-frame);
+  transform: none;
+  box-shadow: none;
+}
+
+/* the plate: a generous ivory field the logo sits on, or the initials
+   tile when there is no logo yet — same footprint either way, so a
+   sponsor without artwork is never the small one on the wall */
+.sponsor-plate {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: var(--hf-ivory-bright);
   display: grid;
   place-items: center;
-  font-family: var(--hf-serif);
-  font-weight: 500;
-  font-size: 17px;
-  color: var(--hf-ivory-bright);
-  letter-spacing: 0.02em;
+  overflow: hidden;
 }
 .sponsor-logo-img {
-  flex-shrink: 0;
-  width: 54px;
-  height: 54px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  background: var(--hf-ivory-bright);
-  padding: 5px;
+  padding: 14%;
   box-sizing: border-box;
 }
-.sponsor-grid.featured .sponsor-logo,
-.sponsor-grid.featured .sponsor-logo-img { width: 72px; height: 72px; }
-.sponsor-grid.featured .sponsor-card { padding: 24px; border-color: var(--hf-frame); }
-.sponsor-grid.featured .sponsor-name { font-size: 17px; }
-.sponsor-name {
-  font-size: 14.5px;
+.sponsor-logo {
+  font-family: var(--hf-serif);
   font-weight: 500;
-  line-height: 1.35;
+  letter-spacing: 0.02em;
+  color: var(--hf-ivory-bright);
+  font-size: clamp(22px, 4vw, 34px);
+}
+.sponsor-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px;
+}
+.sponsor-name {
+  font-weight: 500;
+  line-height: 1.3;
   color: rgba(241, 232, 214, 0.92);
 }
 .sponsor-link-hint {
@@ -1174,9 +1211,44 @@ a.ev-venue:hover { color: var(--hf-gold-bright); }
 }
 .sponsor-card:hover .sponsor-link-hint { opacity: 1; }
 .sponsor-card[href="#"] .sponsor-link-hint { display: none; }
+
+/* ---- scale steps down by tier: plate proportion, padding, type ---- */
+.sponsor-grid.featured .sponsor-plate { aspect-ratio: 16 / 9; }
+.sponsor-grid.featured .sponsor-logo-img { padding: 10%; }
+.sponsor-grid.featured .sponsor-info { padding: 22px 24px; }
+.sponsor-grid.featured .sponsor-name { font-size: 18px; }
+
+.sponsor-grid.gold .sponsor-info { padding: 18px 20px; }
+.sponsor-grid.gold .sponsor-name { font-size: 16px; }
+
+.sponsor-grid.silver .sponsor-info { padding: 15px 16px; }
+.sponsor-grid.silver .sponsor-name { font-size: 14.5px; }
+
+.sponsor-grid.bronze .sponsor-plate,
+.sponsor-grid.friends .sponsor-plate { aspect-ratio: 4 / 3; }
+.sponsor-grid.bronze .sponsor-info,
+.sponsor-grid.friends .sponsor-info { padding: 12px 14px; }
+.sponsor-grid.bronze .sponsor-name,
+.sponsor-grid.friends .sponsor-name { font-size: 13px; }
+.sponsor-grid.bronze .sponsor-logo,
+.sponsor-grid.friends .sponsor-logo { font-size: clamp(18px, 5vw, 26px); }
+
+.sponsor-grid.community .sponsor-info { padding: 16px 18px; }
+
 @media (max-width: 560px) {
-  .sponsor-grid.featured, .sponsor-grid.gold, .sponsor-grid.silver,
-  .sponsor-grid.bronze, .sponsor-grid.community { grid-template-columns: 1fr; }
+  /* Featured stays one column — these two cards are the most important
+     logos on the page and deserve full width on a phone. Every smaller
+     tier switches to a fixed 2-up grid: auto-fill's minmax stops working
+     once the container is this narrow (two 180px tiles plus a gap don't
+     fit in ~340px), so the column count is stated directly instead. */
+  .sponsor-grid.featured { grid-template-columns: 1fr; }
+  .sponsor-grid.gold,
+  .sponsor-grid.silver,
+  .sponsor-grid.bronze,
+  .sponsor-grid.friends,
+  .sponsor-grid.community { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .sponsor-grid.bronze .sponsor-info,
+  .sponsor-grid.friends .sponsor-info { padding: 10px 12px; }
 }
 
 /* ============================================================
