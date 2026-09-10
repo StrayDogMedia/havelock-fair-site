@@ -46,7 +46,7 @@ const open = async (b, q = '', w = 1440) => {
       const legendIds = [...document.querySelectorAll('.pl-legend-item')].map(b => +b.dataset.loc).sort((a, b) => a - b);
       const venues = [];
       for (const d of Object.keys(scheduleData))
-        scheduleData[d].events.forEach(e => { if (e.venue) venues.push(e.venue); });
+        scheduleData[d].events.forEach(e => { if (e.venue) venues.push(...[].concat(e.venue)); });
       return {
         named: ids,
         onPlan: svgIds,
@@ -121,7 +121,7 @@ const open = async (b, q = '', w = 1440) => {
     const r = await p.evaluate(() => {
       document.querySelector('.hf-pin[data-loc="8"]').click();
       const items = [...document.querySelectorAll('.pp-events li')].map(li => li.textContent);
-      const expected = scheduleData.sunday.events.filter(e => e.venue === 8).length;
+      const expected = scheduleData.sunday.events.filter(e => [].concat(e.venue).includes(8)).length;
       return { items, expected };
     });
     is('Sunday at the Music Building lists every act there', r.items.length, r.expected);
@@ -269,12 +269,12 @@ const open = async (b, q = '', w = 1440) => {
       document.querySelector('.hf-pin[data-loc="8"]').click();
       const sun = { n: document.querySelectorAll('.pp-events li').length,
                     head: document.querySelector('.pp-today').textContent,
-                    expect: scheduleData.sunday.events.filter(e => e.venue === 8).length };
+                    expect: scheduleData.sunday.events.filter(e => [].concat(e.venue).includes(8)).length };
       document.getElementById('tab-sat').click();
       await new Promise(r => setTimeout(r, 100));
       const sat = { n: document.querySelectorAll('.pp-events li').length,
                     head: document.querySelector('.pp-today').textContent,
-                    expect: scheduleData.saturday.events.filter(e => e.venue === 8).length };
+                    expect: scheduleData.saturday.events.filter(e => [].concat(e.venue).includes(8)).length };
       return { sun, sat, mapDay: fairgroundsMap.day() };
     });
     is('Sunday tab → panel lists Sunday at the Music Building', d.sun.n, d.sun.expect);
@@ -295,8 +295,8 @@ const open = async (b, q = '', w = 1440) => {
         .map(t => { const [hh, mm] = t.split(':').map(Number); return [t, hh * 60 + mm]; })
         .sort((a, b) => a[1] - b[1]);
       let slot = null; for (const [t, mm] of order) { if (mm <= mins) slot = t; else break; }
-      const live = [...new Set(scheduleData.saturday.events.filter(x => !x.allDay && x.time === slot && x.venue).map(x => String(x.venue)))].sort();
-      return { now: `2026-09-12T${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`, slot, live, venue: String(e.venue) };
+      const live = [...new Set(scheduleData.saturday.events.filter(x => !x.allDay && x.time === slot && x.venue).flatMap(x => [].concat(x.venue).map(String)))].sort();
+      return { now: `2026-09-12T${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`, slot, live, venue: String([].concat(e.venue)[0]) };
     });
     await probe.close();
     const live = await open(browser, '?now=' + pick.now);

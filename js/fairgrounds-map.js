@@ -65,6 +65,9 @@
     return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   };
 
+  /* `venue` on an event is one pin or a list of pins — always a list here */
+  function venuesOf(e) { return e.venue ? [].concat(e.venue) : []; }
+
   /* One artwork, one coordinate set. Kept as a function because pins and the
      zoom-reveal both need it, and a single definition is what stops the two
      from drifting apart. */
@@ -127,7 +130,7 @@
     }
     if (liveTime === null) return;
     day.events.forEach(function (e) {
-      if (!e.allDay && e.time === liveTime && e.venue) liveVenues[e.venue] = true;
+      if (!e.allDay && e.time === liveTime) venuesOf(e).forEach(function (v) { liveVenues[v] = true; });
     });
   }
   function applyLive() {
@@ -142,7 +145,7 @@
     if (!day) return [];
     var l = lang();
     return day.events
-      .filter(function (e) { return e.venue === id; })
+      .filter(function (e) { return venuesOf(e).indexOf(id) !== -1; })
       .sort(function (a, b) { return (a.allDay ? -1 : mins(a.time)) - (b.allDay ? -1 : mins(b.time)); })
       .map(function (e) {
         var state = '';

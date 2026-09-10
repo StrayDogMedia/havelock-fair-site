@@ -24,13 +24,19 @@
  *   cat       key into categoryInfo below.
  *   en/fr/es  the title. NO times and NO venues in here — both are fields now.
  *   venue     optional PIN NUMBER into mapLocations (js/map-data.js), not a
- *             name. The map owns every place name in all three languages, so
- *             the schedule and the plan can never drift apart and renaming a
- *             building is one edit there.
- *             ⚠️ NEVER GUESS ONE. Only music and the children's races had a
- *             location stated in their own copy; everything else is
- *             deliberately absent until Rommy or Nadeana confirms which pin.
- *             A wrong venue sends someone to the wrong barn.
+ *             name — or a LIST of pins ([4, 5, 6]) when one event really
+ *             spans several buildings. The map owns every place name in all
+ *             three languages, so the schedule and the plan can never drift
+ *             apart and renaming a building is one edit there.
+ *             ⚠️ NEVER GUESS ONE. A wrong venue sends someone to the wrong
+ *             barn. Jesse ruled on 2026-09-10: every 4-H event is 17, every
+ *             horse event is 10, the sugar shanty is 7, Pat's Pet Show is 6,
+ *             and 4, 5 and 6 together are the exhibition halls. Still
+ *             unplaced on purpose: the gates (which gate?), the opening
+ *             ceremony, the cattle/beef/dairy shows, the antique machinery
+ *             and the children's activities — nobody has said where.
+ *             The Winslow Dancers were removed the same day: they came from
+ *             the 2025 booklet and are not on the 2026 programme.
  *
  * ⚠️ Band, act and show names are byte-identical across en/fr/es on purpose
  * and are asserted in tools/verify-music-page.js. Do not "translate" them.
@@ -44,29 +50,28 @@ const scheduleData = {
     events: [
       { time: "6:00", cat: "general", en: "Gates open for exhibitors only", fr: "Ouverture des portes pour les exposants", es: "Puertas abiertas solo para expositores" },
       { time: "8:00", cat: "general", en: "Gates open to the public", fr: "Ouverture des portes au public", es: "Puertas abiertas al público" },
-      { time: "9:00", cat: "music", en: "Winslow Dancers (Line dancing)", fr: "Winslow Dancers (Danse en ligne)", es: "Winslow Dancers (Baile en línea)" },
       { time: "10:00", until: "11:00", cat: "music", en: "The Pine County Ramblers", fr: "The Pine County Ramblers", es: "The Pine County Ramblers", venue: 8 },
       { time: "12:30", until: "13:30", cat: "music", en: "The Pine County Ramblers", fr: "The Pine County Ramblers", es: "The Pine County Ramblers", venue: 8 },
       { time: "15:00", until: "16:00", cat: "music", en: "The Pine County Ramblers", fr: "The Pine County Ramblers", es: "The Pine County Ramblers", venue: 8 },
       { time: "9:00", allDay: true, cat: "antique", en: "Antique cars & machinery — Chateauguay Valley Garden Tractor Club", fr: "Voitures et machines anciennes — Chateauguay Valley Garden Tractor Club", es: "Autos y maquinaria antigua — Chateauguay Valley Garden Tractor Club" },
-      { time: "9:00", allDay: true, cat: "food", en: "Sugar shanty open", fr: "Cabane à sucre ouverte", es: "Cabaña de azúcar abierta" },
+      { time: "9:00", allDay: true, cat: "food", en: "Sugar shanty open", fr: "Cabane à sucre ouverte", es: "Cabaña de azúcar abierta", venue: 7 },
       { time: "9:00", allDay: true, cat: "kids", en: "Children's activities: école au champs, games, story time, face painting, petting zoo", fr: "Activités pour enfants : école au champs, jeux, histoires, peintures de visages, petit zoo", es: "Actividades para niños: escuela en el campo, juegos, cuentos, pintura de caras, zoológico" },
-      { time: "10:00", allDay: true, cat: "animals", en: "Horse show including Gymkhana", fr: "Spectacle équestre avec Gymkhana", es: "Espectáculo ecuestre con Gymkhana" },
-      { time: "10:00", cat: "general", en: "Exhibition halls open", fr: "Ouverture des portes pour l'exposition intérieure", es: "Salas de exposición abiertas" },
+      { time: "10:00", allDay: true, cat: "animals", en: "Horse show including Gymkhana", fr: "Spectacle équestre avec Gymkhana", es: "Espectáculo ecuestre con Gymkhana", venue: 10 },
+      { time: "10:00", cat: "general", en: "Exhibition halls open", fr: "Ouverture des portes pour l'exposition intérieure", es: "Salas de exposición abiertas", venue: [4, 5, 6] },
       { time: "11:00", highlight: true, art: "home/spotlight/ls-2.jpg", cat: "general",
         short_en: "Opening Ceremony", short_fr: "Cérémonie d'ouverture", short_es: "Ceremonia de apertura",
         en: "Opening ceremony by the President; judging starts for indoor exhibitions", fr: "Cérémonie d'ouverture par le président; début du jugement des expositions intérieures", es: "Ceremonia de apertura por el Presidente; comienza el juicio de exposiciones interiores" },
-      { time: "11:00", cat: "animals", en: "4-H showmanship exhibitions", fr: "Suite des expositions 4-H", es: "Exhibiciones de presentación 4-H" },
-      { time: "13:00", highlight: true, art: "gallery/percheron-pair.jpg", cat: "animals", en: "Heavy Horse Show", fr: "Exposition de chevaux lourds", es: "Exhibición de caballos pesados" },
+      { time: "11:00", cat: "animals", en: "4-H showmanship exhibitions", fr: "Suite des expositions 4-H", es: "Exhibiciones de presentación 4-H", venue: 17 },
+      { time: "13:00", highlight: true, art: "gallery/percheron-pair.jpg", cat: "animals", en: "Heavy Horse Show", fr: "Exposition de chevaux lourds", es: "Exhibición de caballos pesados", venue: 10 },
       { time: "13:00", highlight: true, art: "gallery/wheelbarrow-race.jpg", cat: "kids", en: "Children's races", fr: "Courses d'enfants", es: "Carreras de niños", venue: 10 },
       { time: "13:00", cat: "animals", en: "Heritage Cattle Show", fr: "Exposition de bétail du patrimoine", es: "Exhibición de ganado patrimonial" },
       { time: "13:00", cat: "animals", en: "Beef, sheep, goats, and pig show", fr: "Exposition de bœufs, moutons, chèvres et porcs", es: "Exhibición de ganado vacuno, ovejas, cabras y cerdos" },
-      { time: "13:00", cat: "animals", en: "Miniature Horse and Pony Show", fr: "Exposition de miniatures et de poneys", es: "Exhibición de caballos miniatura y ponis" },
+      { time: "13:00", cat: "animals", en: "Miniature Horse and Pony Show", fr: "Exposition de miniatures et de poneys", es: "Exhibición de caballos miniatura y ponis", venue: 10 },
       /* Proper noun — identical in all three languages, like the band names.
          Spelled to match the long-standing SUNDAY entry exactly: the same
          attraction runs both days and must not appear under two names. */
-      { time: "14:00", cat: "kids", en: "Pat's Pet Show", fr: "Pat's Pet Show", es: "Pat's Pet Show" },
-      { time: "16:30", cat: "general", en: "Doors close for indoor exhibitions", fr: "Fin des événements", es: "Cierre de las exposiciones interiores" }
+      { time: "14:00", cat: "kids", en: "Pat's Pet Show", fr: "Pat's Pet Show", es: "Pat's Pet Show", venue: 6 },
+      { time: "16:30", cat: "general", en: "Doors close for indoor exhibitions", fr: "Fin des événements", es: "Cierre de las exposiciones interiores", venue: [4, 5, 6] }
     ]
   },
   sunday: {
@@ -84,18 +89,18 @@ const scheduleData = {
       { time: "13:30", until: "15:00", highlight: true, art: "home/spotlight/mu-1.jpg", cat: "music", en: "Durham County Poets", fr: "Durham County Poets", es: "Durham County Poets", venue: 8 },
       { time: "15:00", until: "16:00", cat: "music", en: "Pierre Lachance &amp; Guy David", fr: "Pierre Lachance &amp; Guy David", es: "Pierre Lachance &amp; Guy David", venue: 8 },
       { time: "9:00", allDay: true, cat: "antique", en: "Antique cars & machinery — Chateauguay Valley Garden Tractor Club", fr: "Voitures et machines anciennes — Chateauguay Valley Garden Tractor Club", es: "Autos y maquinaria antigua — Chateauguay Valley Garden Tractor Club" },
-      { time: "9:00", allDay: true, cat: "food", en: "Sugar shanty open", fr: "Cabane à sucre ouverte", es: "Cabaña de azúcar abierta" },
+      { time: "9:00", allDay: true, cat: "food", en: "Sugar shanty open", fr: "Cabane à sucre ouverte", es: "Cabaña de azúcar abierta", venue: 7 },
       { time: "9:00", allDay: true, cat: "kids", en: "Children's activities continue", fr: "Poursuite des activités pour enfants", es: "Continúan las actividades para niños" },
-      { time: "10:00", cat: "general", en: "Exhibition halls open", fr: "Ouverture des portes pour l'exposition intérieure", es: "Salas de exposición abiertas" },
+      { time: "10:00", cat: "general", en: "Exhibition halls open", fr: "Ouverture des portes pour l'exposition intérieure", es: "Salas de exposición abiertas", venue: [4, 5, 6] },
       { time: "10:00", highlight: true, art: "gallery/fair-2025-05.jpg", cat: "animals",
         short_en: "Miniature Horses & Ponies", short_fr: "Miniatures et poneys", short_es: "Caballos miniatura y ponis",
-        en: "Miniature Horse and Pony Show", fr: "Exposition de miniatures et de poneys", es: "Exhibición de caballos miniatura y ponis" },
-      { time: "11:00", highlight: true, art: "gallery/fair-2025-01.jpg", cat: "animals", en: "Heavy Horse Show", fr: "Exposition de chevaux lourds", es: "Exhibición de caballos pesados" },
+        en: "Miniature Horse and Pony Show", fr: "Exposition de miniatures et de poneys", es: "Exhibición de caballos miniatura y ponis", venue: 10 },
+      { time: "11:00", highlight: true, art: "gallery/fair-2025-01.jpg", cat: "animals", en: "Heavy Horse Show", fr: "Exposition de chevaux lourds", es: "Exhibición de caballos pesados", venue: 10 },
       { time: "13:00", cat: "kids", en: "Children's races", fr: "Courses d'enfants", es: "Carreras de niños", venue: 10 },
       { time: "13:00", cat: "animals", en: "Heritage Cattle Show", fr: "Exposition de bétail du patrimoine", es: "Exhibición de ganado patrimonial" },
       { time: "13:00", cat: "animals", en: "Open Dairy Class", fr: "Classe ouverte des vaches laitières", es: "Clase abierta de vacas lecheras" },
-      { time: "14:00", cat: "kids", en: "Pat's Pet Show", fr: "Pat's Pet Show", es: "Pat's Pet Show" },
-      { time: "16:30", cat: "general", en: "Doors close for indoor exhibitions", fr: "Fin des événements", es: "Cierre de las exposiciones interiores" }
+      { time: "14:00", cat: "kids", en: "Pat's Pet Show", fr: "Pat's Pet Show", es: "Pat's Pet Show", venue: 6 },
+      { time: "16:30", cat: "general", en: "Doors close for indoor exhibitions", fr: "Fin des événements", es: "Cierre de las exposiciones interiores", venue: [4, 5, 6] }
     ]
   }
 };

@@ -185,19 +185,21 @@
        name, so it cannot drift from the fairgrounds plan, and the row links
        straight to that pin on the map below — js/fairgrounds-map.js catches
        the click and lights the pin in place. */
-    function venueOf(ev, lang) {
-      if (!ev.venue || typeof mapLocations === "undefined") return null;
-      const loc = mapLocations[ev.venue];
-      if (!loc) return null;
-      return { id: ev.venue, name: loc[lang] || loc.en };
+    /* `venue` is one pin or a list of pins (the exhibition halls are three
+       buildings) — always a list here */
+    function venuesOf(ev, lang) {
+      if (!ev.venue || typeof mapLocations === "undefined") return [];
+      return [].concat(ev.venue)
+        .filter(id => mapLocations[id])
+        .map(id => ({ id, name: mapLocations[id][lang] || mapLocations[id].en }));
     }
 
     function eventRow(ev, lang) {
       const title = ev[lang] || ev.en;
-      const venue = venueOf(ev, lang);
+      const venues = venuesOf(ev, lang);
       const bits = [];
       if (ev.until) bits.push(`<span class="ev-until">${T("sched_until", lang)} ${esc(fmtTime(ev.until, lang))}</span>`);
-      if (venue) bits.push(`<a class="ev-venue" href="#loc-${venue.id}">${esc(venue.name)}</a>`);
+      venues.forEach(v => bits.push(`<a class="ev-venue" href="#loc-${v.id}">${esc(v.name)}</a>`));
       return `
         <div class="event-card" data-cat="${ev.cat}" style="--ev-color:${catColor(ev.cat)}">
           <span class="ev-rule" aria-hidden="true"></span>

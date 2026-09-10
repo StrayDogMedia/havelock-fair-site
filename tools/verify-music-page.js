@@ -63,7 +63,8 @@ function boot(rel){
   const visible=()=>cards().filter(c=>!c.classList.contains('hidden'));
   ck('Saturday timeline built', cards().length>0, cards().length);
   const satMusic=cards().filter(c=>c.dataset.cat==='music');
-  ck('Saturday has 4 music cards (Winslow + 3 Ramblers sets)', satMusic.length===4, satMusic.length);
+  /* the Winslow Dancers came from the 2025 booklet and were removed 2026-09-10 */
+  ck('Saturday has 3 music cards (3 Ramblers sets)', satMusic.length===3, satMusic.length);
   ck('Ramblers set times present', satMusic.filter(c=>/Pine County Ramblers/.test(c.textContent)).length===3);
   // click the Music filter
   const musicBtn=[...sd.querySelectorAll('.cat-btn')].find(b=>b.dataset.cat==='music');
