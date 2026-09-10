@@ -32,8 +32,10 @@
  *             barn. Jesse ruled on 2026-09-10: every 4-H event is 17, every
  *             horse event is 10, the sugar shanty is 7, Pat's Pet Show is 6,
  *             and 4, 5 and 6 together are the exhibition halls. Still
+ *             The Heritage Cattle Show and the Open Dairy Class are at 17
+ *             too, "where the 4-H stuff happens" (Jesse, same day). Still
  *             unplaced on purpose: the gates (which gate?), the opening
- *             ceremony, the cattle/beef/dairy shows, the antique machinery
+ *             ceremony, the beef/sheep/goats/pig show, the antique machinery
  *             and the children's activities — nobody has said where.
  *             The Winslow Dancers were removed the same day: they came from
  *             the 2025 booklet and are not on the 2026 programme.
@@ -64,7 +66,7 @@ const scheduleData = {
       { time: "11:00", cat: "animals", en: "4-H showmanship exhibitions", fr: "Suite des expositions 4-H", es: "Exhibiciones de presentación 4-H", venue: 17 },
       { time: "13:00", highlight: true, art: "gallery/percheron-pair.jpg", cat: "animals", en: "Heavy Horse Show", fr: "Exposition de chevaux lourds", es: "Exhibición de caballos pesados", venue: 10 },
       { time: "13:00", highlight: true, art: "gallery/wheelbarrow-race.jpg", cat: "kids", en: "Children's races", fr: "Courses d'enfants", es: "Carreras de niños", venue: 10 },
-      { time: "13:00", cat: "animals", en: "Heritage Cattle Show", fr: "Exposition de bétail du patrimoine", es: "Exhibición de ganado patrimonial" },
+      { time: "13:00", cat: "animals", en: "Heritage Cattle Show", fr: "Exposition de bétail du patrimoine", es: "Exhibición de ganado patrimonial", venue: 17 },
       { time: "13:00", cat: "animals", en: "Beef, sheep, goats, and pig show", fr: "Exposition de bœufs, moutons, chèvres et porcs", es: "Exhibición de ganado vacuno, ovejas, cabras y cerdos" },
       { time: "13:00", cat: "animals", en: "Miniature Horse and Pony Show", fr: "Exposition de miniatures et de poneys", es: "Exhibición de caballos miniatura y ponis", venue: 10 },
       /* Proper noun — identical in all three languages, like the band names.
@@ -97,8 +99,8 @@ const scheduleData = {
         en: "Miniature Horse and Pony Show", fr: "Exposition de miniatures et de poneys", es: "Exhibición de caballos miniatura y ponis", venue: 10 },
       { time: "11:00", highlight: true, art: "gallery/fair-2025-01.jpg", cat: "animals", en: "Heavy Horse Show", fr: "Exposition de chevaux lourds", es: "Exhibición de caballos pesados", venue: 10 },
       { time: "13:00", cat: "kids", en: "Children's races", fr: "Courses d'enfants", es: "Carreras de niños", venue: 10 },
-      { time: "13:00", cat: "animals", en: "Heritage Cattle Show", fr: "Exposition de bétail du patrimoine", es: "Exhibición de ganado patrimonial" },
-      { time: "13:00", cat: "animals", en: "Open Dairy Class", fr: "Classe ouverte des vaches laitières", es: "Clase abierta de vacas lecheras" },
+      { time: "13:00", cat: "animals", en: "Heritage Cattle Show", fr: "Exposition de bétail du patrimoine", es: "Exhibición de ganado patrimonial", venue: 17 },
+      { time: "13:00", cat: "animals", en: "Open Dairy Class", fr: "Classe ouverte des vaches laitières", es: "Clase abierta de vacas lecheras", venue: 17 },
       { time: "14:00", cat: "kids", en: "Pat's Pet Show", fr: "Pat's Pet Show", es: "Pat's Pet Show", venue: 6 },
       { time: "16:30", cat: "general", en: "Doors close for indoor exhibitions", fr: "Fin des événements", es: "Cierre de las exposiciones interiores", venue: [4, 5, 6] }
     ]
