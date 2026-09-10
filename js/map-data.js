@@ -19,7 +19,7 @@
  * x / y are PERCENTAGES of images/map/fairgrounds.jpg, so they survive the
  * artwork being re-exported at another resolution. They are still positions on
  * a picture: if the art is REDRAWN they all need rechecking, and
- * pages/directions.html?calibrate=1 prints the percentage under the cursor and
+ * pages/schedule.html?calibrate=1 prints the percentage under the cursor and
  * copies it on click, which makes that minutes rather than a chore.
  *
  * THE ARTWORK (2026-09-06, revised 2026-09-10, Jesse). A top-down illustrated

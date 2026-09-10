@@ -1,5 +1,6 @@
-/* Covers the fairgrounds plan on pages/directions.html — the inline SVG, its
- * hotspots, the legend, the detail panel, and the link back from the schedule.
+/* Covers the fairgrounds plan on pages/schedule.html (moved there from
+ * Directions on 2026-09-10) — the artwork, its pins, the legend, the detail
+ * panel, and the wiring to the timeline it now sits under.
  *
  * ⚠️ Needs the site SERVED:
  *   cd ~/havelock-fair-site && python3 -m http.server 8765
@@ -14,7 +15,7 @@
 const puppeteer = require('puppeteer-core');
 const CHROME = process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const BASE = process.env.MAP_BASE || 'http://localhost:8765';
-const URL = BASE + '/pages/directions.html';
+const URL = BASE + '/pages/schedule.html';
 const LANGS = ['en', 'fr', 'es'];
 
 let pass = 0, fail = 0;
@@ -215,7 +216,7 @@ const open = async (b, q = '', w = 1440) => {
                hrefs: [...new Set(a.map(x => x.getAttribute('href')))] };
     });
     links.n > 0 ? ok('venues on the schedule are links', links.n + ' rows') : bad('venue links exist', links.n);
-    is('  pointing at map pins', links.hrefs.every(h => /^directions\.html#loc-\d+$/.test(h)), true);
+    is('  pointing at map pins on this same page', links.hrefs.every(h => /^#loc-\d+$/.test(h)), true);
     is('  every label matches mapLocations exactly (' + links.lang.toUpperCase() + ')', links.mismatched, []);
     await p.close();
 
@@ -231,6 +232,104 @@ const open = async (b, q = '', w = 1440) => {
     is('arriving at #loc-10 selects it', deep.on, ['10']);
     is('  and shows its panel (' + deep.lang.toUpperCase() + ')', deep.name, deep.expect);
     await q.close();
+  }
+
+  // ---------- 6a. one page: the timeline and the map drive each other ----------
+  console.log('\n=== schedule ↔ map, on one page ===');
+  {
+    /* a venue link selects the pin in place — no navigation */
+    const p = await open(browser);
+    const r = await p.evaluate(async () => {
+      const a = document.querySelector('a.ev-venue');
+      const id = a.getAttribute('href').split('#loc-')[1];
+      const before = location.pathname;
+      a.click();
+      await new Promise(r => setTimeout(r, 900));
+      const sec = document.getElementById('fairgrounds-map').getBoundingClientRect();
+      return { id, stayed: location.pathname === before, hash: location.hash,
+               on: [...document.querySelectorAll('.hf-pin.is-on')].map(g => g.dataset.loc),
+               mapTop: Math.round(sec.top), name: document.querySelector('.pp-name').textContent,
+               expect: mapLocations[id].en };
+    });
+    is('a venue link stays on the schedule page', r.stayed, true);
+    is('  and lights that pin', r.on, [r.id]);
+    is('  deep link updated', r.hash, '#loc-' + r.id);
+    r.mapTop <= 120 && r.mapTop >= -40 ? ok('  and scrolls the map into view', r.mapTop + 'px from top')
+                                       : bad('map scrolled into view', r.mapTop + 'px', 'about 0-120px');
+    await p.close();
+
+    /* the panel follows the day tabs, and says which day it is describing */
+    const q = await open(browser, '?now=2026-09-12T12:00');
+    const d = await q.evaluate(async () => {
+      /* the language persists in localStorage across pages and the check
+         above leaves it in Spanish — pin this one to English */
+      setLanguage('en');
+      document.getElementById('tab-sun').click();
+      await new Promise(r => setTimeout(r, 100));
+      document.querySelector('.hf-pin[data-loc="8"]').click();
+      const sun = { n: document.querySelectorAll('.pp-events li').length,
+                    head: document.querySelector('.pp-today').textContent,
+                    expect: scheduleData.sunday.events.filter(e => e.venue === 8).length };
+      document.getElementById('tab-sat').click();
+      await new Promise(r => setTimeout(r, 100));
+      const sat = { n: document.querySelectorAll('.pp-events li').length,
+                    head: document.querySelector('.pp-today').textContent,
+                    expect: scheduleData.saturday.events.filter(e => e.venue === 8).length };
+      return { sun, sat, mapDay: fairgroundsMap.day() };
+    });
+    is('Sunday tab → panel lists Sunday at the Music Building', d.sun.n, d.sun.expect);
+    /Sunday/.test(d.sun.head) ? ok('  and says so', JSON.stringify(d.sun.head)) : bad('panel names the day', d.sun.head, 'Here on Sunday');
+    is('Saturday tab → panel lists Saturday', d.sat.n, d.sat.expect);
+    is('  which is "today" under ?now=', d.sat.head, 'Here today');
+    is('  map agrees on the day', d.mapDay, 'saturday');
+    await q.close();
+
+    /* live pins: pick a Saturday event with a venue, set now = 5 min after it */
+    const probe = await open(browser);
+    const pick = await probe.evaluate(() => {
+      const timed = scheduleData.saturday.events.filter(e => e.venue && !e.allDay);
+      const e = timed[Math.floor(timed.length / 2)];
+      const [h, m] = e.time.split(':').map(Number);
+      const mins = h * 60 + m + 5;
+      const order = [...new Set(scheduleData.saturday.events.filter(x => !x.allDay).map(x => x.time))]
+        .map(t => { const [hh, mm] = t.split(':').map(Number); return [t, hh * 60 + mm]; })
+        .sort((a, b) => a[1] - b[1]);
+      let slot = null; for (const [t, mm] of order) { if (mm <= mins) slot = t; else break; }
+      const live = [...new Set(scheduleData.saturday.events.filter(x => !x.allDay && x.time === slot && x.venue).map(x => String(x.venue)))].sort();
+      return { now: `2026-09-12T${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`, slot, live, venue: String(e.venue) };
+    });
+    await probe.close();
+    const live = await open(browser, '?now=' + pick.now);
+    const lr = await live.evaluate(async (venue) => {
+      const pins = [...document.querySelectorAll('.hf-pin.is-live')].map(b => b.dataset.loc).sort();
+      const timelineNow = [...document.querySelectorAll('.day-content.active .time-group.is-now')].map(g => g.dataset.time);
+      document.querySelector('.hf-pin[data-loc="' + venue + '"]').click();
+      const rows = [...document.querySelectorAll('.pp-events li')].map(li => li.className);
+      const flag = document.querySelector('.pp-events li.is-now .pp-ev-flag');
+      /* a panel row jumps the timeline to its slot */
+      const btn = document.querySelector('.pp-events li.is-now .pp-ev');
+      btn.click();
+      await new Promise(r => setTimeout(r, 150));
+      const flashed = document.querySelector('.day-content.active .time-group.flash');
+      return { pins, timelineNow, rows, flag: flag ? flag.textContent : null,
+               flashed: flashed ? flashed.dataset.time : null, slot: btn.dataset.time };
+    }, pick.venue);
+    is(`at ${pick.now} the live pins are exactly the on-now venues`, lr.pins, pick.live);
+    is('  and the timeline agrees on the slot', lr.timelineNow, [pick.slot]);
+    lr.rows.some(c => c === 'is-now') ? ok('  the panel marks the on-now row', lr.flag) : bad('panel on-now row', lr.rows);
+    is('  choosing that row scrolls the timeline to its slot', lr.flashed, lr.slot);
+    await live.close();
+
+    /* directions.html#loc-N still lands on the pin */
+    const fwd = await browser.newPage();
+    await fwd.setViewport({ width: 1440, height: 950 });
+    await fwd.goto(BASE + '/pages/directions.html#loc-10', { waitUntil: 'networkidle2' });
+    await new Promise(r => setTimeout(r, 900));
+    const f = await fwd.evaluate(() => ({ path: location.pathname, hash: location.hash,
+      on: [...document.querySelectorAll('.hf-pin.is-on')].map(g => g.dataset.loc) }));
+    is('directions.html#loc-10 forwards to the schedule', f.path.endsWith('/schedule.html') && f.hash === '#loc-10', true);
+    is('  with the pin selected', f.on, ['10']);
+    await fwd.close();
   }
 
   // ---------- 6b. contrast, measured on rendered pixels ----------
@@ -401,7 +500,7 @@ const open = async (b, q = '', w = 1440) => {
       'var localStorage={getItem:function(){return null},setItem:function(){}};' +
       'var document={querySelectorAll:function(){return[]},addEventListener:function(){},documentElement:{}};' +
       src + '; module.exports=translations; return module.exports;})()');
-    const html = fs2.readFileSync(__dirname + '/../pages/directions.html', 'utf8');
+    const html = fs2.readFileSync(__dirname + '/../pages/schedule.html', 'utf8');
     const keys = [...new Set([...html.matchAll(/data-i18n(?:-label)?="([^"]+)"/g)].map(m => m[1]))];
     const missing = [];
     for (const k of keys) for (const l of LANGS) if (!(k in t[l])) missing.push(l + ':' + k);

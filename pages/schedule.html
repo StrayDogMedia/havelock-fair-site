@@ -40,6 +40,7 @@
 
       <!-- Category Filters -->
       <div class="cat-filters" id="cat-filters"></div>
+      <p class="sched-maplink"><a href="#fairgrounds-map"><span data-i18n="dir_grounds_title">Fairgrounds Map</span> &darr;</a></p>
 
       <!-- Saturday -->
       <div class="day-content active" id="day-saturday">
@@ -54,6 +55,58 @@
     </div>
   </section>
 
+  <!-- ========== FAIRGROUNDS MAP (ivory) ========== -->
+  <!-- ============================================================
+       The plan lives HERE, under the timeline, since 2026-09-10 (it used to
+       be on Directions). The two are wired together by js/fairgrounds-map.js:
+         - a venue on an event row is `#loc-N` and selects that pin in place
+         - the panel describes the day the tabs are showing, and marks what
+           is on now while a fair day is under way; live pins carry a ring
+         - a row in the panel jumps the timeline to its time slot
+       Everything that carries meaning is HTML over the drawing: the pins,
+       the legend, the panel. That keeps names in js/map-data.js (one source
+       of truth with the schedule), keeps the legend translatable to
+       EN/FR/ES, and makes every location a real <button> — keyboard-
+       reachable and screen-readable, which a tap affordance on a flat image
+       is not. No text is baked into the artwork on purpose.
+       The i18n keys keep their dir_ prefix from the old home: renaming them
+       across three dictionaries buys nothing.
+       ============================================================ -->
+  <section class="hf-sec hf-sec--ivory" id="fairgrounds-map">
+    <div class="hf-sec-inner">
+      <div class="hf-sec-head" data-reveal>
+        <span class="hf-eyebrow hf-eyebrow--bronze" data-i18n="visit_eyebrow">Plan Your Visit</span>
+        <h2 class="hf-sec-h2" data-i18n="dir_grounds_title">Fairgrounds Map</h2>
+        <p class="hf-sec-lede" data-i18n="dir_grounds_subtitle">Find your way around the Havelock Fairgrounds</p>
+      </div>
+      <div class="hf-plan" data-reveal>
+        <div class="hf-plan-stage">
+          <div class="hf-map-wrap" id="map-wrap">
+            <div class="hf-map-view" id="map-view">
+              <img class="hf-map-art" id="map-art"
+                   src="../images/map/fairgrounds.jpg"
+                   width="974" height="1400" decoding="async" loading="lazy"
+                   alt="" data-i18n-label="map_svg_title">
+              <div class="hf-map-pins" id="map-pins"></div>
+            </div>
+            <div class="hf-map-cal" id="map-cal" hidden></div>
+            <div class="hf-map-zoom" id="map-zoom">
+              <button type="button" data-zoom="in"  aria-label="Zoom in">+</button>
+              <button type="button" data-zoom="out" aria-label="Zoom out">&minus;</button>
+              <button type="button" data-zoom="reset" aria-label="Reset zoom">&#8634;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hf-plan-side">
+          <p class="hf-plan-hint" data-i18n="map_hint">Select a location for details and what is on there today.</p>
+          <div class="hf-plan-panel" id="plan-panel" role="region" aria-live="polite" tabindex="-1"></div>
+          <div class="hf-plan-legend" id="plan-legend"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ========== DOWNLOAD PROGRAM (ivory) ========== -->
   <section class="hf-sec hf-sec--ivory hf-sec--tight hf-cta-sec">
     <div class="hf-sec-inner" data-reveal>
@@ -64,11 +117,13 @@
     </div>
   </section>
 
-  <!-- Scripts (order matters: chrome → i18n → data → page) -->
+  <!-- Scripts (order matters: chrome → i18n → data → map → page; the map
+       wraps setLanguage first and the page wraps that, so both refresh) -->
   <script src="../js/heritage-chrome.js"></script>
   <script src="../js/i18n.js"></script>
   <script src="../js/map-data.js"></script>
   <script src="../js/schedule-data.js"></script>
+  <script src="../js/fairgrounds-map.js"></script>
   <script>
     let activeDay = "saturday";
     let activeCat = "all";
@@ -128,7 +183,8 @@
     /* The venue is a PIN NUMBER into mapLocations (js/map-data.js), which owns
        every place name in all three languages. The schedule never stores a
        name, so it cannot drift from the fairgrounds plan, and the row links
-       straight to that pin on the map. */
+       straight to that pin on the map below — js/fairgrounds-map.js catches
+       the click and lights the pin in place. */
     function venueOf(ev, lang) {
       if (!ev.venue || typeof mapLocations === "undefined") return null;
       const loc = mapLocations[ev.venue];
@@ -141,7 +197,7 @@
       const venue = venueOf(ev, lang);
       const bits = [];
       if (ev.until) bits.push(`<span class="ev-until">${T("sched_until", lang)} ${esc(fmtTime(ev.until, lang))}</span>`);
-      if (venue) bits.push(`<a class="ev-venue" href="directions.html#loc-${venue.id}">${esc(venue.name)}</a>`);
+      if (venue) bits.push(`<a class="ev-venue" href="#loc-${venue.id}">${esc(venue.name)}</a>`);
       return `
         <div class="event-card" data-cat="${ev.cat}" style="--ev-color:${catColor(ev.cat)}">
           <span class="ev-rule" aria-hidden="true"></span>
@@ -248,18 +304,28 @@
       });
 
       timeline.querySelectorAll("[data-jump]").forEach(a => {
-        a.addEventListener("click", e => {
-          e.preventDefault();
-          const target = timeline.querySelector(`.time-group[data-time="${a.dataset.jump}"]`);
-          if (!target) return;
-          const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
-          target.classList.add("flash");
-          setTimeout(() => target.classList.remove("flash"), 1400);
-        });
+        a.addEventListener("click", e => { e.preventDefault(); jumpTo(a.dataset.jump); });
       });
 
       filterEvents();
+    }
+
+    /* Scroll the visible day to a time slot and flash it. "allday" lands on
+       the all-day band. Used by the "Don't miss" cards and by the map panel,
+       whose rows lead back here. A category filter can hide the slot, so it
+       is lifted first — a jump that lands on nothing looks like a dead click. */
+    function jumpTo(slot) {
+      const sel = slot === "allday" ? ".sched-allday" : `.time-group[data-time="${slot}"]`;
+      let target = document.querySelector(`.day-content.active ${sel}`);
+      if (!target) return;
+      if (target.classList.contains("hidden") && activeCat !== "all") {
+        document.querySelector('.cat-btn[data-cat="all"]').click();
+        target = document.querySelector(`.day-content.active ${sel}`);
+      }
+      const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+      target.classList.add("flash");
+      setTimeout(() => target.classList.remove("flash"), 1400);
     }
 
     function filterEvents() {
@@ -320,6 +386,8 @@
       });
       document.querySelectorAll(".day-content").forEach(c => c.classList.toggle("active", c.id === `day-${day}`));
       buildTimeline(day);
+      /* the map panel describes the same day the timeline shows */
+      if (window.fairgroundsMap) fairgroundsMap.setDay(day);
     }
 
     document.querySelectorAll(".day-tab").forEach(tab => {
@@ -336,13 +404,18 @@
 
     buildFilters();
     updateDayTabs();
+    /* a row in the map panel scrolls the timeline to its slot */
+    if (window.fairgroundsMap) fairgroundsMap.onEventPick = slot => jumpTo(slot);
     /* open on the day that is actually happening, if one is */
     if (nowMinutesFor("sunday") !== null) activeDay = "sunday";
     switchDay(activeDay);
 
-    /* keep "on now" honest without hammering the CPU */
+    /* keep "on now" honest without hammering the CPU — on the timeline AND
+       on the map's live pins */
     setInterval(() => {
-      if (nowMinutesFor(activeDay) !== null) buildTimeline(activeDay);
+      if (nowMinutesFor(activeDay) === null) return;
+      buildTimeline(activeDay);
+      if (window.fairgroundsMap) fairgroundsMap.setDay(activeDay);
     }, 60000);
   </script>
 </body>

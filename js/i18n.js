@@ -258,6 +258,7 @@ const translations = {
     poster_cta: "See the Schedule",
     dir_grounds_title: "Fairgrounds Map",
     dir_grounds_subtitle: "Find your way around the Havelock Fairgrounds",
+    dir_grounds_cta: "See the map on the schedule page",
     schedule_download_text: "The full 48-page program book includes competition classes, prize lists, regulations, and registration forms.",
     schedule_download_btn: "Download Full Program (PDF)",
 
@@ -420,7 +421,7 @@ const translations = {
     rules_note_text: "Entries are accepted right up to fair day — you can register online now, or complete your form and bring it to the office before judging begins at 11:00 a.m. Registering ahead of time simply means less to do on the morning.",
     rules_cta_title: "Ready to Enter?",
     rules_cta_text: "Pick your classes and register online — it takes a few minutes.",
-    // Fairgrounds map (pages/directions.html)
+    // Fairgrounds map (pages/schedule.html#fairgrounds-map since 2026-09-10; dir_ keys kept)
     map_svg_title: "Illustrated plan of the Havelock fairgrounds",
     map_hint: "Select a location for details and what is on there today.",
   },
@@ -675,6 +676,7 @@ const translations = {
     poster_cta: "Voir l'horaire",
     dir_grounds_title: "Plan du terrain",
     dir_grounds_subtitle: "Repérez-vous sur le terrain de la Foire Havelock",
+    dir_grounds_cta: "Voir le plan sur la page Horaire",
     schedule_download_text: "Le programme complet de 48 pages comprend les classes de compétition, les listes de prix, les règlements et les formulaires d'inscription.",
     schedule_download_btn: "Télécharger le programme complet (PDF)",
 
@@ -832,7 +834,7 @@ const translations = {
     rules_note_text: "Les inscriptions sont acceptées jusqu'au jour de la foire — vous pouvez vous inscrire en ligne dès maintenant, ou remplir votre formulaire et l'apporter au bureau avant le début du jugement à 11 h. S'inscrire à l'avance, c'est simplement moins à faire le matin même.",
     rules_cta_title: "Prêt à vous inscrire ?",
     rules_cta_text: "Choisissez vos classes et inscrivez-vous en ligne — quelques minutes suffisent.",
-    // Plan des terrains (pages/directions.html)
+    // Plan des terrains (pages/schedule.html#fairgrounds-map)
     map_svg_title: "Plan illustré des terrains de la Foire Havelock",
     map_hint: "Choisissez un lieu pour en savoir plus et voir ce qui s'y passe aujourd'hui.",
   },
@@ -1087,6 +1089,7 @@ const translations = {
     poster_cta: "Ver el horario",
     dir_grounds_title: "Mapa del recinto",
     dir_grounds_subtitle: "Oriéntese en el recinto ferial de Havelock",
+    dir_grounds_cta: "Ver el mapa en la página del horario",
     schedule_download_text: "El programa completo de 48 páginas incluye las clases de competencia, listas de premios, reglamentos y formularios de inscripción.",
     schedule_download_btn: "Descargar el programa completo (PDF)",
 
@@ -1244,7 +1247,7 @@ const translations = {
     rules_note_text: "Las inscripciones se aceptan hasta el día mismo de la feria — puede inscribirse en línea ahora, o completar su formulario y llevarlo a la oficina antes de que comience el juicio a las 11:00. Inscribirse con antelación simplemente significa menos que hacer esa mañana.",
     rules_cta_title: "¿Listo para inscribirse?",
     rules_cta_text: "Elija sus clases e inscríbase en línea — solo toma unos minutos.",
-    // Plano del recinto (pages/directions.html)
+    // Plano del recinto (pages/schedule.html#fairgrounds-map)
     map_svg_title: "Plano ilustrado del recinto de la Feria Havelock",
     map_hint: "Elija un lugar para ver los detalles y lo que ocurre allí hoy.",
   }

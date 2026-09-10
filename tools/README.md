@@ -243,8 +243,11 @@ category as `.sr-only` text. Re-measure if you retint.
 
 ## verify-map.js
 
-Covers the fairgrounds plan on `pages/directions.html` — the inline SVG, its
-hotspots, the legend, the detail panel, and the link back from the schedule.
+Covers the fairgrounds plan on `pages/schedule.html#fairgrounds-map` (moved
+there from Directions on 2026-09-10) — the artwork, its pins, the legend, the
+detail panel, and the wiring to the timeline it sits under: venue links select
+a pin in place, the panel follows the day tabs and marks what is on now, panel
+rows jump the timeline, and `directions.html#loc-N` forwards.
 
 ```sh
 cd ~/havelock-fair-site && python3 -m http.server 8765   # in another shell
